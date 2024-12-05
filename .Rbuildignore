@@ -1,4 +1,4 @@
-^biosys\.Rproj$
+^blit\.Rproj$
 ^\.Rproj\.user$
 ^\.radian_history$
 ^Scratch\.RConsole$
@@ -6,3 +6,6 @@
 ^\.github$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+^README\.Rmd$
+^icon$
+README.html

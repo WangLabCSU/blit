@@ -1,13 +1,19 @@
-Package: biosys
-Title: System Command Function for Bioinformatics
+Package: blit
+Title: Bioinformatics Library for Integrated Tools
 Version: 0.1.0
-Authors@R: 
-    person("Yun", "Peng", , "yunyunp96@163.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-2801-3332"))
-Description: System Command function for Bioinformatics.
+Authors@R: c(
+    person("Yun", "Peng", , "yunyunp96@163.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-2801-3332")),
+    person("Shixiang", "Wang", , "w_shixiang@163.com", role = c("aut"),
+           comment = c(ORCID = "0000-0001-9855-7357"))
+  )
+Description: An all-encompassing R toolkit designed to streamline the
+    process of calling various bioinformatics software and performing data
+    analysis and visualization. With BLIT, users can easily integrate a
+    wide array of conventional bioinformatics tools into their workflows,
+    leveraging the power of R for sophisticated data manipulation and
+    graphical representation.
 License: MIT + file LICENSE
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Imports: 
     cli,
     data.table,
@@ -15,5 +21,8 @@ Imports:
     rlang (>= 1.1.0)
 Suggests: 
     testthat (>= 3.0.0)
-SystemRequirements: Unix System
 Config/testthat/edition: 3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+SystemRequirements: Unix System

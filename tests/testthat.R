@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(biosys)
+library(blit)
 
-test_check("biosys")
+test_check("blit")
