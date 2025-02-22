@@ -23,33 +23,39 @@ exprs <- function(...) {
     dots
 }
 
-fclass <- function(x) class(x)[1L]
+fclass <- function(x) .subset(class(x), 1L)
 
-on_exit <- function(expr, add = FALSE, after = TRUE, envir = parent.frame()) {
-    expr <- rlang::enquo(expr)
-    expr <- rlang::expr(on.exit(expr = !!expr, add = !!add, after = !!after))
-    rlang::eval_tidy(expr, env = envir)
+# utils function to collapse characters ---------------------------
+oxford_and <- function(chr, code = TRUE, quote = TRUE, sep = ", ") {
+    oxford_comma(code_quote(chr, code, quote), sep = sep, final = "and")
 }
 
-set_seed <- function(seed = NULL, add = FALSE, envir = parent.frame()) {
-    if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
-        oseed <- get(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
-    } else {
-        oseed <- NULL
+oxford_or <- function(chr, code = TRUE, quote = TRUE, sep = ", ") {
+    oxford_comma(code_quote(chr, code, quote), sep = sep, final = "or")
+}
+
+code_quote <- function(x, code = TRUE, quote = TRUE) {
+    if (quote) x <- paste0("\"", x, "\"")
+    if (code) x <- paste0("`", x, "`")
+    x
+}
+
+oxford_comma <- function(chr, sep = ", ", final = "and") {
+    n <- length(chr)
+
+    if (n < 2L) {
+        return(chr)
     }
-    on_exit(restore_rng(oseed), add = add, envir = envir)
-    seed <- seed %||% random_seed(1L)
-    set.seed(seed)
-}
 
-restore_rng <- function(oseed) {
-    if (is.null(oseed)) {
-        if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
-            rm(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
-        }
+    head <- chr[seq_len(n - 1L)]
+    last <- chr[n]
+
+    head <- paste(head, collapse = sep)
+
+    # Write a or b. But a, b, or c.
+    if (n > 2L) {
+        paste0(head, sep, final, " ", last)
     } else {
-        assign(".Random.seed", oseed, envir = .GlobalEnv, inherits = FALSE)
+        paste0(head, " ", final, " ", last)
     }
 }
-
-random_seed <- function(n) sample.int(1e6L, n)

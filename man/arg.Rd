@@ -15,13 +15,12 @@ arg(tag, value, indicator = FALSE, lgl2int = FALSE, format = "\%s", sep = " ")
 indicator of tag. If TRUE, logical value will explain the set or unset of
 tag.}
 
-\item{lgl2int}{A logical value indicates whether transfrom value \code{TRUE} to 1
-or \code{FALSE} to 0. If \code{TRUE}, format will always be set to "\%d".}
+\item{lgl2int}{A logical value indicates whether transfrom value \code{TRUE} to
+\code{1} or \code{FALSE} to \code{0}. If \code{TRUE}, format will always be set to \code{"\%d"}.}
 
-\item{format}{The format of the value, details see \link{sprintf}.}
+\item{format}{The format of the value, details see \code{\link{sprintf}}.}
 
-\item{sep}{A character string used to separate "tag" and "value", usually " "
-or "=".}
+\item{sep}{A character string used to separate "tag" and "value", usually \code{" "} or \code{"="}.}
 }
 \value{
 A string.

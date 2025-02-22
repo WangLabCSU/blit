@@ -14,33 +14,36 @@
 #'  - `trust4`: Prefix of output files. (default: inferred from file prefix).
 #'  - `trust4_imgt_annot`: Output file name.
 #'  - `trust4_gene_names`: Output file name.
-#' @param ... `r rd_dots("run-trust4")`. Details see: `trust4(help = TRUE)`
+#' @param ... `r rd_dots("run-trust4")`.
 #' @inheritParams allele_counter
 #' @param trust4 `r rd_cmd("run-trust4")`.
 #' @seealso <https://github.com/liulab-dfci/TRUST4>
 #' @inherit exec return
 #' @export
-trust4 <- function(file1, ref_coordinate, ..., file2 = NULL, mode = NULL,
-                   ref_annot = NULL, ofile = NULL, odir = getwd(),
-                   trust4 = NULL) {
-    Execute$new(
-        SysTrust4$new(
-            cmd = perl,
+trust4 <- make_command(
+    "trust4",
+    function(file1, ref_coordinate, ..., file2 = NULL,
+             mode = NULL, ref_annot = NULL,
+             ofile = NULL, odir = getwd(),
+             trust4 = NULL) {
+        assert_string(trust4, allow_empty = FALSE, allow_null = TRUE)
+        Trust4$new(
+            cmd = trust4,
             ..., file1 = file1, ref_coordinate = ref_coordinate,
             file2 = file2, mode = mode, ref_annot = ref_annot,
             ofile = ofile, odir = odir
         )
-    )
-}
+    }
+)
 
-SysTrust4 <- R6::R6Class(
-    "SysTrust4",
+Trust4 <- R6Class(
+    "Trust4",
     inherit = Command,
     private = list(
-        name = "run-trust4", help = NULL,
+        name = "run-trust4",
         setup_command_params = function(file1, file2, mode, ref_annot,
                                         ref_coordinate, ofile, odir) {
-            assert_string(file1, empty_ok = FALSE)
+            assert_string(file1, allow_empty = FALSE)
             if (is.null(mode)) {
                 if (grepl("(fastq|fq)(\\.gz)?$", file1, perl = TRUE)) {
                     mode <- "fastq"
@@ -76,8 +79,8 @@ SysTrust4 <- R6::R6Class(
             c(
                 params,
                 arg_internal("-f", ref_coordinate),
-                arg_internal("-ref", ref_annot, null_ok = TRUE),
-                arg_internal("-o", ofile, null_ok = TRUE),
+                arg_internal("-ref", ref_annot, allow_null = TRUE),
+                arg_internal("-o", ofile, allow_null = TRUE),
                 arg_internal("--od", odir)
             )
         }
@@ -92,28 +95,30 @@ SysTrust4 <- R6::R6Class(
 #' @inheritParams perl
 #' @export
 #' @rdname trust4
-trust4_imgt_annot <- function(species = "Homo_sapien", ...,
-                              ofile = "IMGT+C.fa", odir = getwd(),
-                              perl = NULL) {
-    Execute$new(SysTrust4ImgtAnnot$new(
-        cmd = perl, ..., species = species, ofile = ofile, odir = odir
-    ))
-}
+trust4_imgt_annot <- make_command(
+    "trust4_imgt_annot",
+    function(species = "Homo_sapien", ...,
+             ofile = "IMGT+C.fa", odir = getwd(),
+             perl = NULL) {
+        assert_string(perl, allow_empty = FALSE, allow_null = TRUE)
+        perl$new(cmd = perl, ..., species = species, ofile = ofile, odir = odir)
+    }
+)
 
-SysTrust4ImgtAnnot <- R6::R6Class(
-    "SysTrust4ImgtAnnot",
-    inherit = SysPerl,
+Trust4ImgtAnnot <- R6Class(
+    "Trust4ImgtAnnot",
+    inherit = Perl,
     private = list(
-        internal_params = "script", help = NULL,
+        help = NULL,
         setup_command_params = function(species, ofile, odir) {
-            assert_string(species, empty_ok = FALSE)
+            assert_string(species, allow_empty = FALSE)
             opath <- build_opath(odir, ofile, abs = TRUE)
             c(shQuote(species), ">", opath)
         },
         combine_params = function() {
-            build_imgt_annot <- internal_file("TRUST4", "BuildImgtAnnot.pl")
-            if (file.access(build_imgt_annot, mode = 1L) != 0L) {
-                Sys.chmod(build_imgt_annot, "555")
+            script <- internal_file("TRUST4", "BuildImgtAnnot.pl")
+            if (file.access(script, mode = 1L) != 0L) {
+                Sys.chmod(script, "555")
             }
             c(script, super$combine_params())
         },
@@ -125,8 +130,9 @@ SysTrust4ImgtAnnot <- R6::R6Class(
 #' `trust4_imgt_annot`.
 #' @export
 #' @rdname trust4
-trust4_gene_names <- function(imgt_annot, ofile = "bcr_tcr_gene_name.txt", odir = getwd()) {
-    assert_string(imgt_annot, empty_ok = FALSE)
+trust4_gene_names <- function(imgt_annot, ofile = "bcr_tcr_gene_name.txt",
+                              odir = getwd()) {
+    assert_string(imgt_annot, allow_empty = FALSE)
     opath <- build_opath(odir, ofile)
     lines <- read_lines(imgt_annot)
     gene_lines <- grep("^>", lines, value = TRUE, perl = TRUE)

@@ -1,4 +1,5 @@
 #' Run GISTIC2
+#'
 #' @description The GISTIC module identifies regions of the genome that are
 #' significantly amplified or deleted across a set of samples. Each aberration
 #' is assigned a G-score that considers the amplitude of the aberration as well
@@ -16,29 +17,35 @@
 #' the genomic locations and calculated q-values for the aberrant regions. It
 #' identifies the samples that exhibit each significant amplification or
 #' deletion, and it lists genes found in each "wide peak" region.
+#'
 #' @param seg A data.frame of segmented data.
 #' @param refgene Path to reference genome data input file (REQUIRED, see below
 #' for file description).
-#' @param ... `r rd_dots("gistic2")`. Details see: `gistic2(help = TRUE)`.
+#' @param ... `r rd_dots("gistic2")`.
 #' @inheritParams allele_counter
 #' @param gistic2 `r rd_cmd("gistic2")`.
 #' @seealso <https://broadinstitute.github.io/gistic2/>
 #' @inherit exec return
 #' @export
-gistic2 <- function(seg, refgene, ..., odir = getwd(), gistic2 = NULL) {
-    Execute$new(SysGistic2$new(
-        cmd = gistic2, ..., odir = odir,
-        seg = seg, refgene = refgene
-    ))
-}
+gistic2 <- make_command(
+    "gistic2",
+    function(seg, refgene, ...,
+             odir = getwd(), gistic2 = NULL) {
+        assert_string(gistic2, allow_empty = FALSE, allow_null = TRUE)
+        Gistic2$new(
+            cmd = gistic2, ..., odir = odir,
+            seg = seg, refgene = refgene
+        )
+    }
+)
 
-SysGistic2 <- R6::R6Class(
-    "SysGistic2",
+Gistic2 <- R6Class(
+    "Gistic2",
     inherit = Command,
     private = list(
-        name = "gistic2", help = NULL,
+        name = "gistic2",
         setup_command_params = function(seg, refgene, odir) {
-            assert_data_frame(seg)
+            assert_s3_class(seg, "data.frame", "a data frame")
             odir <- build_opath(odir)
             seg_file <- tempfile("gistic2")
             data.table::fwrite(seg, file = seg_file, sep = "\t")

@@ -6,20 +6,22 @@
 #'
 #' @param script Name of the kraken2 script. One of
 #' `r oxford_comma(rd_format_code(KrakenToolsScripts))`
-#' @param ... `r rd_dots("script")`. Details see: `kraken_tools(script, help =
-#' TRUE)`.
+#' @param ... `r rd_dots("script")`.
 #' @inheritParams python
 #' @seealso <https://github.com/jenniferlu717/KrakenTools>
 #' @inherit exec return
 #' @export
-kraken_tools <- function(script, ..., python = NULL) {
-    script <- match.arg(script, KrakenToolsScripts)
-    Execute$new(SysKrakenTools$new(cmd = python, ..., script = script))
-}
+kraken_tools <- make_command(
+    "kraken_tools",
+    function(script, ..., python = NULL) {
+        script <- rlang::arg_match0(script, KrakenToolsScripts)
+        KrakenTools$new(cmd = python, ..., script = script)
+    }
+)
 
-SysKrakenTools <- R6::R6Class(
-    "SysKrakenTools",
-    inherit = SysPython,
+KrakenTools <- R6Class(
+    "KrakenTools",
+    inherit = Python,
     private = list(
         combine_params = function(script) {
             script <- internal_file("KrakenTools", paste0(script, ".py"))
