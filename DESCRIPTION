@@ -8,11 +8,11 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-9855-7357"))
   )
 Description: An all-encompassing R toolkit designed to streamline the
-    process of calling various bioinformatics software and performing data
-    analysis and visualization. With BLIT, users can easily integrate a
-    wide array of conventional bioinformatics tools into their workflows,
-    leveraging the power of R for sophisticated data manipulation and
-    graphical representation.
+    process of calling various bioinformatics software and then performing data
+    analysis and visualization in R. With BLIT, users can easily integrate a
+    wide array of bioinformatics command line tools into their workflows,
+    leveraging the power of R for sophisticated data manipulation and graphical
+    representation.
 License: MIT + file LICENSE
 Imports: 
     cli,
