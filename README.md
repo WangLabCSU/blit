@@ -25,8 +25,6 @@ devtools::install_github("WangLabCSU/blit")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
-
 ``` r
 library(blit)
 ```
@@ -200,8 +198,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command /usr/bin/gzip -c /tmp/Rtmpz8bP8k/filed0c7a48449a73 |
-#> /usr/bin/gzip -d > /tmp/Rtmpz8bP8k/filed0c7a3535bed9
+#> Running command /usr/bin/gzip -c /tmp/Rtmpr1CaEi/filed33e6561e9b6d |
+#> /usr/bin/gzip -d > /tmp/Rtmpr1CaEi/filed33e6487726e6
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```
