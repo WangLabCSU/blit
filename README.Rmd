@@ -6,22 +6,141 @@ output: github_document
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
+    collapse = TRUE,
+    comment = "#>",
+    fig.path = "man/figures/README-",
+    out.width = "100%"
 )
 ```
 
 # blit: Bioinformatics Library for Integrated Tools <img src="man/figures/logo.png" alt="logo" align="right" height="140" width="120"/>
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/WangLabCSU/blit/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/WangLabCSU/blit/actions/workflows/R-CMD-check.yaml)
+[![CRAN status](https://www.r-pkg.org/badges/version/blit)](https://CRAN.R-project.org/package=blit)
+[![](https://cranlogs.r-pkg.org/badges/blit)](https://cran.r-project.org/package=blit)
 <!-- badges: end -->
 
-The goal of blit is to ...
+The goal of blit is to make it easy to run system command from R.
 
 ## Installation
 
-## Attribution
+You can install the development version of blit from [GitHub](https://github.com/) with:
 
-<a href="https://www.flaticon.com/free-icons/deer" title="deer icons">Deer icons created by amoghdesign - Flaticon</a>
+``` r
+# install.packages("devtools")
+devtools::install_github("WangLabCSU/blit")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r}
+library(blit)
+```
+
+To build a `command`, simply use `exec`. The first argument is the command name,
+and you can also provide the full path. After that, pass the command parameters.
+This will create a `command` object:
+```{r}
+exec("echo", "$PATH")
+```
+
+To run the command, just pass the `command` object to the `cmd_run()`
+```{r, eval=FALSE}
+Sys.setenv(TEST = "blit is awesome")
+exec("echo", "$TEST") |> cmd_run()
+Sys.unsetenv("TEST")
+```
+
+```{r, echo=FALSE, comment=""}
+Sys.setenv(TEST = "blit is awesome")
+x <- exec("echo", "$TEST") |> cmd_run(stdout = TRUE)
+Sys.unsetenv("TEST")
+cat(x, sep = "\n")
+```
+
+Several functions allow you to control the environment when running the command:
+
+  - `cmd_wd`: define the working directory.
+  - `cmd_envvar`: define the environment variables.
+  - `cmd_envpath`: define the `PATH`-like environment variables.
+
+```{r, eval=FALSE}
+exec("echo", "$TEST") |>
+    cmd_envvar(TEST = "blit is very awesome") |>
+    cmd_run()
+```
+
+```{r, echo=FALSE, comment=""}
+x <- exec("echo", "$TEST") |>
+    cmd_envvar(TEST = "blit is very awesome") |>
+    cmd_run(stdout = TRUE)
+cat(x, sep = "\n")
+```
+
+`blit` provides several built-in functions for directly executing specific
+commands., these include:
+[alleleCounter](https://github.com/cancerit/alleleCount),
+[cellranger](https://www.10xgenomics.com/cn/support/software/cell-ranger/latest),
+[fastq_pair](https://github.com/linsalrob/fastq-pair),
+[gistic2](https://broadinstitute.github.io/gistic2/),
+[KrakenTools](https://github.com/jenniferlu717/KrakenTools),
+[kraken2](https://github.com/DerrickWood/kraken2/wiki/Manual),
+[perl](https://www.perl.org/), [pySCENIC](https://github.com/aertslab/pySCENIC),
+[python](https://www.python.org/), [seqkit](https://bioinf.shenwei.me/seqkit/),
+[trust4](https://github.com/liulab-dfci/TRUST4).
+
+For these commands, you can also use `cmd_help()` to print the help document.
+```{r, eval=FALSE}
+python() |> cmd_help()
+```
+
+```{r, echo=FALSE, comment=""}
+x <- python() |> cmd_help(stdout = TRUE)
+cat(x, sep = "\n")
+```
+
+```{r, eval=FALSE}
+perl() |> cmd_help()
+```
+
+```{r, echo=FALSE, comment=""}
+x <- perl() |> cmd_help(stdout = TRUE)
+cat(x, sep = "\n")
+```
+
+And it is very easily to extend for other commands.
+
+One of the great features of `blit` is its ability to translate the R pipe
+(`%>%` or `|>`) into the Linux pipe (`|`). All functions used to create a
+`command` object can accept another `command` object. The internal will capture
+the first unnamed input value. If it is a `command` object, it will be removed
+from the call and saved. When the `command` object is run, the saved command
+will be passed through the pipe (`|`) to the command.
+
+```{r}
+tmpdir <- tempdir()
+file <- tempfile(tmpdir = tmpdir)
+data.table::fwrite(
+    x = list(letters),
+    file = file,
+    quote = FALSE,
+    na = "NA",
+    col.names = FALSE,
+    logical01 = FALSE,
+    showProgress = FALSE,
+    verbose = FALSE
+)
+file2 <- tempfile()
+exec("gzip", "-c", file) |>
+    exec("gzip", "-d", ">", file2) |>
+    cmd_run()
+identical(readLines(file), readLines(file2))
+```
+
+## Session Informations
+```{r}
+sessionInfo()
+```

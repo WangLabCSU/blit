@@ -1,7 +1,7 @@
 #' Run alleleCount
 #'
-#' The alleleCount package primarily exists to prevent code duplication between
-#' some other projects, specifically AscatNGS and Battenberg.
+#' The `alleleCount` program primarily exists to prevent code duplication
+#' between some other projects, specifically `AscatNGS` and `Battenberg`.
 #'
 #' @param hts_file A string of path to sample HTS file.
 #' @param loci_file A string of path to loci file.
@@ -12,19 +12,26 @@
 #' @seealso <https://github.com/cancerit/alleleCount>
 #' @inherit exec return
 #' @export
-allele_counter <- function(hts_file, loci_file, ofile, ..., odir = getwd(),
-                           alleleCounter = NULL) {
-    Execute$new(SysAlleleCounter$new(,
-        cmd = alleleCounter, ...,
-        hts_file = hts_file, loci_file = loci_file, ofile = ofile, odir = odir
-    ))
-}
+allele_counter <- make_command(
+    "allele_counter",
+    function(hts_file, loci_file,
+             ofile, ..., odir = getwd(),
+             alleleCounter = NULL) {
+        assert_string(alleleCounter, allow_empty = FALSE, allow_null = TRUE)
+        AlleleCounter$new(,
+            cmd = alleleCounter, ...,
+            hts_file = hts_file, loci_file = loci_file,
+            ofile = ofile, odir = odir
+        )
+    }
+)
 
-SysAlleleCounter <- R6::R6Class(
-    "SysAlleleCounter",
+AlleleCounter <- R6Class(
+    "AlleleCounter",
     inherit = Command,
     private = list(
-        name = "alleleCounter", help = "--help",
+        name = "alleleCounter",
+        setup_help_params = function() "--help",
         setup_command_params = function(hts_file, loci_file, ofile, odir) {
             opath <- build_opath(odir, ofile)
             c(

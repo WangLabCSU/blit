@@ -12,37 +12,40 @@
 #' they demand paired end files have the same number of reads.
 #'
 #' @param fq1,fq2 A string of fastq file path.
-#' @param ... `r rd_dots("fastq_pair")`. Details see: `fastq_pair(help = TRUE)`.
+#' @param ... `r rd_dots("fastq_pair")`.
 #' @param hash_table_size Size of hash table to use.
 #' @param max_hash_table_size Maximal hash table size to use.
 #' @param fastq_pair `r rd_cmd("fastq_pair")`.
 #' @seealso <https://github.com/linsalrob/fastq-pair>
 #' @inherit exec return
 #' @export
-fastq_pair <- function(fq1, fq2, ...,
-                       hash_table_size = NULL,
-                       max_hash_table_size = NULL,
-                       fastq_pair = NULL) {
-    Execute$new(
-        SysFastqPair$new(
+fastq_pair <- make_command(
+    "fastq_pair",
+    function(fq1, fq2, ...,
+             hash_table_size = NULL,
+             max_hash_table_size = NULL,
+             fastq_pair = NULL) {
+        assert_string(fastq_pair, allow_empty = FALSE, allow_null = TRUE)
+        FastqPair$new(
             cmd = fastq_pair,
             ...,
             fq1 = fq1, fq2 = fq2,
             hash_table_size = hash_table_size,
             max_hash_table_size = max_hash_table_size
         )
-    )
-}
+    }
+)
 
-SysFastqPair <- R6::R6Class(
-    "SysFastqPair",
+FastqPair <- R6Class(
+    "FastqPair",
     inherit = Command,
     private = list(
-        name = "fastq_pair", help = "--help",
+        name = "fastq_pair",
+        setup_help_params = function() "--help",
         setup_command_params = function(fq1, fq2, hash_table_size,
                                         max_hash_table_size) {
-            assert_string(fq1, empty_ok = FALSE)
-            assert_string(fq2, empty_ok = FALSE)
+            assert_string(fq1, allow_empty = FALSE)
+            assert_string(fq2, allow_empty = FALSE)
             if (is.null(hash_table_size)) {
                 nlines_file <- tempfile()
                 if (verbose) {

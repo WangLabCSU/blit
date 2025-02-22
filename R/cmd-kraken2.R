@@ -7,7 +7,7 @@
 #' given k-mer.
 #'
 #' @param fq1,fq2 A string of fastq file path.
-#' @param ... `r rd_dots("kraken2")`. Details see: `kraken2(help = TRUE)`
+#' @param ... `r rd_dots("kraken2")`.
 #' @param ofile A string of path to save kraken2 output.
 #' @param report A string of path to save kraken2 report.
 #' @param classified_out A string of path to save classified sequences, which
@@ -16,35 +16,42 @@
 #' which should be a fastq file.
 #' @inheritParams allele_counter
 #' @param kraken2 `r rd_cmd("kraken2")`.
-#' @seealso 
+#' @seealso
 #'  - <https://github.com/DerrickWood/kraken2/wiki/Manual>
 #'  - <https://benlangmead.github.io/aws-indexes/k2>
 #' @inherit exec return
 #' @export
-kraken2 <- function(fq1, ..., fq2 = NULL,
-                    ofile = "kraken_output.txt", report = "kraken_report.txt",
-                    classified_out = NULL, unclassified_out = NULL,
-                    odir = getwd(), kraken2 = NULL) {
-    Execute$new(SysKraken2$new(
-        cmd = kraken2,
-        ...,
-        fq1 = fq1, fq2 = fq2, ofile = ofile, report = report,
-        classified_out = classified_out, unclassified_out = unclassified_out,
-        odir = odir,
-    ))
-}
+kraken2 <- make_command(
+    "kraken2",
+    function(fq1, ..., fq2 = NULL,
+             ofile = "kraken_output.txt",
+             report = "kraken_report.txt",
+             classified_out = NULL, unclassified_out = NULL,
+             odir = getwd(), kraken2 = NULL) {
+        assert_string(kraken2, allow_empty = FALSE, allow_null = TRUE)
+        Kraken2$new(
+            cmd = kraken2,
+            ...,
+            fq1 = fq1, fq2 = fq2, ofile = ofile, report = report,
+            classified_out = classified_out,
+            unclassified_out = unclassified_out,
+            odir = odir,
+        )
+    }
+)
 
-SysKraken2 <- R6::R6Class(
-    "SysKraken2",
+Kraken2 <- R6Class(
+    "Kraken2",
     inherit = Command,
     private = list(
-        name = "kraken2", help = "--help",
+        name = "kraken2",
+        setup_help_params = function() "--help",
         setup_command_params = function(fq1, fq2, ofile, report,
                                         classified_out, unclassified_out,
                                         odir) {
-            assert_string(ofile, null_ok = TRUE)
-            assert_string(report, null_ok = TRUE)
-            assert_string(classified_out, null_ok = TRUE)
+            assert_string(ofile, allow_null = TRUE)
+            assert_string(report, allow_null = TRUE)
+            assert_string(classified_out, allow_null = TRUE)
             # https://github.com/DerrickWood/kraken2/wiki/Manual
             # Usage of --paired also affects the --classified-out and
             # --unclassified-out options; users should provide a # character in
@@ -70,17 +77,16 @@ SysKraken2 <- R6::R6Class(
             c(
                 arg_internal("--classified-out",
                     classified_out,
-                    null_ok = TRUE
+                    allow_null = TRUE
                 ),
                 arg_internal("--unclassified-out",
                     classified_out,
-                    null_ok = TRUE
+                    allow_null = TRUE
                 ),
-                arg_internal("--output", ofile, null_ok = TRUE),
-                arg_internal("--report", report, null_ok = TRUE),
+                arg_internal("--output", ofile, allow_null = TRUE),
+                arg_internal("--report", report, allow_null = TRUE),
                 if (!is.null(fq2)) "--paired", fq1, fq2
             )
-        },
-        setup_help_params = function() "--help"
+        }
     )
 )

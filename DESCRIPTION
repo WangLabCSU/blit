@@ -18,7 +18,8 @@ Imports:
     cli,
     data.table,
     R6,
-    rlang (>= 1.1.0)
+    rlang (>= 1.1.0),
+    withr
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
