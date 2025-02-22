@@ -8,10 +8,18 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-An all-encompassing R toolkit designed to streamline the process of calling various bioinformatics software and then performing data analysis and visualization in R. With BLIT, users can easily integrate a wide array of bioinformatics command line tools into their workflows, leveraging the power of R for sophisticated data manipulation and graphical representation.
+An all-encompassing R toolkit designed to streamline the process of calling various bioinformatics software and then performing data analysis and visualization in R. With 'blit', users can easily integrate a wide array of bioinformatics command line tools into their workflows, leveraging the power of R for sophisticated data manipulation and graphical representation.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/WangLabCSU/blit}
+  \item Report bugs at \url{https://github.com/WangLabCSU/blit/issues}
+}
+
 }
 \author{
-\strong{Maintainer}: Yun Peng \email{yunyunp96@163.com} (\href{https://orcid.org/0000-0003-2801-3332}{ORCID})
+\strong{Maintainer}: Yun Peng \email{yunyunp96@163.com} (\href{https://orcid.org/0000-0003-2801-3332}{ORCID}) [copyright holder]
 
 Authors:
 \itemize{
