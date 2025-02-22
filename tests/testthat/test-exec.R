@@ -57,7 +57,7 @@ testthat::test_that("`trust4()` works as expected", {
 testthat::test_that("`pipe()` method works well", {
     tmpdir <- tempdir()
     file <- tempfile(tmpdir = tmpdir)
-    biosys:::write_lines(letters, path = file)
+    write_lines(letters, path = file)
     on.exit(file.remove(file))
     file2 <- tempfile()
     on.exit(file.remove(file2), add = TRUE)
