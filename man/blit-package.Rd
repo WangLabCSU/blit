@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-An all-encompassing R toolkit designed to streamline the process of calling various bioinformatics software and performing data analysis and visualization. With BLIT, users can easily integrate a wide array of conventional bioinformatics tools into their workflows, leveraging the power of R for sophisticated data manipulation and graphical representation.
+An all-encompassing R toolkit designed to streamline the process of calling various bioinformatics software and then performing data analysis and visualization in R. With BLIT, users can easily integrate a wide array of bioinformatics command line tools into their workflows, leveraging the power of R for sophisticated data manipulation and graphical representation.
 }
 \author{
 \strong{Maintainer}: Yun Peng \email{yunyunp96@163.com} (\href{https://orcid.org/0000-0003-2801-3332}{ORCID})

@@ -6,12 +6,9 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/WangLabCSU/blit/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/WangLabCSU/blit/actions/workflows/R-CMD-check.yaml)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/blit)](https://CRAN.R-project.org/package=blit)
-[![](https://cranlogs.r-pkg.org/badges/blit)](https://cran.r-project.org/package=blit)
 <!-- badges: end -->
 
-The goal of blit is to make it easy to run system command from R.
+The goal of blit is to make it easy to execute command line tool from R.
 
 ## Installation
 
@@ -198,8 +195,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command /usr/bin/gzip -c /tmp/Rtmpr1CaEi/filed33e6561e9b6d |
-#> /usr/bin/gzip -d > /tmp/Rtmpr1CaEi/filed33e6487726e6
+#> Running command /usr/bin/gzip -c /tmp/RtmpyIKPB5/filedab23177a82c4 |
+#> /usr/bin/gzip -d > /tmp/RtmpyIKPB5/filedab234402a502
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```
