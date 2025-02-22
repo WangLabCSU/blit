@@ -541,9 +541,7 @@ exec_command <- function(command, help,
     # setting environment variables -------------
     if (length(envvar <- .subset2(command, "envvar")) > 0L) {
         if (verbose) {
-            cli::cli_inform(paste(
-                "Setting environment variables:", "{names(envvar)}"
-            ))
+            cli::cli_inform("Setting environment variables: {names(envvar)}")
         }
         old <- as.list(Sys.getenv(names(envvar),
             names = TRUE, unset = NA_character_
@@ -556,8 +554,8 @@ exec_command <- function(command, help,
         exec_command2(
             command,
             help = TRUE,
-            stdout = TRUE,
-            stderr = TRUE,
+            stdout = stdout,
+            stderr = stderr,
             stdin = "",
             timeout = 0L,
             verbose = verbose
