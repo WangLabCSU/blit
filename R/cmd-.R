@@ -214,7 +214,7 @@ cmd_help <- function(command, stdout = NULL, stderr = NULL, verbose = TRUE) {
         stdout = stdout %||% TRUE,
         stderr = stderr %||% TRUE,
         stdin = "",
-        timeout = 0L,
+        timeout = NULL,
         verbose = verbose
     )
     invisible(command)
