@@ -97,7 +97,7 @@ print.command <- function(x, ...) {
 #' @return A `command` object.
 #' @seealso
 #' - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
-#' - [`cmd_run()`]/[`cmd_help()`]
+#' - [`cmd_run()`]/[`cmd_background()`]/[`cmd_help()`]
 #' @export
 exec <- make_command("exec", function(cmd, ...) {
     assert_string(cmd, allow_empty = FALSE)
@@ -172,7 +172,7 @@ cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
 
 #' @return
 #' - `cmd_background`: The process id, the process can be killed manually with
-#'   [`tools::pskill`].
+#'   [`tools::pskill()`].
 #' @export
 #' @rdname cmd_run
 cmd_background <- function(command, stdout = NULL, stderr = NULL, stdin = NULL,
@@ -236,7 +236,7 @@ cmd_help <- function(command, stdout = NULL, stderr = NULL, verbose = TRUE) {
 #' variable updated.
 #' - `cmd_envpath`: The `command` object self, with running environment variable
 #' `name` updated.
-#' @seealso [`cmd_run()`]/[`cmd_help()`]
+#' @seealso [`cmd_run()`]/[`cmd_background()`]/[`cmd_help()`]
 #' @export
 cmd_wd <- function(command, wd = NULL) {
     assert_s3_class(command, "command")

@@ -49,5 +49,5 @@ variable updated.
 }
 }
 \seealso{
-\code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
+\code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_background]{cmd_background()}}/\code{\link[=cmd_help]{cmd_help()}}
 }
