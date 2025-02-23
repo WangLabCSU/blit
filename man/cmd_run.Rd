@@ -53,8 +53,8 @@ command message.}
 }
 
 \itemize{
-\item \code{cmd_background}: The process id, the state of the process is not
-controlled but can be killed manually with \code{\link[tools:pskill]{tools::pskill}}.
+\item \code{cmd_background}: The process id, the process can be killed manually with
+\code{\link[tools:pskill]{tools::pskill}}.
 }
 
 \itemize{

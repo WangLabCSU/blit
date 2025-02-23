@@ -168,8 +168,8 @@ cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
 }
 
 #' @return
-#' - `cmd_background`: The process id, the state of the process is not
-#'   controlled but can be killed manually with [`tools::pskill`].
+#' - `cmd_background`: The process id, the process can be killed manually with
+#'   [`tools::pskill`].
 #' @export
 #' @rdname cmd_run
 cmd_background <- function(command, stdout = NULL, stderr = NULL, stdin = NULL,
