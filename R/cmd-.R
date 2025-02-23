@@ -522,10 +522,10 @@ Command <- R6Class("Command",
 
         ##############################################################
         # Following fields or methods should be overrided by sub-class.
-        # @field A string of the command name.
+        # @field name A string of the command name.
         name = NULL,
 
-        # @field A character giving the command alias.
+        # @field alias A character giving the command alias.
         alias = NULL,
 
         # @field collect_dots A bool indicates whether `...` should be
