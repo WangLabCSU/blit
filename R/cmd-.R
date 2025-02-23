@@ -126,7 +126,7 @@ Execute <- R6Class(
 #'
 #' - `cmd_run`: Run the command.
 #' - `cmd_background`: Run the command in the background with
-#'   [mcparallel][parallel::mcparallel].
+#'   [`mcparallel`][parallel::mcparallel].
 #' - `cmd_help`: Print the help document for this command.
 #' @param command A `command` object.
 #' @param stdout,stderr How output streams of the child process are processed.
@@ -140,9 +140,8 @@ Execute <- R6Class(
 #' used.
 #'
 #' @param stdin should the input be diverted? A character string naming a file.
-#' @param timeout Timeout in seconds, ignored if `NULL`. This is a limit for
-#' the elapsed time running command in a separate process. Fractions of
-#' seconds are ignored.
+#' @param timeout Timeout in seconds. This is a limit for the elapsed time
+#' running command in the separate process.
 #' @param verbose A single boolean value indicates whether to print running
 #' command message.
 #' @return

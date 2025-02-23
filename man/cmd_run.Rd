@@ -41,9 +41,8 @@ used.}
 
 \item{stdin}{should the input be diverted? A character string naming a file.}
 
-\item{timeout}{Timeout in seconds, ignored if \code{NULL}. This is a limit for
-the elapsed time running command in a separate process. Fractions of
-seconds are ignored.}
+\item{timeout}{Timeout in seconds. This is a limit for the elapsed time
+running command in the separate process.}
 
 \item{verbose}{A single boolean value indicates whether to print running
 command message.}
@@ -66,7 +65,7 @@ controlled but can be killed manually with \code{\link[tools:pskill]{tools::pski
 \itemize{
 \item \code{cmd_run}: Run the command.
 \item \code{cmd_background}: Run the command in the background with
-\link[parallel:mcparallel]{mcparallel}.
+\code{\link[parallel:mcparallel]{mcparallel}}.
 \item \code{cmd_help}: Print the help document for this command.
 }
 }
