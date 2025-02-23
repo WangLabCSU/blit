@@ -125,8 +125,8 @@ Execute <- R6Class(
 #' Execute command
 #'
 #' - `cmd_run`: Run the command.
-#' - `cmd_background`: Run the command in the background with
-#'   [`mcparallel`][parallel::mcparallel].
+#' - `cmd_background`: Run the command in the background using
+#'   `parallel::mcparallel`, not available on windows.
 #' - `cmd_help`: Print the help document for this command.
 #' @param command A `command` object.
 #' @param stdout,stderr How output streams of the child process are processed.

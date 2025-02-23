@@ -64,8 +64,8 @@ controlled but can be killed manually with \code{\link[tools:pskill]{tools::pski
 \description{
 \itemize{
 \item \code{cmd_run}: Run the command.
-\item \code{cmd_background}: Run the command in the background with
-\code{\link[parallel:mcparallel]{mcparallel}}.
+\item \code{cmd_background}: Run the command in the background using
+\code{parallel::mcparallel}, not available on windows.
 \item \code{cmd_help}: Print the help document for this command.
 }
 }
