@@ -32,6 +32,7 @@ the command parameters. This will create a `command` object:
 
 ``` r
 exec("echo", "$PATH")
+#> <Command: echo>
 ```
 
 To run the command, just pass the `command` object to the `cmd_run()`
@@ -185,8 +186,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command /usr/bin/gzip -c /tmp/RtmpMSUPM9/file19d1ebad69604 |
-#> /usr/bin/gzip -d > /tmp/RtmpMSUPM9/file19d1eb1fb523f1
+#> Running command /usr/bin/gzip -c /tmp/RtmpcMpTdZ/file1a265314cc5698 |
+#> /usr/bin/gzip -d > /tmp/RtmpcMpTdZ/file1a2653fd96d62
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```
