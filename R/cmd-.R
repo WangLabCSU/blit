@@ -79,8 +79,11 @@ print.command <- function(x, ...) {
     if (!is.null(wd <- .subset2(x, "wd"))) {
         cat(sprintf("Working directory: %s", wd), sep = "\n")
     }
-    if (!is.null(wd <- .subset2(x, "envvar"))) {
+    if (!is.null(envvar <- .subset2(x, "envvar"))) {
         cat("Environment Variables:", sep = "\n")
+        nms <- format(names(envvar), justify = "right")
+        values <- format(envvar, justify = "left")
+        cat(paste0("  ", nms, ": ", values), sep = "\n")
     }
     invisible(x)
 }
@@ -106,7 +109,7 @@ Execute <- R6Class(
     inherit = Command,
     public = list(
         print = function(indent = NULL) {
-            name <- rlang::eval_tidy(.subset2(private$params, "cmd"))
+            name <- .subset2(private$.core_params, "cmd")
             if (!is.numeric(indent) || indent < 1L) {
                 msg <- sprintf("<Command: %s>", name)
             } else {
