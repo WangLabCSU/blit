@@ -213,7 +213,7 @@ cmd_help <- function(command, stdout = NULL, stderr = NULL, verbose = TRUE) {
         help = TRUE,
         stdout = stdout %||% TRUE,
         stderr = stderr %||% TRUE,
-        stdin = "",
+        stdin = NULL,
         timeout = NULL,
         verbose = verbose
     )
