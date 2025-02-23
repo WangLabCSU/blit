@@ -328,14 +328,6 @@ Command <- R6Class("Command",
             # if provided subcmd, we assign it into our object
             private$subcmd <- .subcmd
 
-            # Always ensure that the following fields are set to NULL when not
-            # in use.
-            private$.core_params <- NULL
-            private$.params <- NULL
-            private$.dots <- NULL
-            private$.evaluated_params <- NULL
-            private$.evaluated_dots <- NULL
-
             # collect all parameters, we cannot evaluate it since if we want to
             # print help document, it's much possible there were some missing
             # argument we only evaluate necessary parameters
