@@ -614,8 +614,8 @@ exec_command <- function(command, help,
             help = TRUE,
             stdout = stdout,
             stderr = stderr,
-            stdin = "",
-            timeout = 0L,
+            stdin = NULL,
+            timeout = NULL,
             verbose = verbose
         )
     } else {
