@@ -582,7 +582,7 @@ Command <- R6Class("Command",
 
         # @description Method used to combine `dots` and `params`
         #
-        # @return An atomic character, or `NULL`.
+        # @return An atomic character.
         combine_params = function() c(private$dots, private$params)
     )
 )
