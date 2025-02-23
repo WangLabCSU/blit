@@ -2,15 +2,24 @@
 % Please edit documentation in R/cmd-.R
 \name{cmd_run}
 \alias{cmd_run}
+\alias{cmd_background}
 \alias{cmd_help}
 \title{Execute command}
 \usage{
 cmd_run(
   command,
+  stdout = TRUE,
+  stderr = TRUE,
+  stdin = NULL,
+  timeout = NULL,
+  verbose = TRUE
+)
+
+cmd_background(
+  command,
   stdout = NULL,
   stderr = NULL,
   stdin = NULL,
-  timeout = NULL,
   verbose = TRUE
 )
 
@@ -19,18 +28,18 @@ cmd_help(command, stdout = NULL, stderr = NULL, verbose = TRUE)
 \arguments{
 \item{command}{A \code{command} object.}
 
-\item{stdout, stderr}{Where output to 'stdout' or 'stderr' should be
-sent. Possible values are:
+\item{stdout, stderr}{How output streams of the child process are processed.
+Possible values are:
 \itemize{
-\item \code{NULL}: print child output in R console
-\item \code{TRUE}: capture the output in a character vector
-\item \code{FALSE}: suppress output stream
+\item \code{TRUE}: Print the child output in R console.
+\item \code{FALSE}: Suppress output stream
 \item \strong{string}: name or path of file to redirect output
-}}
+}
 
-\item{stdin}{should input be diverted? \code{NULL} means the default,
-alternatively a character string naming a file. Ignored if input is
-supplied.}
+For \code{cmd_background()} and \code{cmd_help()}, only a string (file path) can be
+used.}
+
+\item{stdin}{should the input be diverted? A character string naming a file.}
 
 \item{timeout}{Timeout in seconds, ignored if \code{NULL}. This is a limit for
 the elapsed time running command in a separate process. Fractions of
@@ -41,18 +50,23 @@ command message.}
 }
 \value{
 \itemize{
-\item \code{cmd_run}: Exit status or the captured output when \code{stdout}/\code{stderr} is
-\code{TRUE}.
+\item \code{cmd_run}: Exit status.
 }
 
 \itemize{
-\item \code{cmd_help}: the input \code{command} or the captured output when
-\code{stdout}/\code{stderr} is \code{TRUE}.
+\item \code{cmd_background}: The process id, the state of the process is not
+controlled but can be killed manually with \code{\link[tools:pskill]{tools::pskill}}.
+}
+
+\itemize{
+\item \code{cmd_help}: the input \code{command} invisiblely.
 }
 }
 \description{
 \itemize{
 \item \code{cmd_run}: Run the command.
+\item \code{cmd_background}: Run the command in the background with
+\link[parallel:mcparallel]{mcparallel}.
 \item \code{cmd_help}: Print the help document for this command.
 }
 }

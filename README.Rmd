@@ -35,6 +35,10 @@ devtools::install_github("WangLabCSU/blit")
 library(blit)
 ```
 
+```{r, echo=FALSE}
+file <- tempfile()
+```
+
 To build a `command`, simply use `exec`. The first argument is the command name,
 and you can also provide the full path. After that, pass the command parameters.
 This will create a `command` object:
@@ -51,9 +55,9 @@ Sys.unsetenv("TEST")
 
 ```{r, echo=FALSE, comment=""}
 Sys.setenv(TEST = "blit is awesome")
-x <- exec("echo", "$TEST") |> cmd_run(stdout = TRUE)
+exec("echo", "$TEST") |> cmd_run(stdout = file)
 Sys.unsetenv("TEST")
-cat(x, sep = "\n")
+cat(readLines(file), sep = "\n")
 ```
 
 Several functions allow you to control the environment when running the command:
@@ -69,10 +73,10 @@ exec("echo", "$TEST") |>
 ```
 
 ```{r, echo=FALSE, comment=""}
-x <- exec("echo", "$TEST") |>
+exec("echo", "$TEST") |>
     cmd_envvar(TEST = "blit is very awesome") |>
-    cmd_run(stdout = TRUE)
-cat(x, sep = "\n")
+    cmd_run(stdout = file)
+cat(readLines(file), sep = "\n")
 ```
 
 `blit` provides several built-in functions for directly executing specific
@@ -93,8 +97,8 @@ python() |> cmd_help()
 ```
 
 ```{r, echo=FALSE, comment=""}
-x <- python() |> cmd_help(stdout = TRUE)
-cat(x, sep = "\n")
+python() |> cmd_help(stdout = file)
+cat(readLines(file), sep = "\n")
 ```
 
 ```{r, eval=FALSE}
@@ -102,8 +106,8 @@ perl() |> cmd_help()
 ```
 
 ```{r, echo=FALSE, comment=""}
-x <- perl() |> cmd_help(stdout = TRUE)
-cat(x, sep = "\n")
+perl() |> cmd_help(stdout = file)
+cat(readLines(file), sep = "\n")
 ```
 
 And it is very easily to extend for other commands.
@@ -118,16 +122,7 @@ will be passed through the pipe (`|`) to the command.
 ```{r}
 tmpdir <- tempdir()
 file <- tempfile(tmpdir = tmpdir)
-data.table::fwrite(
-    x = list(letters),
-    file = file,
-    quote = FALSE,
-    na = "NA",
-    col.names = FALSE,
-    logical01 = FALSE,
-    showProgress = FALSE,
-    verbose = FALSE
-)
+writeLines(letters, con = file)
 file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>

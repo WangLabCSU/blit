@@ -32,7 +32,6 @@ the command parameters. This will create a `command` object:
 
 ``` r
 exec("echo", "$PATH")
-#> <Command: echo>
 ```
 
 To run the command, just pass the `command` object to the `cmd_run()`
@@ -181,22 +180,13 @@ pipe (`|`) to the command.
 ``` r
 tmpdir <- tempdir()
 file <- tempfile(tmpdir = tmpdir)
-data.table::fwrite(
-    x = list(letters),
-    file = file,
-    quote = FALSE,
-    na = "NA",
-    col.names = FALSE,
-    logical01 = FALSE,
-    showProgress = FALSE,
-    verbose = FALSE
-)
+writeLines(letters, con = file)
 file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command /usr/bin/gzip -c /tmp/RtmpyIKPB5/filedab23177a82c4 |
-#> /usr/bin/gzip -d > /tmp/RtmpyIKPB5/filedab234402a502
+#> Running command /usr/bin/gzip -c /tmp/RtmpMSUPM9/file19d1ebad69604 |
+#> /usr/bin/gzip -d > /tmp/RtmpMSUPM9/file19d1eb1fb523f1
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```
@@ -228,8 +218,8 @@ sessionInfo()
 #> [1] blit_0.1.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] compiler_4.4.2     R6_2.5.1           fastmap_1.2.0      cli_3.6.3         
-#>  [5] tools_4.4.2        htmltools_0.5.8.1  withr_3.0.2        yaml_2.3.10       
-#>  [9] rmarkdown_2.29     data.table_1.16.99 knitr_1.49         xfun_0.49         
-#> [13] digest_0.6.37      rlang_1.1.4        evaluate_1.0.1
+#>  [1] compiler_4.4.2    R6_2.5.1          fastmap_1.2.0     cli_3.6.3        
+#>  [5] tools_4.4.2       htmltools_0.5.8.1 withr_3.0.2       yaml_2.3.10      
+#>  [9] rmarkdown_2.29    knitr_1.49        xfun_0.49         digest_0.6.37    
+#> [13] rlang_1.1.4       evaluate_1.0.1
 ```

@@ -76,6 +76,12 @@ print.command <- function(x, ...) {
             print(cmd, indent = indent)
         }
     }
+    if (!is.null(wd <- .subset2(x, "wd"))) {
+        cat(sprintf("Working directory: %s", wd), sep = "\n")
+    }
+    if (!is.null(wd <- .subset2(x, "envvar"))) {
+        cat("Environment Variables:", sep = "\n")
+    }
     invisible(x)
 }
 
@@ -119,36 +125,38 @@ Execute <- R6Class(
 #' Execute command
 #'
 #' - `cmd_run`: Run the command.
+#' - `cmd_background`: Run the command in the background with
+#'   [mcparallel][parallel::mcparallel].
 #' - `cmd_help`: Print the help document for this command.
 #' @param command A `command` object.
-#' @param stdout,stderr Where output to 'stdout' or 'stderr' should be
-#' sent. Possible values are:
+#' @param stdout,stderr How output streams of the child process are processed.
+#' Possible values are:
 #'
-#'  - `NULL`: print child output in R console
-#'  - `TRUE`: capture the output in a character vector
-#'  - `FALSE`: suppress output stream
+#'  - `TRUE`: Print the child output in R console.
+#'  - `FALSE`: Suppress output stream
 #'  - **string**: name or path of file to redirect output
 #'
-#' @param stdin should input be diverted? `NULL` means the default,
-#' alternatively a character string naming a file. Ignored if input is
-#' supplied.
+#' For `cmd_background()` and `cmd_help()`, only a string (file path) can be
+#' used.
+#'
+#' @param stdin should the input be diverted? A character string naming a file.
 #' @param timeout Timeout in seconds, ignored if `NULL`. This is a limit for
 #' the elapsed time running command in a separate process. Fractions of
 #' seconds are ignored.
 #' @param verbose A single boolean value indicates whether to print running
 #' command message.
 #' @return
-#' - `cmd_run`: Exit status or the captured output when `stdout`/`stderr` is
-#'   `TRUE`.
+#' - `cmd_run`: Exit status.
+#' @seealso [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
 #' @export
-cmd_run <- function(command, stdout = NULL, stderr = NULL, stdin = NULL,
+cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
                     timeout = NULL, verbose = TRUE) {
     assert_s3_class(command, "command")
     assert_io(stdout)
     assert_io(stderr)
-    assert_bool(verbose)
     assert_string(stdin, allow_empty = FALSE, allow_null = TRUE)
     assert_number_whole(timeout, allow_null = TRUE)
+    assert_bool(verbose)
     exec_command(
         command,
         help = FALSE,
@@ -161,26 +169,55 @@ cmd_run <- function(command, stdout = NULL, stderr = NULL, stdin = NULL,
 }
 
 #' @return
-#' - `cmd_help`: the input `command` or the captured output when
-#'   `stdout`/`stderr` is `TRUE`.
-#' @seealso [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
+#' - `cmd_background`: The process id, the state of the process is not
+#'   controlled but can be killed manually with [`tools::pskill`].
+#' @export
+#' @rdname cmd_run
+cmd_background <- function(command, stdout = NULL, stderr = NULL, stdin = NULL,
+                           verbose = TRUE) {
+    assert_s3_class(command, "command")
+    assert_string(stdout, allow_empty = FALSE, allow_null = TRUE)
+    assert_string(stderr, allow_empty = FALSE, allow_null = TRUE)
+    assert_string(stdin, allow_empty = FALSE, allow_null = TRUE)
+    assert_bool(verbose)
+    command$commands <- lapply(.subset2(command, "commands"), function(cmd) {
+        cmd$evaluate()
+    })
+    out <- parallel::mcparallel(
+        exec_command(
+            command,
+            help = FALSE,
+            stdout = stdout %||% FALSE,
+            stderr = stderr %||% FALSE,
+            stdin = stdin,
+            timeout = NULL,
+            verbose = verbose
+        ),
+        mc.set.seed = FALSE,
+        silent = TRUE,
+        detached = TRUE
+    )
+    utils::getFromNamespace("processID", "parallel")(out)
+}
+
+#' @return
+#' - `cmd_help`: the input `command` invisiblely.
 #' @export
 #' @rdname cmd_run
 cmd_help <- function(command, stdout = NULL, stderr = NULL, verbose = TRUE) {
     assert_s3_class(command, "command")
-    assert_io(stdout)
-    assert_io(stderr)
+    assert_string(stdout, allow_empty = FALSE, allow_null = TRUE)
+    assert_string(stderr, allow_empty = FALSE, allow_null = TRUE)
     assert_bool(verbose)
-    out <- exec_command(
+    exec_command(
         command,
         help = TRUE,
-        stdout = stdout,
-        stderr = stderr,
+        stdout = stdout %||% TRUE,
+        stderr = stderr %||% TRUE,
         stdin = "",
         timeout = 0L,
         verbose = verbose
     )
-    if (isTRUE(stdout) || isTRUE(stderr)) return(out) # styler: off
     invisible(command)
 }
 
@@ -289,21 +326,51 @@ Command <- R6Class("Command",
             # if provided subcmd, we assign it into our object
             private$subcmd <- .subcmd
 
+            # Always ensure that the following fields are set to NULL when not
+            # in use.
+            private$.core_params <- NULL
+            private$.params <- NULL
+            private$.dots <- NULL
+            private$.evaluated_params <- NULL
+            private$.evaluated_dots <- NULL
+
             # collect all parameters, we cannot evaluate it since if we want to
             # print help document, it's much possible there were some missing
             # argument we only evaluate necessary parameters
-            params <- rlang::enquos(..., .ignore_empty = "all")
+            input <- rlang::enquos(..., .ignore_empty = "all")
 
-            # Extract params used by `Command` object internal
+            # Extract params used
             # `command_locate`: params used to locate command path.
-            # `setup_command_params`: params used by regular command
             # `combine_params`: combine combine dots and params or other global
             #                   params (both optional and regular params)
-            param_names <- private$parameters()
+            # Core parameters will always be evaluated, they will be used to
+            # execute the command or display the document
+            core_params <- private$trim_params(c(
+                rlang::fn_fmls_names(private$command_locate),
+                rlang::fn_fmls_names(private$combine_params)
+            ))
+
+            # `setup_command_params`: params used to execute the command
+            params <- private$trim_params(
+                setdiff(
+                    rlang::fn_fmls_names(private$setup_command_params),
+                    core_params
+                )
+            )
 
             # there were usually additional arguments passed into command by
             # `...`, they must be un-named
-            dots <- params[!rlang::names2(params) %in% param_names]
+            dots <- input[!rlang::names2(input) %in% c(core_params, params)]
+
+            # here: we check if all necessary parameters have been provided by
+            #       external function. (in case from myself missing provide the
+            #       parameters in external function)
+            missing <- setdiff(core_params, names(input))
+            if (length(missing)) {
+                cli::cli_abort("Missing parameters: {.arg {missing}}")
+            }
+
+            # here: we check if we need `...`.
             if (private$collect_dots) {
                 # we collect and check dots
                 named <- dots[rlang::have_name(dots)]
@@ -312,7 +379,7 @@ Command <- R6Class("Command",
                         "Unknown parameter{?s}: {.arg {names(named)}}"
                     )
                 }
-                private$dots <- dots
+                if (length(dots)) private$.dots <- dots
             } else if (length(dots)) {
                 if (rlang::is_named(dots)) {
                     note <- paste(
@@ -325,36 +392,49 @@ Command <- R6Class("Command",
                 cli::cli_abort(c("`...` must be empty", i = note))
             }
 
-            # here: we check if all necessary parameters have been provided by
-            #       external function. (in case from myself missing provide the
-            #       parameters in external function)
-            missing <- setdiff(param_names, names(params))
-            if (length(missing)) {
-                cli::cli_abort("Missing parameters: {.arg {missing}}")
+            core_params <- lapply(
+                input[intersect(names(input), core_params)],
+                rlang::eval_tidy
+            )
+
+            params <- input[intersect(names(input), params)]
+            if (length(core_params)) private$.core_params <- core_params
+            if (length(params)) private$.params <- params
+        },
+
+        #' @description Evaluate the parameters to execute command.
+        #' @return The object itself.
+        evaluate = function() {
+            # only evaluate the parameters once
+            if (is.null(private$.evaluated_params) &&
+                !is.null(private$.params)) {
+                private$.evaluated_params <- lapply(
+                    private$.params, rlang::eval_tidy
+                )
             }
-            private$params <- params[intersect(names(params), param_names)]
+            if (is.null(private$.evaluated_dots) && !is.null(private$.dots)) {
+                private$.evaluated_dots <- lapply(
+                    private$.dots, rlang::eval_tidy
+                )
+            }
+            invisible(self)
         },
 
         #' @description Build parameters to run command.
-        #' @param help A bool, indicates whether to build parameters for help
-        #' document or not.
+        #' @param help A boolean value, indicates whether to build parameters
+        #' for help document or not.
         #' @param envir An environment used to Execute command.
         #' @return An atomic character combine the command and parameters.
         #' @importFrom rlang caller_env
         build = function(help = FALSE, envir = caller_env()) {
-            private$environment <- envir
-            necessary_params <- .subset(
-                private$params, private$parameters(help = help)
-            )
-
-            # weevaluate params since all params have been defused
-            necessary_params <- lapply(necessary_params, rlang::eval_tidy)
+            private$envir <- envir
+            core_params <- private$.core_params
 
             # locate command path ------------------------------
             command <- rlang::inject(private$command_locate(
-                !!!necessary_params[intersect(
+                !!!core_params[intersect(
                     rlang::fn_fmls_names(private$command_locate),
-                    names(necessary_params)
+                    names(core_params)
                 )]
             ))
             if (is.null(command) || !nzchar(command)) {
@@ -363,32 +443,32 @@ Command <- R6Class("Command",
 
             # prepare command parameters -----------------------
             if (isTRUE(help)) {
-                private$.params <- build_command_params(
+                private$params <- build_command_params(
                     private$setup_help_params()
                 )
+                private$dots <- character()
             } else {
-                # compute command params
-                private$.params <- build_command_params(
+                # always ensure the parameters have been computed
+                self$evaluate()
+                private$params <- build_command_params(
                     rlang::inject(private$setup_command_params(
-                        !!!necessary_params[intersect(
+                        !!!private$.evaluated_params[intersect(
                             rlang::fn_fmls_names(private$setup_command_params),
-                            names(necessary_params)
+                            names(private$.evaluated_params)
                         )]
                     ))
                 )
-                private$.dots <- build_command_params(
-                    lapply(private$dots, rlang::eval_tidy)
-                )
+                private$dots <- build_command_params(private$.evaluated_dots)
             }
-            command_params <- rlang::inject(private$combine_params(
-                !!!necessary_params[intersect(
+            combined <- rlang::inject(private$combine_params(
+                !!!core_params[intersect(
                     rlang::fn_fmls_names(private$combine_params),
-                    names(necessary_params)
+                    names(core_params)
                 )]
             ))
 
             # combine command, subcmd, and params -------
-            c(command, private$subcmd, command_params)
+            enc2utf8(c(command, private$subcmd, combined))
         },
 
         #' @description Build parameters to run command.
@@ -409,54 +489,37 @@ Command <- R6Class("Command",
         }
     ),
     private = list(
-        # @field dots A list of parameters used by command.
-        dots = list(),
+        # @field core_params A list of parameters used to define the command
+        # itself.
+        .core_params = list(),
 
-        # @field params A list of parameters used by `Command` object methods.
-        params = list(),
+        # @field dots A list of parameters used to execute the command
+        .params = NULL,
 
-        # These three fields carry state when executating the command but will
-        # always be estimated before use
-        environment = NULL,
-        .dots = character(),
-        .params = character(),
+        # @field dots Additional parameters used to execute the command.
+        .dots = NULL,
+
+        # the both fields saved the estimated value for the `$params` and
+        # `$dots` respectively.
+        .evaluated_params = NULL,
+        .evaluated_dots = NULL,
+
+        # the three fields carry the state when executating the command, and
+        # will always be re-calculated before using
+        envir = NULL,
+        params = NULL,
+        dots = NULL,
 
         # @field subcmd A character string define the subcmd argument.
         subcmd = NULL,
 
-        # @description Extract parameters used by this object.
-        # @return A character of the used parameter of this object.
-        parameters = function(help = FALSE) {
-            argv <- c(
-                rlang::fn_fmls_names(private$command_locate),
-                rlang::fn_fmls_names(private$combine_params)
-            )
-            if (!isTRUE(help)) {
-                argv <- c(
-                    argv,
-                    rlang::fn_fmls_names(private$setup_command_params)
-                )
-            }
-            # remove arguments used by internal only
-            setdiff(argv, private$internal_params)
-        },
-
-        # @description methods to insert into or get parameters from
-        # `private$params`
-        set_param = function(name, value) {
-            private$params[[name]] <- value
-            invisible(self)
-        },
-        get_param = function(name) {
-            out <- private$params
-            if (!is.null(name)) out <- .subset2(out, name)
-            out
-        },
+        # remove extra parameters used by internal
+        trim_params = function(argv) setdiff(argv, private$extra_params),
 
         # @description Used to attach an expression to be evaluated when
-        # exiting `Execute$exec_command2`.
+        # exiting `exec_command2`.
         setup_exit = function(expr, after = TRUE, add = TRUE,
-                              envir = private$environment) {
+                              envir = private$envir) {
             defer(expr,
                 envir = envir,
                 priority = if (isTRUE(after)) "last" else "first"
@@ -475,15 +538,15 @@ Command <- R6Class("Command",
         # collected and passed into command
         collect_dots = TRUE,
 
-        # @field internal_params Additional parameters used by `Command` object
+        # @field extra_params Additional parameters used by `Command` object
         # but shouldn't collected from user input.
-        internal_params = NULL,
+        extra_params = NULL,
 
         # @description Method used to locate command
         #
         # @return An string of command path
         command_locate = function(cmd) {
-            if (is.null(cmd <- rlang::eval_tidy(cmd))) {
+            if (is.null(cmd <- cmd)) {
                 commands <- c(private$name, private$alias)
                 for (cmd in commands) {
                     if (nzchar(command <- Sys.which(cmd))) {
@@ -492,9 +555,8 @@ Command <- R6Class("Command",
                 }
                 if (!nzchar(command)) {
                     cli::cli_abort(sprintf(
-                        "Cannot locate {.field %s} command",
-                        oxford_comma(
-                            sprintf("{.field %s}", commands),
+                        "Cannot locate %s command",
+                        oxford_comma(sprintf("{.field %s}", commands),
                             final = "or"
                         )
                     ))
@@ -519,7 +581,7 @@ Command <- R6Class("Command",
         # @description Method used to combine `dots` and `params`
         #
         # @return An atomic character, or `NULL`.
-        combine_params = function() c(private$.dots, private$.params)
+        combine_params = function() c(private$dots, private$params)
     )
 )
 
@@ -541,7 +603,9 @@ exec_command <- function(command, help,
     # setting environment variables -------------
     if (length(envvar <- .subset2(command, "envvar")) > 0L) {
         if (verbose) {
-            cli::cli_inform("Setting environment variables: {names(envvar)}")
+            cli::cli_inform(
+                "Setting environment variables: {.field {names(envvar)}}"
+            )
         }
         old <- as.list(Sys.getenv(names(envvar),
             names = TRUE, unset = NA_character_
@@ -590,23 +654,22 @@ exec_command2 <- function(command, help, ...) {
 
     # run command ---------------------------------------
     exec_command3(
-        command = params[1L], command_params = params[-1L],
+        command = params[1L], params = params[-1L],
         wd = .subset2(command, "wd"), ...
     )
 }
 
 # Used to the working directory, then this method call `system2` to invoke the
 # command.
-exec_command3 <- function(command, command_params, wd = NULL,
+exec_command3 <- function(command, params, wait = TRUE, wd = NULL,
                           stdout = TRUE, stderr = TRUE, stdin = NULL,
-                          wait = TRUE, timeout = NULL,
-                          verbose = TRUE) {
+                          timeout = NULL, verbose = TRUE) {
     # set working directory ---------------------
     if (!is.null(wd)) {
         if (!dir.exists(wd) &&
             !dir.create(wd, showWarnings = FALSE)) {
             cli::cli_abort(
-                "Cannot create working directory {.path {wd}"
+                "Cannot create working directory {.path {wd}}"
             )
         }
         if (verbose) {
@@ -619,15 +682,17 @@ exec_command3 <- function(command, command_params, wd = NULL,
     if (verbose) {
         cli::cli_inform(paste(
             "Running command {.field {command}}",
-            "{.field {paste(command_params, collapse = ' ')}}"
+            "{.field {paste(params, collapse = ' ')}}"
         ))
         cli::cat_line()
     }
+    if (isTRUE(stdout)) stdout <- ""
+    if (isTRUE(stderr)) stderr <- ""
     system2(
         command = command,
-        args = command_params,
-        stdout = stdout %||% "",
-        stderr = stderr %||% "",
+        args = params,
+        stdout = stdout,
+        stderr = stderr,
         stdin = stdin %||% "",
         wait = wait,
         timeout = timeout %||% 0L
@@ -661,9 +726,7 @@ parse_envvar <- function(name, new, old, action, sep) {
 # For `stdout` and `stderr`
 assert_io <- function(x, arg = rlang::caller_arg(x),
                       call = rlang::caller_call()) {
-    if (is.null(x)) {
-
-    } else if (rlang::is_string(x)) {
+    if (rlang::is_string(x)) {
         if (!nzchar(x)) {
             cli::cli_abort(
                 "{.arg {arg}} cannot be an empty string",

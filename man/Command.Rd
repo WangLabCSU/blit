@@ -12,6 +12,7 @@ R6 Class to prepare command parameters
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-Command-new}{\code{Command$new()}}
+\item \href{#method-Command-evaluate}{\code{Command$evaluate()}}
 \item \href{#method-Command-build}{\code{Command$build()}}
 \item \href{#method-Command-print}{\code{Command$print()}}
 \item \href{#method-Command-clone}{\code{Command$clone()}}
@@ -37,6 +38,19 @@ Create a new \code{Command} object.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Command-evaluate"></a>}}
+\if{latex}{\out{\hypertarget{method-Command-evaluate}{}}}
+\subsection{Method \code{evaluate()}}{
+Evaluate the parameters to execute command.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Command$evaluate()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+The object itself.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Command-build"></a>}}
 \if{latex}{\out{\hypertarget{method-Command-build}{}}}
 \subsection{Method \code{build()}}{
@@ -48,8 +62,8 @@ Build parameters to run command.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{help}}{A bool, indicates whether to build parameters for help
-document or not.}
+\item{\code{help}}{A boolean value, indicates whether to build parameters
+for help document or not.}
 
 \item{\code{envir}}{An environment used to Execute command.}
 }
