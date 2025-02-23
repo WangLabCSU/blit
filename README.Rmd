@@ -108,6 +108,7 @@ perl() |> cmd_help()
 ```{r, echo=FALSE, comment=""}
 perl() |> cmd_help(stdout = file)
 cat(readLines(file), sep = "\n")
+file.remove(file)
 ```
 
 And it is very easily to extend for other commands.
@@ -128,6 +129,11 @@ exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
 identical(readLines(file), readLines(file2))
+```
+
+```{r}
+file.remove(file)
+file.remove(file2)
 ```
 
 ## Session Informations

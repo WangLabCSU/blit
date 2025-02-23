@@ -167,6 +167,7 @@ perl() |> cmd_help()
       -X                    disable all warnings
       
     Run 'perldoc perl' for more help with Perl.
+    [1] TRUE
 
 And it is very easily to extend for other commands.
 
@@ -186,9 +187,16 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command /usr/bin/gzip -c /tmp/RtmpcMpTdZ/file1a265314cc5698 |
-#> /usr/bin/gzip -d > /tmp/RtmpcMpTdZ/file1a2653fd96d62
+#> Running command /usr/bin/gzip -c /tmp/RtmpHCHV2E/file1a423a7925ab81 |
+#> /usr/bin/gzip -d > /tmp/RtmpHCHV2E/file1a423a42b4e217
 identical(readLines(file), readLines(file2))
+#> [1] TRUE
+```
+
+``` r
+file.remove(file)
+#> [1] TRUE
+file.remove(file2)
 #> [1] TRUE
 ```
 
