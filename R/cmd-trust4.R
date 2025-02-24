@@ -14,7 +14,9 @@
 #'  - `trust4`: Prefix of output files. (default: inferred from file prefix).
 #'  - `trust4_imgt_annot`: Output file name.
 #'  - `trust4_gene_names`: Output file name.
-#' @param ... `r rd_dots("run-trust4")`.
+#' @param ...
+#'  - `trust4`: `r rd_dots("run-trust4")`.
+#'  - `trust4_imgt_annot`: `r rd_dots("trust4_imgt_annot")`.
 #' @inheritParams allele_counter
 #' @param trust4 `r rd_cmd("run-trust4")`.
 #' @seealso <https://github.com/liulab-dfci/TRUST4>
@@ -101,7 +103,9 @@ trust4_imgt_annot <- make_command(
              ofile = "IMGT+C.fa", odir = getwd(),
              perl = NULL) {
         assert_string(perl, allow_empty = FALSE, allow_null = TRUE)
-        perl$new(cmd = perl, ..., species = species, ofile = ofile, odir = odir)
+        Trust4ImgtAnnot$new(
+            cmd = perl, ..., species = species, ofile = ofile, odir = odir
+        )
     }
 )
 
