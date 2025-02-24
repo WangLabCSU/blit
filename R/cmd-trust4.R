@@ -113,7 +113,9 @@ Trust4ImgtAnnot <- R6Class(
     "Trust4ImgtAnnot",
     inherit = Perl,
     private = list(
-        help = NULL,
+        setup_help_params = function() {
+            cli::cli_abort("No help document for <Command: trust4_imgt_annot>")
+        },
         setup_command_params = function(species, ofile, odir) {
             assert_string(species, allow_empty = FALSE)
             opath <- build_opath(odir, ofile, abs = TRUE)

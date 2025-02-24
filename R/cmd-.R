@@ -122,6 +122,20 @@ Execute <- R6Class(
             cat(msg, sep = "\n")
             invisible(self)
         }
+    ),
+    private = list(
+        setup_help_params = function() {
+            cli::cli_abort(c(
+                paste(
+                    "Don't know how to show the help document",
+                    "for {(.subset2(private$.core_params, 'cmd'))}"
+                ),
+                i = paste(
+                    "Please manually set the help document argument with",
+                    "{.code cmd_run(exec())} instead."
+                )
+            ))
+        }
     )
 )
 
@@ -571,7 +585,14 @@ Command <- R6Class("Command",
         # documents. This method shouldn't have any arguments.
         #
         # @return An atomic character, or `NULL`.
-        setup_help_params = function() NULL,
+        setup_help_params = function() {
+            if (is.null(private$name)) {
+                nm <- "<Command: %s>"
+            } else {
+                nm <- sprintf("<Command: %s>", private$name)
+            }
+            cli::cli_abort("No help document for {nm}")
+        },
 
         # @description Method used to combine `dots` and `params`
         #
