@@ -56,14 +56,17 @@ The object itself.
 \subsection{Method \code{build()}}{
 Build parameters to run command.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Command$build(help = FALSE, envir = caller_env())}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Command$build(help = FALSE, verbose = TRUE, envir = caller_env())}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{help}}{A boolean value, indicates whether to build parameters
+\item{\code{help}}{A boolean value indicating whether to build parameters
 for help document or not.}
+
+\item{\code{verbose}}{A boolean value indicating whether the command
+execution should be verbose.}
 
 \item{\code{envir}}{An environment used to Execute command.}
 }

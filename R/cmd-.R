@@ -145,8 +145,8 @@ Execute <- R6Class(
 #' @param stdin should the input be diverted? A character string naming a file.
 #' @param timeout Timeout in seconds. This is a limit for the elapsed time
 #' running command in the separate process.
-#' @param verbose A single boolean value indicates whether to print running
-#' command message.
+#' @param verbose A single boolean value indicating whether the command
+#' execution should be verbose.
 #' @return
 #' - `cmd_run`: Exit status.
 #' @seealso [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
@@ -415,8 +415,10 @@ Command <- R6Class("Command",
         },
 
         #' @description Build parameters to run command.
-        #' @param help A boolean value, indicates whether to build parameters
+        #' @param help A boolean value indicating whether to build parameters
         #' for help document or not.
+        #' @param verbose A boolean value indicating whether the command
+        #' execution should be verbose.
         #' @param envir An environment used to Execute command.
         #' @return An atomic character combine the command and parameters.
         #' @importFrom rlang caller_env
@@ -512,8 +514,7 @@ Command <- R6Class("Command",
 
         # @description Used to attach an expression to be evaluated when
         # exiting `exec_command2`.
-        setup_exit = function(expr, after = TRUE, add = TRUE,
-                              envir = private$envir) {
+        setup_exit = function(expr, after = TRUE, envir = private$envir) {
             defer(expr,
                 envir = envir,
                 priority = if (isTRUE(after)) "last" else "first"
@@ -528,7 +529,7 @@ Command <- R6Class("Command",
         # @field alias A character giving the command alias.
         alias = NULL,
 
-        # @field collect_dots A bool indicates whether `...` should be
+        # @field collect_dots A boolean value indicating whether `...` should be
         # collected and passed into command
         collect_dots = TRUE,
 

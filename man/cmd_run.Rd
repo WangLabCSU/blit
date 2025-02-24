@@ -44,8 +44,8 @@ used.}
 \item{timeout}{Timeout in seconds. This is a limit for the elapsed time
 running command in the separate process.}
 
-\item{verbose}{A single boolean value indicates whether to print running
-command message.}
+\item{verbose}{A single boolean value indicating whether the command
+execution should be verbose.}
 }
 \value{
 \itemize{
