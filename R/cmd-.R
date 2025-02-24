@@ -420,8 +420,9 @@ Command <- R6Class("Command",
         #' @param envir An environment used to Execute command.
         #' @return An atomic character combine the command and parameters.
         #' @importFrom rlang caller_env
-        build = function(help = FALSE, envir = caller_env()) {
+        build = function(help = FALSE, verbose = TRUE, envir = caller_env()) {
             private$envir <- envir
+            private$verbose <- verbose
             core_params <- private$.core_params
 
             # locate command path ------------------------------
@@ -498,11 +499,10 @@ Command <- R6Class("Command",
         .evaluated_params = NULL,
         .evaluated_dots = NULL,
 
-        # the three fields carry the state when executating the command, and
+        # the four fields carry the state when executating the command, and
         # will always be re-calculated before using
-        envir = NULL,
-        params = NULL,
-        dots = NULL,
+        envir = NULL, verbose = NULL,
+        params = NULL, dots = NULL,
 
         # @field subcmd A character string define the subcmd argument.
         subcmd = NULL,
@@ -632,7 +632,7 @@ exec_command <- function(command, help,
 }
 
 # Used to prepare environmen used to clean the variables for each command
-exec_command2 <- function(command, help, ...) {
+exec_command2 <- function(command, help, ..., verbose) {
     # save current environment -------------------------
     # `setup_exit` in Command object will push expression into this
     # environment
@@ -640,7 +640,7 @@ exec_command2 <- function(command, help, ...) {
 
     # use Command object to prepare command parameters -----
     params <- lapply(.subset2(command, "commands"), function(cmd) {
-        cmd$build(help = help, envir = envir)
+        cmd$build(help = help, verbose = verbose, envir = envir)
     })
 
     # combine command parameters -----------------------
@@ -649,7 +649,7 @@ exec_command2 <- function(command, help, ...) {
     # run command ---------------------------------------
     exec_command3(
         command = params[1L], params = params[-1L],
-        wd = .subset2(command, "wd"), ...
+        wd = .subset2(command, "wd"), ..., verbose = verbose
     )
 }
 

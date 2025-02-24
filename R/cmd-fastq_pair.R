@@ -48,7 +48,7 @@ FastqPair <- R6Class(
             assert_string(fq2, allow_empty = FALSE)
             if (is.null(hash_table_size)) {
                 nlines_file <- tempfile()
-                if (verbose) {
+                if (private$verbose) {
                     cli::cli_inform(
                         "counting the number of lines of {.path {fq1}}"
                     )
@@ -60,7 +60,7 @@ FastqPair <- R6Class(
                 " ", fixed = TRUE # styler: off
                 )[[c(1L, 1L)]]
                 hash_table_size <- ceiling(as.integer(hash_table_size) / 4L)
-                if (verbose) {
+                if (private$verbose) {
                     cli::cli_inform("Using -t {.val {hash_table_size}}")
                 }
             }
