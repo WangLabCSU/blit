@@ -5,8 +5,8 @@
 #' analysis of Kraken results.
 #'
 #' @param script Name of the kraken2 script. One of
-#' `r oxford_comma(rd_format_code(KrakenToolsScripts))`
-#' @param ... `r rd_dots("script")`.
+#' `r oxford_comma(code_quote(KrakenToolsScripts))`.
+#' @param ... `r rd_dots("kraken_tools")`.
 #' @inheritParams python
 #' @seealso <https://github.com/jenniferlu717/KrakenTools>
 #' @inherit exec return
