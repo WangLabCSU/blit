@@ -35,7 +35,7 @@ trust4_gene_names(imgt_annot, ofile = "bcr_tcr_gene_name.txt", odir = getwd())
 \item{ref_coordinate}{Path to the fasta file coordinate and sequence of
 V/D/J/C genes.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{run-trust4} command, empty arguments are automatically trimed. Details see: \code{cmd_help(run-trust4())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{run-trust4} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(run-trust4())}.}
 
 \item{file2}{Path to the second paired-end read fastq file, only used for
 \code{mode = "fastq"}.}

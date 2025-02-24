@@ -9,7 +9,7 @@ cellranger(subcmd = NULL, ..., cellranger = NULL)
 \arguments{
 \item{subcmd}{Sub-Command of cellranger.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \verb{cellranger subcmd} command, empty arguments are automatically trimed. Details see: \verb{cmd_help(cellranger subcmd())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \verb{cellranger subcmd} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \verb{cmd_help(cellranger subcmd())}.}
 
 \item{cellranger}{A string of path to \code{cellranger} command.}
 }

@@ -8,7 +8,7 @@ systems more effectively.}
 python(..., python = NULL)
 }
 \arguments{
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{python} command, empty arguments are automatically trimed. Details see: \code{cmd_help(python())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{python} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(python())}.}
 
 \item{python}{A string of path to \code{python} command.}
 }

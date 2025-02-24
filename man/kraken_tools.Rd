@@ -11,7 +11,7 @@ kraken_tools(script, ..., python = NULL)
 \item{script}{Name of the kraken2 script. One of
 \code{combine_kreports}, \code{combine_mpa}, \code{extract_kraken_reads}, \code{filter_bracken_out}, \code{fix_unmapped}, \code{kreport2krona}, \code{kreport2mpa}, \code{make_kreport}, and \code{make_ktaxonomy}}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{script} command, empty arguments are automatically trimed. Details see: \code{cmd_help(script())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{script} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(script())}.}
 
 \item{python}{A string of path to \code{python} command.}
 }

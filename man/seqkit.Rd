@@ -9,7 +9,7 @@ seqkit(subcmd = NULL, ..., seqkit = NULL)
 \arguments{
 \item{subcmd}{Sub-Command of seqkit.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \verb{seqkit subcmd} command, empty arguments are automatically trimed. Details see: \verb{cmd_help(seqkit subcmd())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \verb{seqkit subcmd} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \verb{cmd_help(seqkit subcmd())}.}
 
 \item{seqkit}{A string of path to \code{seqkit} command.}
 }

@@ -12,7 +12,7 @@ gistic2(seg, refgene, ..., odir = getwd(), gistic2 = NULL)
 \item{refgene}{Path to reference genome data input file (REQUIRED, see below
 for file description).}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{gistic2} command, empty arguments are automatically trimed. Details see: \code{cmd_help(gistic2())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{gistic2} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(gistic2())}.}
 
 \item{odir}{A string of path to the output directory.}
 

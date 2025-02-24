@@ -20,7 +20,7 @@ allele_counter(
 
 \item{ofile}{A string of path to the output file.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{alleleCounter} command, empty arguments are automatically trimed. Details see: \code{cmd_help(alleleCounter())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{alleleCounter} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(alleleCounter())}.}
 
 \item{odir}{A string of path to the output directory.}
 

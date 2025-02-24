@@ -19,7 +19,7 @@ fastq_read_pair(fastq_files)
 \arguments{
 \item{fq1, fq2}{A string of fastq file path.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{fastq_pair} command, empty arguments are automatically trimed. Details see: \code{cmd_help(fastq_pair())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{fastq_pair} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(fastq_pair())}.}
 
 \item{hash_table_size}{Size of hash table to use.}
 

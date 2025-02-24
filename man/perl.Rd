@@ -8,7 +8,7 @@ years of development.}
 perl(..., perl = NULL)
 }
 \arguments{
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{perl} command, empty arguments are automatically trimed. Details see: \code{cmd_help(perl())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{perl} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(perl())}.}
 
 \item{perl}{A string of path to \code{perl} command.}
 }
