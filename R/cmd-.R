@@ -421,8 +421,12 @@ Command <- R6Class("Command",
                 )
             }
             if (is.null(private$.evaluated_dots) && !is.null(private$.dots)) {
-                private$.evaluated_dots <- lapply(
-                    private$.dots, rlang::eval_tidy
+                private$.evaluated_dots <- build_command_params(
+                    lapply(private$.dots, rlang::eval_tidy),
+                    paste(
+                        "Only objects that can be coerced into",
+                        "a character vector can be input in {.code ...}"
+                    )
                 )
             }
             invisible(self)
@@ -455,7 +459,11 @@ Command <- R6Class("Command",
             # prepare command parameters -----------------------
             if (isTRUE(help)) {
                 private$params <- build_command_params(
-                    private$setup_help_params()
+                    private$setup_help_params(),
+                    paste(
+                        "`$setup_help_params()` method must return an",
+                        "object that can be coerced into a character vector."
+                    )
                 )
                 private$dots <- character()
             } else {
@@ -467,9 +475,13 @@ Command <- R6Class("Command",
                             rlang::fn_fmls_names(private$setup_command_params),
                             names(private$.evaluated_params)
                         )]
-                    ))
+                    )),
+                    paste(
+                        "`$setup_command_params()` method must return an",
+                        "object that can be coerced into a character vector."
+                    )
                 )
-                private$dots <- build_command_params(private$.evaluated_dots)
+                private$dots <- private$.evaluated_dots %||% character()
             }
             combined <- rlang::inject(private$combine_params(
                 !!!core_params[intersect(
@@ -477,6 +489,8 @@ Command <- R6Class("Command",
                     names(core_params)
                 )]
             ))
+            private$params <- NULL
+            private$dots <- NULL
 
             # combine command, subcmd, and params -------
             enc2utf8(c(command, private$subcmd, combined))
@@ -603,13 +617,21 @@ Command <- R6Class("Command",
 
 #' @return Always return a character.
 #' @noRd
-build_command_params <- function(params) {
-    if (is.character(params)) return(params) # styler: off
-    if (is.null(params)) return(character()) # styler: off
-    if (is.list(params)) {
-        return(as.character(unlist(params, use.names = FALSE)))
+build_command_params <- function(params, msg) {
+    if (is.null(params)) {
+        character()
+    } else if (is.character(params)) {
+        params
+    } else if (is.numeric(params) || is.logical(params)) {
+        as.character(params)
+    } else if (is.list(params)) {
+        unlist(
+            lapply(params, build_command_params, msg = msg),
+            use.names = FALSE
+        )
+    } else {
+        cli::cli_abort(msg)
     }
-    cli::cli_abort("Unsupported command parameters")
 }
 
 # Used to prepare command environment variables
