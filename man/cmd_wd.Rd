@@ -26,7 +26,8 @@ variables \code{name}.
 \item{action}{Should the new values \code{"replace"}, \code{"prefix"} or \code{"suffix"}
 existing environment variables?}
 
-\item{sep}{A string to separate new and old value.}
+\item{sep}{A string to separate new and old value when \code{action} is \code{"prefix"}
+or \code{"suffix"}.}
 
 \item{name}{A string define the PATH environment variable name. You
 can use this to define other \code{PATH}-like environment variable such as

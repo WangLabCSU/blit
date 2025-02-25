@@ -266,11 +266,14 @@ cmd_wd <- function(command, wd = NULL) {
 #' variables `name`.
 #' @param action Should the new values `"replace"`, `"prefix"` or `"suffix"`
 #' existing environment variables?
-#' @param sep A string to separate new and old value.
+#' @param sep A string to separate new and old value when `action` is `"prefix"`
+#' or `"suffix"`.
 #' @export
 #' @rdname cmd_wd
 cmd_envvar <- function(command, ..., action = "replace", sep = " ") {
     assert_s3_class(command, "command")
+    action <- rlang::arg_match0(action, c("replace", "prefix", "suffix"))
+    assert_string(sep)
     dots <- rlang::dots_list(..., .ignore_empty = "all")
     if (!rlang::is_named2(dots)) {
         cli::cli_abort("All elements in {.arg ...} must be named")
@@ -282,7 +285,6 @@ cmd_envvar <- function(command, ..., action = "replace", sep = " ") {
             "or {.val NULL}"
         ))
     }
-    action <- rlang::arg_match0(action, c("replace", "prefix", "suffix"))
     for (nm in names(dots)) {
         command$envvar[[nm]] <- parse_envvar(
             name = nm,
@@ -307,20 +309,14 @@ cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
     assert_string(name, allow_empty = FALSE)
     envpath <- rlang::dots_list(..., .ignore_empty = "all")
     envpath <- unlist(envpath, use.names = FALSE)
+    envpath <- as.character(envpath)
     if (anyNA(envpath)) {
-        if (length(ignored <- envpath[!is.na(envpath)])) { # nolint
-            cli::cli_warn(paste(
-                "Found {.val NA}",
-                "{.field {ignored}} will be ignored",
-                sep = ", "
-            ))
-        }
-        envpath <- NA_character_
-    } else {
-        envpath <- as.character(envpath)
-        envpath <- normalizePath(envpath, "/", mustWork = FALSE)
-        envpath <- paste0(envpath, collapse = .Platform$path.sep)
+        cli::cli_warn("Missing value will be ignored")
+        envpath <- envpath[!is.na(envpath)]
     }
+    envpath <- normalizePath(envpath, "/", mustWork = FALSE)
+    envpath <- rev(envpath)
+    envpath <- paste0(envpath, collapse = .Platform$path.sep)
     cmd_envvar(
         command,
         !!name := envpath, # nolint
@@ -748,14 +744,16 @@ set_envvar <- function(envs) {
 }
 
 parse_envvar <- function(name, new, old, action, sep) {
-    if (is.null(old)) {
-        old <- Sys.getenv(name, unset = NA_character_, names = FALSE)
-    }
-    if (!is.na(new) && !is.na(old)) {
-        if (action == "prefix") {
-            new <- paste(new, old, sep = sep)
-        } else if (action == "suffix") {
-            new <- paste(old, new, sep = sep)
+    if (!is.na(new)) {
+        if (is.null(old)) {
+            old <- Sys.getenv(name, unset = NA_character_, names = FALSE)
+        }
+        if (!is.na(old)) {
+            if (action == "prefix") {
+                new <- paste(new, old, sep = sep)
+            } else if (action == "suffix") {
+                new <- paste(old, new, sep = sep)
+            }
         }
     }
     new
