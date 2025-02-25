@@ -43,7 +43,7 @@ exec("echo", "$TEST") |> cmd_run()
 Sys.unsetenv("TEST")
 ```
 
-    Running command /usr/bin/echo $TEST
+    Running command: /usr/bin/echo $TEST
     blit is awesome
 
 Several functions allow you to control the environment when running the
@@ -60,7 +60,7 @@ exec("echo", "$TEST") |>
 ```
 
     Setting environment variables: TEST
-    Running command /usr/bin/echo $TEST
+    Running command: /usr/bin/echo $TEST
     blit is very awesome
 
 `blit` provides several built-in functions for directly executing
@@ -84,7 +84,7 @@ document.
 python() |> cmd_help()
 ```
 
-    Running command /usr/bin/python3 --help
+    Running command: /usr/bin/python3 --help
     usage: /usr/bin/python3 [option] ... [-c cmd | -m mod | file | -] [arg] ...
     Options (and corresponding environment variables):
     -b     : issue warnings about converting bytes/bytearray to str and comparing
@@ -133,7 +133,7 @@ python() |> cmd_help()
 perl() |> cmd_help()
 ```
 
-    Running command /usr/bin/perl --help
+    Running command: /usr/bin/perl --help
 
     Usage: /usr/bin/perl [switches] [--] [programfile] [arguments]
       -0[octal/hexadecimal] specify record separator (\0, if no argument)
@@ -187,8 +187,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command /usr/bin/gzip -c /tmp/RtmpHCHV2E/file1a423a7925ab81 |
-#> /usr/bin/gzip -d > /tmp/RtmpHCHV2E/file1a423a42b4e217
+#> Running command: /usr/bin/gzip -c /tmp/RtmpgIE8Ov/file1eed5b268ae7fd |
+#> /usr/bin/gzip -d > /tmp/RtmpgIE8Ov/file1eed5b6072ead8
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```

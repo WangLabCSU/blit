@@ -715,7 +715,7 @@ exec_command3 <- function(command, params, wait = TRUE, wd = NULL,
     }
     if (verbose) {
         cli::cli_inform(paste(
-            "Running command {.field {command}}",
+            "Running command: {.field {command}}",
             "{.field {paste(params, collapse = ' ')}}"
         ))
         cli::cat_line()
