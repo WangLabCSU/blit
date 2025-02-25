@@ -18,7 +18,7 @@ A \code{command} object.
 Invoke a System Command
 }
 \examples{
-exec("echo", "$PATH") |> cmd_run()
+cmd_run(exec("echo", "$PATH"))
 }
 \seealso{
 \itemize{

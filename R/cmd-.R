@@ -93,7 +93,7 @@ print.command <- function(x, ...) {
 #' @param cmd Command to be invoked, as a character string.
 #' @param ... `r rd_dots("cmd", FALSE)`.
 #' @examples
-#' exec("echo", "$PATH") |> cmd_run()
+#' cmd_run(exec("echo", "$PATH"))
 #' @return A `command` object.
 #' @seealso
 #' - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
