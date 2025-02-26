@@ -26,5 +26,12 @@ Authors:
   \item Shixiang Wang \email{w_shixiang@163.com} (\href{https://orcid.org/0000-0001-9855-7357}{ORCID})
 }
 
+Other contributors:
+\itemize{
+  \item Jennifer Lu \email{jennifer.lu717@gmail.com} (Author of the included scripts from Kraken2 and KrakenTools libraries) [copyright holder]
+  \item Li Song \email{Li.Song@dartmouth.edu} (Author of included scripts from TRUST4 library) [copyright holder]
+  \item X. Shirley Liu \email{xsliu@ds.dfci.harvard.edu} (Author of included scripts from TRUST4 library) [copyright holder]
+}
+
 }
 \keyword{internal}
