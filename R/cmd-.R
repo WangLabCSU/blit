@@ -148,12 +148,14 @@ Execute <- R6Class(
 #' @param stdout,stderr How output streams of the child process are processed.
 #' Possible values are:
 #'
-#'  - `TRUE`: print the child output in R console.
-#'  - `FALSE`: suppress output stream
-#'  - **string**: name or path of file to redirect output
-#'  - `connection`: a writable R [`connection`] object
-#'  - `function`: a callback function (including purrr-like lambda syntax) with
-#'    one argument accepting the standard output or error .
+#'  - `TRUE`: Print the child output in R console.
+#'  - `FALSE`: Suppress output stream
+#'  - **string**: Name or path of file to redirect output
+#'  - `connection`: A writable R [`connection`] object
+#'  - `function`: A callback function (including purrr-like lambda syntax) that
+#'   takes one argument, which accepts the standard output or error. You can
+#'   wrap the function with [`I()`] so that it accepts raw vectors. In this
+#'   case, you should use [`sys::as_text()`] to convert them into characters.
 #'
 #' For `cmd_background()`, only a string (file path), or a single boolean value
 #' can be used.
@@ -849,12 +851,41 @@ check_io <- function(x, background = FALSE, help = FALSE,
         }
         return(x)
     }
-    if (rlang::is_formula(x)) x <- rlang::as_function(x)
+    if (rlang::is_formula(x)) {
+        if (inherits(x, "AsIs")) {
+            x <- I(rlang::as_function(x))
+        } else {
+            x <- rlang::as_function(x)
+        }
+    }
     if (is.function(x)) {
         if (background) {
             cli::cli_abort("{.arg {arg}} cannot be a function", call = call)
         }
-        return(function(raw, ...) x(sys::as_text(raw), ...))
+        # let the function name the same as the argument name for better message
+        assign(arg, x, envir = environment())
+        if (inherits(x, "AsIs")) {
+            o <- rlang::new_function(
+                rlang::exprs(raw = , ... = ),
+                substitute(
+                    {
+                        myfun(raw, ...)
+                    },
+                    list(myfun = rlang::sym(arg))
+                )
+            )
+        } else {
+            o <- rlang::new_function(
+                rlang::exprs(raw = , ... = ),
+                substitute(
+                    {
+                        myfun(sys::as_text(raw), ...)
+                    },
+                    list(myfun = rlang::sym(arg))
+                )
+            )
+        }
+        return(o)
     }
     cli::cli_abort("{.arg {arg}} cannot be a {.obj_type_friendly {x}}",
         call = call

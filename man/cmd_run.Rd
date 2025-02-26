@@ -31,12 +31,14 @@ cmd_help(command, stdout = NULL, stderr = NULL, verbose = TRUE)
 \item{stdout, stderr}{How output streams of the child process are processed.
 Possible values are:
 \itemize{
-\item \code{TRUE}: print the child output in R console.
-\item \code{FALSE}: suppress output stream
-\item \strong{string}: name or path of file to redirect output
-\item \code{connection}: a writable R \code{\link{connection}} object
-\item \code{function}: a callback function (including purrr-like lambda syntax) with
-one argument accepting the standard output or error .
+\item \code{TRUE}: Print the child output in R console.
+\item \code{FALSE}: Suppress output stream
+\item \strong{string}: Name or path of file to redirect output
+\item \code{connection}: A writable R \code{\link{connection}} object
+\item \code{function}: A callback function (including purrr-like lambda syntax) that
+takes one argument, which accepts the standard output or error. You can
+wrap the function with \code{\link[=I]{I()}} so that it accepts raw vectors. In this
+case, you should use \code{\link[sys:as_text]{sys::as_text()}} to convert them into characters.
 }
 
 For \code{cmd_background()}, only a string (file path), or a single boolean value
