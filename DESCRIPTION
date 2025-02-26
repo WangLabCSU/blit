@@ -7,9 +7,9 @@ Authors@R: c(
     person("Shixiang", "Wang", , "w_shixiang@163.com", role = c("aut"),
            comment = c(ORCID = "0000-0001-9855-7357"))
     person("Jennifer", "Lu", , "jennifer.lu717@gmail.com", 
-           role = c("cph"), comment = "Author of the included scripts from Kraken2 and KrakenTools libraries")
+           role = c("cph"), comment = "Author of the included scripts from Kraken2 and KrakenTools libraries"),
     person("Li", "Song", , "Li.Song@dartmouth.edu", 
-           role = c("cph"), comment = "Author of included scripts from TRUST4 library")
+           role = c("cph"), comment = "Author of included scripts from TRUST4 library"),
     person("X. Shirley", "Liu", , "xsliu@ds.dfci.harvard.edu", 
            role = c("cph"), comment = "Author of included scripts from TRUST4 library")
   )
