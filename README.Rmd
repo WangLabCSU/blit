@@ -47,17 +47,10 @@ exec("echo", "$PATH")
 ```
 
 To run the command, just pass the `command` object to the `cmd_run()`
-```{r, eval=FALSE}
+```{r}
 Sys.setenv(TEST = "blit is awesome")
 exec("echo", "$TEST") |> cmd_run()
 Sys.unsetenv("TEST")
-```
-
-```{r, echo=FALSE, comment=""}
-Sys.setenv(TEST = "blit is awesome")
-exec("echo", "$TEST") |> cmd_run(stdout = file)
-Sys.unsetenv("TEST")
-cat(readLines(file), sep = "\n")
 ```
 
 Several functions allow you to control the environment when running the command:
@@ -66,17 +59,10 @@ Several functions allow you to control the environment when running the command:
   - `cmd_envvar`: define the environment variables.
   - `cmd_envpath`: define the `PATH`-like environment variables.
 
-```{r, eval=FALSE}
+```{r}
 exec("echo", "$TEST") |>
     cmd_envvar(TEST = "blit is very awesome") |>
     cmd_run()
-```
-
-```{r, echo=FALSE, comment=""}
-exec("echo", "$TEST") |>
-    cmd_envvar(TEST = "blit is very awesome") |>
-    cmd_run(stdout = file)
-cat(readLines(file), sep = "\n")
 ```
 
 `blit` provides several built-in functions for directly executing specific
@@ -92,23 +78,12 @@ commands., these include:
 [trust4](https://github.com/liulab-dfci/TRUST4).
 
 For these commands, you can also use `cmd_help()` to print the help document.
-```{r, eval=FALSE}
+```{r}
 python() |> cmd_help()
 ```
 
-```{r, echo=FALSE, comment=""}
-python() |> cmd_help(stdout = file)
-cat(readLines(file), sep = "\n")
-```
-
-```{r, eval=FALSE}
+```{r}
 perl() |> cmd_help()
-```
-
-```{r, echo=FALSE, comment=""}
-perl() |> cmd_help(stdout = file)
-cat(readLines(file), sep = "\n")
-file.remove(file)
 ```
 
 And it is very easily to extend for other commands.
@@ -131,6 +106,7 @@ exec("gzip", "-c", file) |>
 identical(readLines(file), readLines(file2))
 ```
 
+In the last we clean the temporary files.
 ```{r}
 file.remove(file)
 file.remove(file2)

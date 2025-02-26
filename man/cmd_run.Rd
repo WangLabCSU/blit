@@ -31,13 +31,20 @@ cmd_help(command, stdout = NULL, stderr = NULL, verbose = TRUE)
 \item{stdout, stderr}{How output streams of the child process are processed.
 Possible values are:
 \itemize{
-\item \code{TRUE}: Print the child output in R console.
-\item \code{FALSE}: Suppress output stream
+\item \code{TRUE}: print the child output in R console.
+\item \code{FALSE}: suppress output stream
 \item \strong{string}: name or path of file to redirect output
+\item \code{connection}: a writable R \code{\link{connection}} object
+\item \code{function}: a callback function (including purrr-like lambda syntax) with
+one argument accepting a raw vector (use \code{\link[sys:as_text]{as_text()}} to
+convert to text).
 }
 
-For \code{cmd_background()} and \code{cmd_help()}, only a string (file path) can be
-used.}
+For \code{cmd_background()}, only a string (file path), or a single boolean value
+can be used.
+
+For \code{cmd_help()}, only a string (file path), \code{connection}, or \code{function} can
+be used.}
 
 \item{stdin}{should the input be diverted? A character string naming a file.}
 
@@ -49,12 +56,13 @@ execution should be verbose.}
 }
 \value{
 \itemize{
-\item \code{cmd_run}: Exit status.
+\item \code{cmd_run}: Exit status invisiblely.
 }
 
 \itemize{
-\item \code{cmd_background}: The process id, the process can be killed manually with
-\code{\link[tools:pskill]{tools::pskill()}}.
+\item \code{cmd_background}: Returns the process ID, which can be terminated manually
+using \code{\link[tools:pskill]{tools::pskill()}}. You can also use \code{\link[sys:exec]{sys::exec_status()}} to check
+the process's exit status.
 }
 
 \itemize{
@@ -64,8 +72,7 @@ execution should be verbose.}
 \description{
 \itemize{
 \item \code{cmd_run}: Run the command.
-\item \code{cmd_background}: Run the command in the background using
-\code{parallel::mcparallel}, not available on windows.
+\item \code{cmd_background}: Run the command in the background.
 \item \code{cmd_help}: Print the help document for this command.
 }
 }

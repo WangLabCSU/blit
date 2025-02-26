@@ -17,9 +17,9 @@ License: MIT + file LICENSE
 Imports: 
     cli,
     data.table,
-    parallel,
     R6,
     rlang (>= 1.1.0),
+    sys,
     utils,
     withr
 Suggests: 

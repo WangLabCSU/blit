@@ -142,19 +142,25 @@ Execute <- R6Class(
 #' Execute command
 #'
 #' - `cmd_run`: Run the command.
-#' - `cmd_background`: Run the command in the background using
-#'   `parallel::mcparallel`, not available on windows.
+#' - `cmd_background`: Run the command in the background.
 #' - `cmd_help`: Print the help document for this command.
 #' @param command A `command` object.
 #' @param stdout,stderr How output streams of the child process are processed.
 #' Possible values are:
 #'
-#'  - `TRUE`: Print the child output in R console.
-#'  - `FALSE`: Suppress output stream
+#'  - `TRUE`: print the child output in R console.
+#'  - `FALSE`: suppress output stream
 #'  - **string**: name or path of file to redirect output
+#'  - `connection`: a writable R [`connection`] object
+#'  - `function`: a callback function (including purrr-like lambda syntax) with
+#'    one argument accepting a raw vector (use [`as_text()`][sys::as_text] to
+#'    convert to text).
 #'
-#' For `cmd_background()` and `cmd_help()`, only a string (file path) can be
-#' used.
+#' For `cmd_background()`, only a string (file path), or a single boolean value
+#' can be used.
+#'
+#' For `cmd_help()`, only a string (file path), `connection`, or `function` can
+#' be used.
 #'
 #' @param stdin should the input be diverted? A character string naming a file.
 #' @param timeout Timeout in seconds. This is a limit for the elapsed time
@@ -162,58 +168,47 @@ Execute <- R6Class(
 #' @param verbose A single boolean value indicating whether the command
 #' execution should be verbose.
 #' @return
-#' - `cmd_run`: Exit status.
+#' - `cmd_run`: Exit status invisiblely.
 #' @seealso [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
 #' @export
 cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
                     timeout = NULL, verbose = TRUE) {
-    assert_s3_class(command, "command")
-    assert_io(stdout)
-    assert_io(stderr)
-    assert_string(stdin, allow_empty = FALSE, allow_null = TRUE)
     assert_number_whole(timeout, allow_null = TRUE)
-    assert_bool(verbose)
-    exec_command(
+    stdout <- check_io(stdout)
+    stderr <- check_io(stderr)
+    status <- cmd_exec(
         command,
         help = FALSE,
+        wait = TRUE,
         stdout = stdout,
         stderr = stderr,
         stdin = stdin,
         timeout = timeout,
         verbose = verbose
     )
+    invisible(status)
 }
 
 #' @return
-#' - `cmd_background`: The process id, the process can be killed manually with
-#'   [`tools::pskill()`].
+#' - `cmd_background`: Returns the process ID, which can be terminated manually
+#'   using [`tools::pskill()`]. You can also use [`sys::exec_status()`] to check
+#'   the process's exit status.
 #' @export
 #' @rdname cmd_run
 cmd_background <- function(command, stdout = NULL, stderr = NULL, stdin = NULL,
                            verbose = TRUE) {
-    assert_s3_class(command, "command")
-    assert_string(stdout, allow_empty = FALSE, allow_null = TRUE)
-    assert_string(stderr, allow_empty = FALSE, allow_null = TRUE)
-    assert_string(stdin, allow_empty = FALSE, allow_null = TRUE)
-    assert_bool(verbose)
-    command$commands <- lapply(.subset2(command, "commands"), function(cmd) {
-        cmd$evaluate()
-    })
-    out <- parallel::mcparallel(
-        exec_command(
-            command,
-            help = FALSE,
-            stdout = stdout %||% FALSE,
-            stderr = stderr %||% FALSE,
-            stdin = stdin,
-            timeout = NULL,
-            verbose = verbose
-        ),
-        mc.set.seed = FALSE,
-        silent = TRUE,
-        detached = TRUE
+    if (!is.null(stdout)) stdout <- check_io(stdout, background = TRUE)
+    if (!is.null(stderr)) stderr <- check_io(stderr, background = TRUE)
+    cmd_exec(
+        command,
+        help = FALSE,
+        wait = FALSE,
+        stdout = stdout %||% FALSE,
+        stderr = stderr %||% FALSE,
+        stdin = stdin,
+        timeout = NULL,
+        verbose = verbose
     )
-    utils::getFromNamespace("processID", "parallel")(out)
 }
 
 #' @return
@@ -221,13 +216,12 @@ cmd_background <- function(command, stdout = NULL, stderr = NULL, stdin = NULL,
 #' @export
 #' @rdname cmd_run
 cmd_help <- function(command, stdout = NULL, stderr = NULL, verbose = TRUE) {
-    assert_s3_class(command, "command")
-    assert_string(stdout, allow_empty = FALSE, allow_null = TRUE)
-    assert_string(stderr, allow_empty = FALSE, allow_null = TRUE)
-    assert_bool(verbose)
-    exec_command(
+    if (!is.null(stdout)) stdout <- check_io(stdout, help = TRUE)
+    if (!is.null(stderr)) stderr <- check_io(stderr, help = TRUE)
+    cmd_exec(
         command,
         help = TRUE,
+        wait = TRUE,
         stdout = stdout %||% TRUE,
         stderr = stderr %||% TRUE,
         stdin = NULL,
@@ -235,6 +229,26 @@ cmd_help <- function(command, stdout = NULL, stderr = NULL, verbose = TRUE) {
         verbose = verbose
     )
     invisible(command)
+}
+
+#' @importFrom rlang caller_call
+#' @keywords internal
+cmd_exec <- function(command, help = FALSE, wait = TRUE,
+                     stdout = TRUE, stderr = TRUE, stdin = NULL,
+                     timeout = NULL, verbose = TRUE, call = caller_call()) {
+    assert_s3_class(command, "command", call = call)
+    assert_string(stdin, allow_empty = FALSE, allow_null = TRUE, call = call)
+    assert_bool(verbose, call = call)
+    exec_command(
+        command,
+        help = help,
+        wait = wait,
+        stdout = stdout,
+        stderr = stderr,
+        stdin = stdin,
+        timeout = timeout,
+        verbose = verbose
+    )
 }
 
 #' Define the environment when running the command
@@ -631,7 +645,7 @@ build_command_params <- function(params, msg) {
 }
 
 # Used to prepare command environment variables
-exec_command <- function(command, help,
+exec_command <- function(command, help, wait,
                          stdout, stderr, stdin, timeout,
                          verbose) {
     # setting environment variables -------------
@@ -647,28 +661,20 @@ exec_command <- function(command, help,
         on.exit(set_envvar(old), add = TRUE)
         set_envvar(envvar)
     }
+    # for help document, we only display the last one
     if (help) {
         command$commands <- command$commands[length(command$commands)]
-        exec_command2(
-            command,
-            help = TRUE,
-            stdout = stdout,
-            stderr = stderr,
-            stdin = NULL,
-            timeout = NULL,
-            verbose = verbose
-        )
-    } else {
-        exec_command2(
-            command,
-            help = FALSE,
-            stdout = stdout,
-            stderr = stderr,
-            stdin = stdin,
-            timeout = timeout,
-            verbose = verbose
-        )
     }
+    exec_command2(
+        command,
+        help = help,
+        wait = wait,
+        stdout = stdout,
+        stderr = stderr,
+        stdin = stdin,
+        timeout = timeout,
+        verbose = verbose
+    )
 }
 
 # Used to prepare environmen used to clean the variables for each command
@@ -688,16 +694,53 @@ exec_command2 <- function(command, help, ..., verbose) {
 
     # run command ---------------------------------------
     exec_command3(
-        command = params[1L], params = params[-1L],
-        wd = .subset2(command, "wd"), ..., verbose = verbose
+        command = params,
+        wd = .subset2(command, "wd"),
+        ...,
+        verbose = verbose
     )
 }
 
 # Used to the working directory, then this method call `system2` to invoke the
 # command.
-exec_command3 <- function(command, params, wait = TRUE, wd = NULL,
+#' @param interpreter For windows, a string of "cmd" or "powershell", for
+#' others, a string of "sh" or "bash".
+#' @noRd
+exec_command3 <- function(command, interpreter = NULL, wait = TRUE, wd = NULL,
                           stdout = TRUE, stderr = TRUE, stdin = NULL,
                           timeout = NULL, verbose = TRUE) {
+    # prepare the command -----------------------
+    script <- tempfile(pkg_nm())
+    if (.Platform$OS.type == "windows") {
+        # https://stackoverflow.com/questions/605686/how-to-write-a-multiline-command
+        # for cmd "^"
+        # for powershell "`"
+        content <- command
+        if (length(content) > 1L) {
+            content[-length(content)] <- switch(interpreter %||% "cmd",
+                cmd = paste(content[-length(content)], "^"),
+                powershell = paste(content[-length(content)], "`")
+            )
+        }
+        content <- c(switch(interpreter,
+            cmd = sprintf("del /F %s", shQuote(script, "cmd")),
+            powershell = sprintf("Remove-Item -Force -Path '%s'", script)
+        ), content)
+        cmd <- paste(interpreter, "exe", sep = ".")
+        arg <- switch(interpreter,
+            cmd = "/c",
+            powershell = c("-ExecutionPolicy", "Bypass", "-File")
+        )
+    } else {
+        content <- command
+        if (length(content) > 1L) {
+            content[-length(content)] <- paste(content[-length(content)], "\\")
+        }
+        content <- c(sprintf("rm -f '%s'", script), content)
+        cmd <- interpreter %||% "sh" # or "bash"
+        arg <- NULL
+    }
+
     # set working directory ---------------------
     if (!is.null(wd)) {
         if (!dir.exists(wd) &&
@@ -713,24 +756,38 @@ exec_command3 <- function(command, params, wait = TRUE, wd = NULL,
         setwd(wd)
         on.exit(setwd(old_wd), add = TRUE)
     }
+
+    # write the content to the script ----------
+    writeLines(content, script, sep = "\n")
+    # ensure file has execute permission
+    if (file.access(script, mode = 1L) != 0L) {
+        Sys.chmod(script, "555")
+    }
+
     if (verbose) {
-        cli::cli_inform(paste(
-            "Running command: {.field {command}}",
-            "{.field {paste(params, collapse = ' ')}}"
-        ))
+        cli::cli_text(
+            "Running command: {.field {paste(command, collapse = ' ')}}"
+        )
         cli::cat_line()
     }
-    if (isTRUE(stdout)) stdout <- ""
-    if (isTRUE(stderr)) stderr <- ""
-    system2(
-        command = command,
-        args = params,
-        stdout = stdout,
-        stderr = stderr,
-        stdin = stdin %||% "",
-        wait = wait,
-        timeout = timeout %||% 0L
-    )
+
+    # execute the command ----------------------
+    if (wait) {
+        if (is.null(timeout)) {
+            timeout <- 0
+        } else {
+            timeout <- as.numeric(timeout)
+        }
+        sys::exec_wait(cmd, c(arg, script),
+            std_out = stdout, std_err = stderr,
+            std_in = stdin, timeout = timeout
+        )
+    } else {
+        sys::exec_background(cmd, c(arg, script),
+            std_out = stdout, std_err = stderr,
+            std_in = stdin
+        )
+    }
 }
 
 set_envvar <- function(envs) {
@@ -760,8 +817,9 @@ parse_envvar <- function(name, new, old, action, sep) {
 }
 
 # For `stdout` and `stderr`
-assert_io <- function(x, arg = rlang::caller_arg(x),
-                      call = rlang::caller_call()) {
+#' @importFrom rlang caller_arg caller_call
+check_io <- function(x, background = FALSE, help = FALSE,
+                     arg = caller_arg(x), call = caller_call()) {
     if (rlang::is_string(x)) {
         if (!nzchar(x)) {
             cli::cli_abort(
@@ -769,12 +827,38 @@ assert_io <- function(x, arg = rlang::caller_arg(x),
                 call = call
             )
         }
-    } else if (!rlang::is_bool(x)) {
-        cli::cli_abort(
-            "{.arg {arg}} must be a bool or a string of file path",
-            call = call
-        )
+        return(x)
     }
+
+    if (rlang::is_bool(x)) {
+        if (help) {
+            cli::cli_abort(
+                "{.arg {arg}} cannot be a single boolean value",
+                call = call
+            )
+        }
+        return(x)
+    }
+
+    if (inherits(x, "connection")) {
+        if (background) {
+            cli::cli_abort(
+                "{.arg {arg}} cannot be a {.cls connection} object",
+                call = call
+            )
+        }
+        return(x)
+    }
+    if (rlang::is_formula(x)) x <- rlang::as_function(x)
+    if (is.function(x)) {
+        if (background) {
+            cli::cli_abort("{.arg {arg}} cannot be a function", call = call)
+        }
+        return(x)
+    }
+    cli::cli_abort("{.arg {arg}} cannot be a {.obj_type_friendly {x}}",
+        call = call
+    )
 }
 
 remove_opath <- function(opath) {
