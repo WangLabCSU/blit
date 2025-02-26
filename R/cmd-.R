@@ -715,22 +715,23 @@ exec_command3 <- function(command, interpreter = NULL, wait = TRUE, wd = NULL,
         # https://stackoverflow.com/questions/605686/how-to-write-a-multiline-command
         # for cmd "^"
         # for powershell "`"
+        cmd <- interpreter %||% "cmd"
         content <- command
         if (length(content) > 1L) {
-            content[-length(content)] <- switch(interpreter %||% "cmd",
+            content[-length(content)] <- switch(cmd,
                 cmd = paste(content[-length(content)], "^"),
                 powershell = paste(content[-length(content)], "`")
             )
         }
-        content <- c(switch(interpreter,
+        content <- c(switch(cmd,
             cmd = sprintf("del /F %s", shQuote(script, "cmd")),
             powershell = sprintf("Remove-Item -Force -Path '%s'", script)
         ), content)
-        cmd <- paste(interpreter, "exe", sep = ".")
-        arg <- switch(interpreter,
+        arg <- switch(cmd,
             cmd = "/c",
             powershell = c("-ExecutionPolicy", "Bypass", "-File")
         )
+        cmd <- paste(cmd, "exe", sep = ".")
     } else {
         content <- command
         if (length(content) > 1L) {
