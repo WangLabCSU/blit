@@ -19,7 +19,7 @@ Description: An all-encompassing R toolkit designed to streamline the
     wide array of bioinformatics command line tools into their workflows,
     leveraging the power of R for sophisticated data manipulation and graphical
     representation.
-License: GPL (>= 3) + file LICENSE
+License: GPL (>= 3)
 Imports: 
     cli,
     data.table,
