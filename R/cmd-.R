@@ -153,8 +153,7 @@ Execute <- R6Class(
 #'  - **string**: name or path of file to redirect output
 #'  - `connection`: a writable R [`connection`] object
 #'  - `function`: a callback function (including purrr-like lambda syntax) with
-#'    one argument accepting a raw vector (use [`as_text()`][sys::as_text] to
-#'    convert to text).
+#'    one argument accepting the standard output or error .
 #'
 #' For `cmd_background()`, only a string (file path), or a single boolean value
 #' can be used.
@@ -855,7 +854,7 @@ check_io <- function(x, background = FALSE, help = FALSE,
         if (background) {
             cli::cli_abort("{.arg {arg}} cannot be a function", call = call)
         }
-        return(x)
+        return(function(raw, ...) x(sys::as_text(raw), ...))
     }
     cli::cli_abort("{.arg {arg}} cannot be a {.obj_type_friendly {x}}",
         call = call

@@ -36,8 +36,7 @@ Possible values are:
 \item \strong{string}: name or path of file to redirect output
 \item \code{connection}: a writable R \code{\link{connection}} object
 \item \code{function}: a callback function (including purrr-like lambda syntax) with
-one argument accepting a raw vector (use \code{\link[sys:as_text]{as_text()}} to
-convert to text).
+one argument accepting the standard output or error .
 }
 
 For \code{cmd_background()}, only a string (file path), or a single boolean value
