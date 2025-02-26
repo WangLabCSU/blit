@@ -6,6 +6,12 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-2801-3332")),
     person("Shixiang", "Wang", , "w_shixiang@163.com", role = c("aut"),
            comment = c(ORCID = "0000-0001-9855-7357"))
+    person("Jennifer", "Lu", , "jennifer.lu717@gmail.com", 
+           role = c("cph"), comment = "Author of the included scripts from Kraken2 and KrakenTools libraries")
+    person("Li", "Song", , "Li.Song@dartmouth.edu", 
+           role = c("cph"), comment = "Author of included scripts from TRUST4 library")
+    person("X. Shirley", "Liu", , "xsliu@ds.dfci.harvard.edu", 
+           role = c("cph"), comment = "Author of included scripts from TRUST4 library")
   )
 Description: An all-encompassing R toolkit designed to streamline the
     process of calling various bioinformatics software and then performing data
@@ -13,7 +19,7 @@ Description: An all-encompassing R toolkit designed to streamline the
     wide array of bioinformatics command line tools into their workflows,
     leveraging the power of R for sophisticated data manipulation and graphical
     representation.
-License: MIT + file LICENSE
+License: GPL (>= 3)
 Imports: 
     cli,
     data.table,

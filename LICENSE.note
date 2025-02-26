@@ -1,0 +1,7 @@
+The blit package as a whole is distributed under GPL 3.0. The blit package includes other open source software components. The following is a list of these components:
+
+* kraken2/kreport2mpa.py: GPL 3.0
+* kraken2Tools: GPL 3.0
+* TRUST4: MIT
+
+Full copies of the license agreements used by these components are included in `inst/extdata`.
