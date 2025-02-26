@@ -867,20 +867,13 @@ check_io <- function(x, background = FALSE, help = FALSE,
         if (inherits(x, "AsIs")) {
             o <- rlang::new_function(
                 rlang::exprs(raw = , ... = ),
-                substitute(
-                    {
-                        myfun(raw, ...)
-                    },
-                    list(myfun = rlang::sym(arg))
-                )
+                substitute(myfun(raw, ...), list(myfun = rlang::sym(arg)))
             )
         } else {
             o <- rlang::new_function(
                 rlang::exprs(raw = , ... = ),
                 substitute(
-                    {
-                        myfun(sys::as_text(raw), ...)
-                    },
+                    myfun(sys::as_text(raw), ...),
                     list(myfun = rlang::sym(arg))
                 )
             )
