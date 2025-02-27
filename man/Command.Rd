@@ -2,11 +2,13 @@
 % Please edit documentation in R/cmd-.R
 \name{Command}
 \alias{Command}
-\title{R6 Class to prepare command parameters}
+\title{R6 Class to prepare command parameters.}
 \description{
-R6 Class to prepare command parameters
-
-R6 Class to prepare command parameters
+\code{Command} is an R6 class used by developers to create new commands. It should
+not be used by end users.
+}
+\seealso{
+make_command
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -32,7 +34,8 @@ Create a new \code{Command} object.
 \describe{
 \item{\code{...}}{Additional argument passed into command.}
 
-\item{\code{.subcmd}}{Sub-command string.}
+\item{\code{.subcmd}}{A sub-command string that is always inserted between
+the main command and other parameters.}
 }
 \if{html}{\out{</div>}}
 }

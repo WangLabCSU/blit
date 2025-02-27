@@ -2,14 +2,14 @@
 % Please edit documentation in R/cmd-.R
 \name{make_command}
 \alias{make_command}
-\title{Helper function to create new command}
+\title{Helper function to create new command.}
 \usage{
 make_command(name, fun, envir = caller_env())
 }
 \arguments{
 \item{name}{A string of the function name.}
 
-\item{fun}{A function used to initialize the \code{Command} object.}
+\item{fun}{A function used to initialize the \code{\link{Command}} object.}
 
 \item{envir}{A environment used to bind the created function.}
 }
@@ -17,5 +17,9 @@ make_command(name, fun, envir = caller_env())
 A function.
 }
 \description{
-Helper function to create new command
+\code{make_command} is a helper function used by developers to create function for
+a new \code{\link{Command}} object. It should not be used by end users.
+}
+\seealso{
+\code{\link{Command}}
 }

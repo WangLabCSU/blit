@@ -1,9 +1,14 @@
-#' Helper function to create new command
+#' Helper function to create new command.
+#'
+#' @description
+#' `make_command` is a helper function used by developers to create function for
+#' a new [`Command`] object. It should not be used by end users.
 #'
 #' @param name A string of the function name.
-#' @param fun A function used to initialize the `Command` object.
+#' @param fun A function used to initialize the [`Command`] object.
 #' @param envir A environment used to bind the created function.
 #' @return A function.
+#' @seealso [`Command`]
 #' @importFrom rlang caller_env
 #' @export
 make_command <- function(name, fun, envir = caller_env()) {
@@ -88,267 +93,21 @@ print.command <- function(x, ...) {
     invisible(x)
 }
 
-#' Invoke a System Command
+#' R6 Class to prepare command parameters.
 #'
-#' @param cmd Command to be invoked, as a character string.
-#' @param ... `r rd_dots("cmd", FALSE)`.
-#' @examples
-#' cmd_run(exec("echo", "$PATH"))
-#' @return A `command` object.
-#' @seealso
-#' - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
-#' - [`cmd_run()`]/[`cmd_background()`]/[`cmd_help()`]
-#' @export
-exec <- make_command("exec", function(cmd, ...) {
-    assert_string(cmd, allow_empty = FALSE)
-    Execute$new(cmd = cmd, ...)
-})
-
-Execute <- R6Class(
-    "Execute",
-    inherit = Command,
-    public = list(
-        print = function(indent = NULL) {
-            name <- .subset2(private$.core_params, "cmd")
-            if (!is.numeric(indent) || indent < 1L) {
-                msg <- sprintf("<Command: %s>", name)
-            } else {
-                msg <- sprintf(
-                    "%s<Command: %s>",
-                    strrep(" ", as.integer(indent)),
-                    name
-                )
-            }
-            cat(msg, sep = "\n")
-            invisible(self)
-        }
-    ),
-    private = list(
-        setup_help_params = function() {
-            cli::cli_abort(c(
-                paste(
-                    "Don't know how to show the help document",
-                    "for {(.subset2(private$.core_params, 'cmd'))}"
-                ),
-                i = paste(
-                    "Please manually set the help document argument with",
-                    "{.code cmd_run(exec())} instead."
-                )
-            ))
-        }
-    )
-)
-
-#' Execute command
+#' @description
+#' `Command` is an R6 class used by developers to create new commands. It should
+#' not be used by end users.
 #'
-#' - `cmd_run`: Run the command.
-#' - `cmd_background`: Run the command in the background.
-#' - `cmd_help`: Print the help document for this command.
-#' @param command A `command` object.
-#' @param stdout,stderr How output streams of the child process are processed.
-#' Possible values are:
-#'
-#'  - `TRUE`: Print the child output in R console.
-#'  - `FALSE`: Suppress output stream
-#'  - **string**: Name or path of file to redirect output
-#'  - `connection`: A writable R [`connection`] object
-#'  - `function`: A callback function (including purrr-like lambda syntax) that
-#'   takes one argument, which accepts the standard output or error. You can
-#'   wrap the function with [`I()`] so that it accepts raw vectors. In this
-#'   case, you should use [`sys::as_text()`] to convert them into characters.
-#'
-#' For `cmd_background()`, only a string (file path), or a single boolean value
-#' can be used.
-#'
-#' For `cmd_help()`, only a string (file path), `connection`, or `function` can
-#' be used.
-#'
-#' @param stdin should the input be diverted? A character string naming a file.
-#' @param timeout Timeout in seconds. This is a limit for the elapsed time
-#' running command in the separate process.
-#' @param verbose A single boolean value indicating whether the command
-#' execution should be verbose.
-#' @return
-#' - `cmd_run`: Exit status invisiblely.
-#' @seealso [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
-#' @export
-cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
-                    timeout = NULL, verbose = TRUE) {
-    assert_number_whole(timeout, allow_null = TRUE)
-    stdout <- check_io(stdout)
-    stderr <- check_io(stderr)
-    status <- cmd_exec(
-        command,
-        help = FALSE,
-        wait = TRUE,
-        stdout = stdout,
-        stderr = stderr,
-        stdin = stdin,
-        timeout = timeout,
-        verbose = verbose
-    )
-    invisible(status)
-}
-
-#' @return
-#' - `cmd_background`: Returns the process ID, which can be terminated manually
-#'   using [`tools::pskill()`]. You can also use [`sys::exec_status()`] to check
-#'   the process's exit status.
-#' @export
-#' @rdname cmd_run
-cmd_background <- function(command, stdout = NULL, stderr = NULL, stdin = NULL,
-                           verbose = TRUE) {
-    if (!is.null(stdout)) stdout <- check_io(stdout, background = TRUE)
-    if (!is.null(stderr)) stderr <- check_io(stderr, background = TRUE)
-    cmd_exec(
-        command,
-        help = FALSE,
-        wait = FALSE,
-        stdout = stdout %||% FALSE,
-        stderr = stderr %||% FALSE,
-        stdin = stdin,
-        timeout = NULL,
-        verbose = verbose
-    )
-}
-
-#' @return
-#' - `cmd_help`: the input `command` invisiblely.
-#' @export
-#' @rdname cmd_run
-cmd_help <- function(command, stdout = NULL, stderr = NULL, verbose = TRUE) {
-    if (!is.null(stdout)) stdout <- check_io(stdout, help = TRUE)
-    if (!is.null(stderr)) stderr <- check_io(stderr, help = TRUE)
-    cmd_exec(
-        command,
-        help = TRUE,
-        wait = TRUE,
-        stdout = stdout %||% TRUE,
-        stderr = stderr %||% TRUE,
-        stdin = NULL,
-        timeout = NULL,
-        verbose = verbose
-    )
-    invisible(command)
-}
-
-#' @importFrom rlang caller_call
-#' @keywords internal
-cmd_exec <- function(command, help = FALSE, wait = TRUE,
-                     stdout = TRUE, stderr = TRUE, stdin = NULL,
-                     timeout = NULL, verbose = TRUE, call = caller_call()) {
-    assert_s3_class(command, "command", call = call)
-    assert_string(stdin, allow_empty = FALSE, allow_null = TRUE, call = call)
-    assert_bool(verbose, call = call)
-    exec_command(
-        command,
-        help = help,
-        wait = wait,
-        stdout = stdout,
-        stderr = stderr,
-        stdin = stdin,
-        timeout = timeout,
-        verbose = verbose
-    )
-}
-
-#' Define the environment when running the command
-#'
-#' - `cmd_wd`: define the working directory.
-#' - `cmd_envvar`: define the environment variables.
-#' - `cmd_envpath`: define the `PATH`-like environment variables.
-#' @inheritParams cmd_help
-#' @param wd A string or `NULL` define the working directory of the command.
-#' @return
-#' - `cmd_wd`: The `command` object itself, with working directory updated.
-#' - `cmd_envvar`: The `command` object itself, with running environment
-#' variable updated.
-#' - `cmd_envpath`: The `command` object self, with running environment variable
-#' `name` updated.
-#' @seealso [`cmd_run()`]/[`cmd_background()`]/[`cmd_help()`]
-#' @export
-cmd_wd <- function(command, wd = NULL) {
-    assert_s3_class(command, "command")
-    assert_string(wd, allow_empty = FALSE, allow_null = TRUE)
-    command["wd"] <- list(wd)
-    command
-}
-
-#' @inheritParams cmd_wd
-#' @param ...
-#'  - `cmd_envvar`: Named character define the environment variables.
-#'  - `cmd_envpath`: Unnamed character to define the `PATH`-like environment
-#' variables `name`.
-#' @param action Should the new values `"replace"`, `"prefix"` or `"suffix"`
-#' existing environment variables?
-#' @param sep A string to separate new and old value when `action` is `"prefix"`
-#' or `"suffix"`.
-#' @export
-#' @rdname cmd_wd
-cmd_envvar <- function(command, ..., action = "replace", sep = " ") {
-    assert_s3_class(command, "command")
-    action <- rlang::arg_match0(action, c("replace", "prefix", "suffix"))
-    assert_string(sep)
-    dots <- rlang::dots_list(..., .ignore_empty = "all")
-    if (!rlang::is_named2(dots)) {
-        cli::cli_abort("All elements in {.arg ...} must be named")
-    }
-    dots[vapply(dots, is.null, logical(1L))] <- NA_character_
-    if (any(lengths(dots) != 1L)) {
-        cli::cli_abort(paste(
-            "all value in {.arg ...} must be of length 1",
-            "or {.val NULL}"
-        ))
-    }
-    for (nm in names(dots)) {
-        command$envvar[[nm]] <- parse_envvar(
-            name = nm,
-            old = command$envvar[[nm]],
-            new = dots[[nm]],
-            action = action,
-            sep = sep
-        )
-    }
-    command
-}
-
-#' @param name A string define the PATH environment variable name. You
-#' can use this to define other `PATH`-like environment variable such as
-#' `PYTHONPATH`.
-#' @importFrom rlang :=
-#' @export
-#' @rdname cmd_wd
-cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
-    assert_s3_class(command, "command")
-    rlang::check_dots_unnamed()
-    assert_string(name, allow_empty = FALSE)
-    envpath <- rlang::dots_list(..., .ignore_empty = "all")
-    envpath <- unlist(envpath, use.names = FALSE)
-    envpath <- as.character(envpath)
-    if (anyNA(envpath)) {
-        cli::cli_warn("Missing value will be ignored")
-        envpath <- envpath[!is.na(envpath)]
-    }
-    envpath <- normalizePath(envpath, "/", mustWork = FALSE)
-    envpath <- rev(envpath)
-    envpath <- paste0(envpath, collapse = .Platform$path.sep)
-    cmd_envvar(
-        command,
-        !!name := envpath, # nolint
-        action = action,
-        sep = .Platform$path.sep
-    )
-}
-
-#' R6 Class to prepare command parameters
-#'
+#' @seealso make_command
 #' @export
 Command <- R6Class("Command",
     public = list(
 
         #' @description Create a new `Command` object.
         #' @param ... Additional argument passed into command.
-        #' @param .subcmd Sub-command string.
+        #' @param .subcmd A sub-command string that is always inserted between
+        #' the main command and other parameters.
         initialize = function(..., .subcmd = NULL) {
             # if provided subcmd, we assign it into our object
             private$subcmd <- .subcmd
@@ -646,6 +405,207 @@ build_command_params <- function(params, msg) {
     }
 }
 
+#' Execute command
+#'
+#' - `cmd_run`: Run the command.
+#' - `cmd_background`: Run the command in the background.
+#' - `cmd_help`: Print the help document for this command.
+#' @param command A `command` object.
+#' @param stdout,stderr How output streams of the child process are processed.
+#' Possible values are:
+#'
+#'  - `TRUE`: Print the child output in R console.
+#'  - `FALSE`: Suppress output stream
+#'  - **string**: Name or path of file to redirect output
+#'  - `connection`: A writable R [`connection`] object
+#'  - `function`: A callback function (including purrr-like lambda syntax) that
+#'   takes one argument, which accepts the standard output or error. You can
+#'   wrap the function with [`I()`] so that it accepts raw vectors. In this
+#'   case, you should use [`sys::as_text()`] to convert them into characters.
+#'
+#' For `cmd_background()`, only a string (file path), or a single boolean value
+#' can be used.
+#'
+#' For `cmd_help()`, only a string (file path), `connection`, or `function` can
+#' be used.
+#'
+#' @param stdin should the input be diverted? A character string naming a file.
+#' @param timeout Timeout in seconds. This is a limit for the elapsed time
+#' running command in the separate process.
+#' @param verbose A single boolean value indicating whether the command
+#' execution should be verbose.
+#' @return
+#' - `cmd_run`: Exit status invisiblely.
+#' @seealso [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
+#' @export
+cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
+                    timeout = NULL, verbose = TRUE) {
+    assert_number_whole(timeout, allow_null = TRUE)
+    stdout <- check_io(stdout)
+    stderr <- check_io(stderr)
+    status <- cmd_exec(
+        command,
+        help = FALSE,
+        wait = TRUE,
+        stdout = stdout,
+        stderr = stderr,
+        stdin = stdin,
+        timeout = timeout,
+        verbose = verbose
+    )
+    invisible(status)
+}
+
+#' @return
+#' - `cmd_background`: Returns the process ID, which can be terminated manually
+#'   using [`tools::pskill()`]. You can also use [`sys::exec_status()`] to check
+#'   the process's exit status.
+#' @export
+#' @rdname cmd_run
+cmd_background <- function(command, stdout = NULL, stderr = NULL, stdin = NULL,
+                           verbose = TRUE) {
+    if (!is.null(stdout)) stdout <- check_io(stdout, background = TRUE)
+    if (!is.null(stderr)) stderr <- check_io(stderr, background = TRUE)
+    cmd_exec(
+        command,
+        help = FALSE,
+        wait = FALSE,
+        stdout = stdout %||% FALSE,
+        stderr = stderr %||% FALSE,
+        stdin = stdin,
+        timeout = NULL,
+        verbose = verbose
+    )
+}
+
+#' @return
+#' - `cmd_help`: the input `command` invisiblely.
+#' @export
+#' @rdname cmd_run
+cmd_help <- function(command, stdout = NULL, stderr = NULL, verbose = TRUE) {
+    if (!is.null(stdout)) stdout <- check_io(stdout, help = TRUE)
+    if (!is.null(stderr)) stderr <- check_io(stderr, help = TRUE)
+    cmd_exec(
+        command,
+        help = TRUE,
+        wait = TRUE,
+        stdout = stdout %||% TRUE,
+        stderr = stderr %||% TRUE,
+        stdin = NULL,
+        timeout = NULL,
+        verbose = verbose
+    )
+    invisible(command)
+}
+
+#' @importFrom rlang caller_call
+#' @keywords internal
+cmd_exec <- function(command, help = FALSE, wait = TRUE,
+                     stdout = TRUE, stderr = TRUE, stdin = NULL,
+                     timeout = NULL, verbose = TRUE, call = caller_call()) {
+    assert_s3_class(command, "command", call = call)
+    assert_string(stdin, allow_empty = FALSE, allow_null = TRUE, call = call)
+    assert_bool(verbose, call = call)
+    exec_command(
+        command,
+        help = help,
+        wait = wait,
+        stdout = stdout,
+        stderr = stderr,
+        stdin = stdin,
+        timeout = timeout,
+        verbose = verbose
+    )
+}
+
+#' Define the environment when running the command
+#'
+#' - `cmd_wd`: define the working directory.
+#' - `cmd_envvar`: define the environment variables.
+#' - `cmd_envpath`: define the `PATH`-like environment variables.
+#' @inheritParams cmd_help
+#' @param wd A string or `NULL` define the working directory of the command.
+#' @return
+#' - `cmd_wd`: The `command` object itself, with working directory updated.
+#' - `cmd_envvar`: The `command` object itself, with running environment
+#' variable updated.
+#' - `cmd_envpath`: The `command` object self, with running environment variable
+#' `name` updated.
+#' @seealso [`cmd_run()`]/[`cmd_background()`]/[`cmd_help()`]
+#' @export
+cmd_wd <- function(command, wd = NULL) {
+    assert_s3_class(command, "command")
+    assert_string(wd, allow_empty = FALSE, allow_null = TRUE)
+    command["wd"] <- list(wd)
+    command
+}
+
+#' @inheritParams cmd_wd
+#' @param ...
+#'  - `cmd_envvar`: Named character define the environment variables.
+#'  - `cmd_envpath`: Unnamed character to define the `PATH`-like environment
+#' variables `name`.
+#' @param action Should the new values `"replace"`, `"prefix"` or `"suffix"`
+#' existing environment variables?
+#' @param sep A string to separate new and old value when `action` is `"prefix"`
+#' or `"suffix"`.
+#' @export
+#' @rdname cmd_wd
+cmd_envvar <- function(command, ..., action = "replace", sep = " ") {
+    assert_s3_class(command, "command")
+    action <- rlang::arg_match0(action, c("replace", "prefix", "suffix"))
+    assert_string(sep)
+    dots <- rlang::dots_list(..., .ignore_empty = "all")
+    if (!rlang::is_named2(dots)) {
+        cli::cli_abort("All elements in {.arg ...} must be named")
+    }
+    dots[vapply(dots, is.null, logical(1L))] <- NA_character_
+    if (any(lengths(dots) != 1L)) {
+        cli::cli_abort(paste(
+            "all value in {.arg ...} must be of length 1",
+            "or {.val NULL}"
+        ))
+    }
+    for (nm in names(dots)) {
+        command$envvar[[nm]] <- parse_envvar(
+            name = nm,
+            old = command$envvar[[nm]],
+            new = dots[[nm]],
+            action = action,
+            sep = sep
+        )
+    }
+    command
+}
+
+#' @param name A string define the PATH environment variable name. You
+#' can use this to define other `PATH`-like environment variable such as
+#' `PYTHONPATH`.
+#' @importFrom rlang :=
+#' @export
+#' @rdname cmd_wd
+cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
+    assert_s3_class(command, "command")
+    rlang::check_dots_unnamed()
+    assert_string(name, allow_empty = FALSE)
+    envpath <- rlang::dots_list(..., .ignore_empty = "all")
+    envpath <- unlist(envpath, use.names = FALSE)
+    envpath <- as.character(envpath)
+    if (anyNA(envpath)) {
+        cli::cli_warn("Missing value will be ignored")
+        envpath <- envpath[!is.na(envpath)]
+    }
+    envpath <- normalizePath(envpath, "/", mustWork = FALSE)
+    envpath <- rev(envpath)
+    envpath <- paste0(envpath, collapse = .Platform$path.sep)
+    cmd_envvar(
+        command,
+        !!name := envpath, # nolint
+        action = action,
+        sep = .Platform$path.sep
+    )
+}
+
 # Used to prepare command environment variables
 exec_command <- function(command, help, wait,
                          stdout, stderr, stdin, timeout,
@@ -685,6 +645,7 @@ exec_command2 <- function(command, help, ..., verbose) {
     # `setup_exit` in Command object will push expression into this
     # environment
     envir <- environment()
+    wd <- .subset2(command, "wd")
 
     # use Command object to prepare command parameters -----
     params <- lapply(.subset2(command, "commands"), function(cmd) {
@@ -692,15 +653,10 @@ exec_command2 <- function(command, help, ..., verbose) {
     })
 
     # combine command parameters -----------------------
-    params <- Reduce(function(x, y) c(x, "|", y), params)
+    command <- Reduce(function(x, y) c(x, "|", y), params)
 
     # run command ---------------------------------------
-    exec_command3(
-        command = params,
-        wd = .subset2(command, "wd"),
-        ...,
-        verbose = verbose
-    )
+    exec_command3(command = command, wd = wd, ..., verbose = verbose)
 }
 
 # Used to the working directory, then this method call `system2` to invoke the
