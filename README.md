@@ -43,6 +43,15 @@ exec("echo", "$TEST") |> cmd_run()
 #> Running command: /usr/bin/echo $TEST
 #> 
 #> blit is awesome
+```
+
+Alternatively, run it in the background. In this case, you can use
+`tools::pskill` to terminate the process:
+
+``` r
+pid <- exec("echo", "$TEST") |> cmd_background()
+#> Running command: /usr/bin/echo $TEST
+tools::pskill(pid)
 Sys.unsetenv("TEST")
 ```
 
@@ -176,7 +185,8 @@ create a `command` object can accept another `command` object. The
 internal will capture the first unnamed input value. If it is a
 `command` object, it will be removed from the call and saved. When the
 `command` object is run, the saved command will be passed through the
-pipe (`|`) to the command.
+pipe (`|`) to the command. Here we take the `gzip` command as an example
+(assuming you’re using a Linux system).
 
 ``` r
 tmpdir <- tempdir()
@@ -186,8 +196,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command: /usr/bin/gzip -c /tmp/Rtmpwhs2BN/file27251341af471f |
-#> /usr/bin/gzip -d > /tmp/Rtmpwhs2BN/file2725131362b9e
+#> Running command: /usr/bin/gzip -c /tmp/RtmpG5r5XF/file28021147ef8184 |
+#> /usr/bin/gzip -d > /tmp/RtmpG5r5XF/file28021140b72785
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```
@@ -200,6 +210,65 @@ file.remove(file)
 file.remove(file2)
 #> [1] TRUE
 ```
+
+## Development
+
+To add a new command, use the `make_command` function. This helper
+function is designed to assist developers in creating functions that
+initialize new `command` objects. A `command` object is a bundle of
+multiple `Command` R6 objects (note the uppercase `"C"` in `Command`,
+which distinguishes it from the `command` object) and the associated
+running environment (including the working directory and environment
+variables).
+
+The `make_command` function accepts a function that initializes a new
+`Command` object and, when necessary, validates the input arguments. The
+core purpose is to create a new `Command` R6 object, so familiarity with
+the R6 class system is essential.
+
+There are several private methods or fields you may want to override
+when creating a new `Command` R6 object. The first method is
+`command_locate`, which determines how to locate the command path. By
+default, it will attempt to use the `cmd` argument provided by the user.
+If no `cmd` argument is supplied, it will try to locate the command
+using the `name` and `alias` fields. In most cases, you will only need
+to provide values for the `name` and `alias` fields, rather than
+overriding the `command_locate` method.
+
+For example, consider the `ping` command. Here is how you can define it:
+
+``` r
+Ping <- R6::R6Class(
+    "Ping",
+    inherit = Command,
+    private = list(name = "ping")
+)
+ping <- make_command("ping", function(..., ping = NULL) {
+    Ping$new(cmd = ping, ...)
+})
+ping("8.8.8.8") |> cmd_run(timeout = 5) # terminate it after 5s
+#> Running command: /usr/bin/ping 8.8.8.8
+#> 
+#> PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=42.3 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=43.7 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=48.9 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=44.0 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=44.1 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=6 ttl=106 time=43.0 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=7 ttl=106 time=42.9 ms
+#> Error: Program 'sh' terminated (timeout reached: 5.00sec)
+```
+
+For the `ping` command, the `name` field is sufficient. However, for
+programs that have multiple names (like `python`), you can also provide
+the `alias` (`c("python2", "python3")`) field. Refer to the
+`cmd-python.R` script for more details.
+
+For command-line tools, the input parameters should always be
+characters. The core principle of the `Command` object is to convert all
+R objects (such as data frames) into characters—typically file paths of
+R objects that have been saved to disk.
 
 ## Session Informations
 

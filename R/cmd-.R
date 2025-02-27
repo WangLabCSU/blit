@@ -382,7 +382,8 @@ Command <- R6Class("Command",
             cli::cli_abort("No help document for {nm}")
         },
 
-        # @description Method used to combine `dots` and `params`
+        # @description Method used to combine `private$dots` and
+        # `private$params`
         #
         # @return An atomic character.
         combine_params = function() c(private$dots, private$params)
