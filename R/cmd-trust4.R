@@ -20,7 +20,7 @@
 #' @inheritParams allele_counter
 #' @param trust4 `r rd_cmd("run-trust4")`.
 #' @seealso <https://github.com/liulab-dfci/TRUST4>
-#' @inherit exec return
+#' @inherit exec return seealso
 #' @export
 trust4 <- make_command(
     "trust4",

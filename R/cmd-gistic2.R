@@ -25,7 +25,7 @@
 #' @inheritParams allele_counter
 #' @param gistic2 `r rd_cmd("gistic2")`.
 #' @seealso <https://broadinstitute.github.io/gistic2/>
-#' @inherit exec return
+#' @inherit exec return seealso
 #' @export
 gistic2 <- make_command(
     "gistic2",

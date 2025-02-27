@@ -19,7 +19,7 @@
 #' @seealso
 #'  - <https://github.com/DerrickWood/kraken2/wiki/Manual>
 #'  - <https://benlangmead.github.io/aws-indexes/k2>
-#' @inherit exec return
+#' @inherit exec return seealso
 #' @export
 kraken2 <- make_command(
     "kraken2",

@@ -9,7 +9,7 @@
 #' @param ... `r rd_dots("kraken_tools")`.
 #' @inheritParams python
 #' @seealso <https://github.com/jenniferlu717/KrakenTools>
-#' @inherit exec return
+#' @inherit exec return seealso
 #' @export
 kraken_tools <- make_command(
     "kraken_tools",

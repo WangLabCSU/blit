@@ -4,7 +4,7 @@
 #' @param ... `r rd_dots("perl")`.
 #' @param perl `r rd_cmd("perl")`.
 #' @seealso <https://www.perl.org/>
-#' @inherit exec return
+#' @inherit exec return seealso
 #' @export
 perl <- make_command(
     "perl",

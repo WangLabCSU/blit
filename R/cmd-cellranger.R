@@ -2,7 +2,7 @@
 #' @param subcmd Sub-Command of cellranger.
 #' @param ... `r rd_dots("cellranger subcmd")`.
 #' @param cellranger `r rd_cmd("cellranger")`.
-#' @inherit exec return
+#' @inherit exec return seealso
 #' @export
 cellranger <- make_command(
     "cellranger",

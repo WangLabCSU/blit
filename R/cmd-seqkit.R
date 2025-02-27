@@ -3,7 +3,7 @@
 #' @param ... `r rd_dots("seqkit subcmd")`.
 #' @param seqkit `r rd_cmd("seqkit")`.
 #' @seealso <https://bioinf.shenwei.me/seqkit/>
-#' @inherit exec return
+#' @inherit exec return seealso
 #' @export
 seqkit <- make_command(
     "seqkit",
