@@ -186,8 +186,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command: /usr/bin/gzip -c /tmp/RtmpxPWVpK/file250bb31a59d402 |
-#> /usr/bin/gzip -d > /tmp/RtmpxPWVpK/file250bb36ba42f5b
+#> Running command: /usr/bin/gzip -c /tmp/Rtmpwhs2BN/file27251341af471f |
+#> /usr/bin/gzip -d > /tmp/Rtmpwhs2BN/file2725131362b9e
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```

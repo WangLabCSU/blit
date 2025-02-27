@@ -48,7 +48,10 @@ make_command <- function(name, fun, envir = caller_env()) {
             if (is.null(out)) {
                 out <- new_command(new)
             } else {
-                out$commands <- c(.subset2(out, "commands"), list(new))
+                out$command_series <- c(
+                    .subset2(out, "command_series"),
+                    list(new)
+                )
             }
             out
         })
@@ -59,26 +62,26 @@ make_command <- function(name, fun, envir = caller_env()) {
 
 new_command <- function(Command, envvar = NULL, wd = NULL) {
     structure(
-        list(commands = list(Command), envvar = NULL, wd = NULL),
+        list(command_series = list(Command), envvar = NULL, wd = NULL),
         class = "command"
     )
 }
 
 #' @export
 print.command <- function(x, ...) {
-    commands <- .subset2(x, "commands")
-    if (length(commands)) {
-        if (length(commands) > 1L) {
+    command_series <- .subset2(x, "command_series")
+    if (length(command_series)) {
+        if (length(command_series) > 1L) {
             cat(
-                sprintf("A sequence of %d commands:", length(commands)),
+                sprintf("A series of %d commands:", length(command_series)),
                 sep = "\n"
             )
             indent <- 2L
         } else {
             indent <- 0L
         }
-        for (cmd in commands) {
-            print(cmd, indent = indent)
+        for (command in command_series) {
+            print(command, indent = indent)
         }
     }
     if (!is.null(wd <- .subset2(x, "wd"))) {
@@ -96,7 +99,7 @@ print.command <- function(x, ...) {
 #' R6 Class to prepare command parameters.
 #'
 #' @description
-#' `Command` is an R6 class used by developers to create new commands. It should
+#' `Command` is an R6 class used by developers to create new command. It should
 #' not be used by end users.
 #'
 #' @seealso make_command
@@ -625,7 +628,9 @@ exec_command <- function(command, help, wait,
     }
     # for help document, we only display the last one
     if (help) {
-        command$commands <- command$commands[length(command$commands)]
+        command$command_series <- command$command_series[
+            length(command$command_series)
+        ]
     }
     exec_command2(
         command,
@@ -648,7 +653,7 @@ exec_command2 <- function(command, help, ..., verbose) {
     wd <- .subset2(command, "wd")
 
     # use Command object to prepare command parameters -----
-    params <- lapply(.subset2(command, "commands"), function(cmd) {
+    params <- lapply(.subset2(command, "command_series"), function(cmd) {
         cmd$build(help = help, verbose = verbose, envir = envir)
     })
 

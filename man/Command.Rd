@@ -4,7 +4,7 @@
 \alias{Command}
 \title{R6 Class to prepare command parameters.}
 \description{
-\code{Command} is an R6 class used by developers to create new commands. It should
+\code{Command} is an R6 class used by developers to create new command. It should
 not be used by end users.
 }
 \seealso{
