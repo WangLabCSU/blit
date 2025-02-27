@@ -34,20 +34,28 @@ path_trim <- function(path) {
     sub("(\\\\+|/+)$", "", path, perl = TRUE)
 }
 
-unlink2 <- function(path, ...) {
-    if (file.exists(path) && unlink(x = path, ...)) {
+dir_delete <- function(path) {
+    if (unlink(x = path, recursive = TRUE, force = TRUE)) {
         cli::cli_abort("Canno remove {.path {path}}")
     }
+    invisible(path)
+}
+
+file_delete <- function(path) {
+    if (unlink(x = path, force = TRUE)) {
+        cli::cli_abort("Canno remove {.path {path}}")
+    }
+    invisible(path)
 }
 
 #' Will always add the basename of file into the exdir
 #' @noRd
-unzip2 <- function(file, exdir, overwrite = TRUE) {
+unzip2 <- function(path, exdir, overwrite = TRUE) {
     dir_create(exdir)
-    exdir <- file.path(exdir, path_ext_remove(file))
+    exdir <- file.path(exdir, path_ext_remove(path))
     dir_create(exdir)
-    if (is.null(utils::unzip(file, exdir = exdir, overwrite = overwrite))) {
-        cli::cli_abort("Cannot unzip {.path {file}}")
+    if (is.null(utils::unzip(path, exdir = exdir, overwrite = overwrite))) {
+        cli::cli_abort("Cannot unzip {.path {path}}")
     }
     exdir
 }
@@ -63,37 +71,33 @@ internal_file <- function(..., dir = "extdata") {
     system.file(dir, ..., package = pkg_nm(), mustWork = TRUE)
 }
 
-read_lines <- function(file, n = -1L, connection = TRUE) {
+path_equal <- function(path1, path2) {
+    normalizePath(path1, "/", FALSE) == normalizePath(path2, "/", FALSE)
+}
+
+read_lines <- function(path, n = Inf) {
     # data.table don't support xz compression
-    if (connection) {
-        if (is_gzip_suffix(file) || is_gzip_signature(file)) {
-            file <- gzfile(file, open = "r")
-        } else if (is_bz2_suffix(file) || is_bz2_signature(file)) {
-            file <- bzfile(file, open = "r")
-        } else if (is_xz_suffix(file)) {
-            file <- xzfile(file, open = "r")
-        }
-    }
-    if (inherits(file, "connection")) {
-        on.exit(close(file))
-        readLines(file, n = n)
-    } else {
-        if (n < 0L) n <- Inf
-        data.table::fread(
-            file = file, sep = "", header = FALSE,
-            colClasses = "character",
-            showProgress = FALSE,
-            nrows = n
-        )[[1L]]
-    }
+    data.table::fread(
+        file = path, sep = "", header = FALSE,
+        colClasses = "character",
+        showProgress = FALSE,
+        nrows = n
+    )[[1L]]
 }
 
 # To write a file with windows line endings use write_lines(eol = "\r\n")
-write_lines <- function(text, path, eol = "\n", compress = "auto") {
+write_lines <- function(text, path,
+                        eol = if (.Platform$OS.type == "windows") {
+                            "\r\n"
+                        } else {
+                            "\n"
+                        },
+                        compress = "auto") {
     data.table::fwrite(
         x = list(text),
         file = path,
         quote = FALSE,
+        eol = eol,
         na = "NA",
         col.names = FALSE,
         logical01 = FALSE,
@@ -104,8 +108,17 @@ write_lines <- function(text, path, eol = "\n", compress = "auto") {
     invisible(text)
 }
 
-file_equal <- function(x, y) {
-    normalizePath(x, "/", FALSE) == normalizePath(y, "/", FALSE)
+read_lines2 <- function(path, n = Inf) {
+    if (is_gzip_suffix(path) || is_gzip_signature(path)) {
+        path <- gzfile(path, open = "r")
+    } else if (is_bz2_suffix(path) || is_bz2_signature(path)) {
+        path <- bzfile(path, open = "r")
+    } else if (is_xz_suffix(path)) {
+        path <- xzfile(path, open = "r")
+    }
+    on.exit(close(path))
+    if (is.infinite(n) || n < 0L) n <- -1L
+    readLines(path, n = n)
 }
 
 # https://github.com/Rdatatable/data.table/blob/15c127e99f8d6aab599c590d4aec346a850f1334/R/fread.R#L90

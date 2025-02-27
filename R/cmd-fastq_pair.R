@@ -54,7 +54,9 @@ FastqPair <- R6Class(
                     )
                 }
                 on.exit(file.remove(nlines_file), add = TRUE)
-                exec("wc", "-l", fq1)$run(stdout = nlines_file, verbose = FALSE)
+                cmd_run(exec("wc", "-l", fq1),
+                    stdout = nlines_file, verbose = FALSE
+                )
                 hash_table_size <- strsplit(
                     read_lines(nlines_file, n = 1L),
                 " ", fixed = TRUE # styler: off
@@ -80,7 +82,7 @@ FastqPair <- R6Class(
 #' @export
 fastq_read_pair <- function(fastq_files) {
     header_list <- lapply(fastq_files, function(file) {
-        header <- read_lines(file, n = 1L)
+        header <- read_lines2(file, n = 1L)
         strsplit(header, ":| ", perl = TRUE)[[1L]]
     })
     # @HWI-ST1276:71:C1162ACXX:1:1101:1208:2458 2:N:0:CGATGT
