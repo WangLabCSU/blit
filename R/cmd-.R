@@ -398,7 +398,7 @@ Command <- R6Class("Command",
                         "Unknown parameter{?s}: {.arg {names(named)}}"
                     )
                 }
-                if (length(dots)) private$.dots <- dots
+                private$.dots <- dots
             } else if (length(dots)) {
                 if (rlang::is_named(dots)) {
                     note <- paste(
@@ -417,27 +417,22 @@ Command <- R6Class("Command",
             )
 
             params <- input[intersect(names(input), params)]
-            if (length(core_params)) private$.core_params <- core_params
-            if (length(params)) private$.params <- params
+            private$.core_params <- core_params
+            private$.params <- params
         },
 
         #' @description Evaluate the parameters to execute command.
         #' @return The object itself.
         evaluate = function() {
             # only evaluate the parameters once
-            if (is.null(private$.evaluated_params) &&
-                !is.null(private$.params)) {
+            if (is.null(private$.evaluated_params)) {
                 private$.evaluated_params <- lapply(
                     private$.params, rlang::eval_tidy
                 )
             }
-            if (is.null(private$.evaluated_dots) && !is.null(private$.dots)) {
-                private$.evaluated_dots <- build_command_params(
-                    lapply(private$.dots, rlang::eval_tidy),
-                    paste(
-                        "Only objects that can be coerced into",
-                        "a character vector can be input in {.code ...}"
-                    )
+            if (is.null(private$.evaluated_dots)) {
+                private$.evaluated_dots <- lapply(
+                    private$.dots, rlang::eval_tidy
                 )
             }
             invisible(self)
@@ -492,7 +487,13 @@ Command <- R6Class("Command",
                         "object that can be coerced into a character vector."
                     )
                 )
-                private$dots <- private$.evaluated_dots %||% character()
+                private$dots <- build_command_params(
+                    private$.evaluated_dots,
+                    paste(
+                        "Only objects that can be coerced into",
+                        "a character vector can be input in {.code ...}"
+                    )
+                )
             }
             combined <- rlang::inject(private$combine_params(
                 !!!core_params[intersect(
@@ -504,7 +505,7 @@ Command <- R6Class("Command",
             private$dots <- NULL
 
             # combine command, subcmd, and params -------
-            enc2utf8(c(command, private$subcmd, combined))
+            c(command, private$subcmd, combined)
         },
 
         #' @description Build parameters to run command.
@@ -612,7 +613,7 @@ Command <- R6Class("Command",
         # @return An atomic character, or `NULL`.
         setup_help_params = function() {
             if (is.null(private$name)) {
-                nm <- "<Command: %s>"
+                nm <- "<Command>"
             } else {
                 nm <- sprintf("<Command: %s>", private$name)
             }
@@ -704,10 +705,10 @@ exec_command2 <- function(command, help, ..., verbose) {
 
 # Used to the working directory, then this method call `system2` to invoke the
 # command.
-#' @param interpreter For windows, a string of "cmd" or "powershell", for
-#' others, a string of "sh" or "bash".
+#' @param shell For windows, a string of "cmd" or "powershell", for others, a
+#' string of "sh" or "bash".
 #' @noRd
-exec_command3 <- function(command, interpreter = NULL, wait = TRUE, wd = NULL,
+exec_command3 <- function(command, shell = NULL, wait = TRUE, wd = NULL,
                           stdout = TRUE, stderr = TRUE, stdin = NULL,
                           timeout = NULL, verbose = TRUE) {
     # prepare the command -----------------------
@@ -716,7 +717,7 @@ exec_command3 <- function(command, interpreter = NULL, wait = TRUE, wd = NULL,
         # https://stackoverflow.com/questions/605686/how-to-write-a-multiline-command
         # for cmd "^"
         # for powershell "`"
-        cmd <- interpreter %||% "cmd"
+        cmd <- shell %||% "cmd"
         content <- command
         if (length(content) > 1L) {
             content[-length(content)] <- switch(cmd,
@@ -729,7 +730,7 @@ exec_command3 <- function(command, interpreter = NULL, wait = TRUE, wd = NULL,
             powershell = sprintf("Remove-Item -Force -Path '%s'", script)
         ), content)
         arg <- switch(cmd,
-            cmd = "/c",
+            cmd = "/C",
             powershell = c("-ExecutionPolicy", "Bypass", "-File")
         )
         cmd <- paste(cmd, "exe", sep = ".")
@@ -739,7 +740,7 @@ exec_command3 <- function(command, interpreter = NULL, wait = TRUE, wd = NULL,
             content[-length(content)] <- paste(content[-length(content)], "\\")
         }
         content <- c(sprintf("rm -f '%s'", script), content)
-        cmd <- interpreter %||% "sh" # or "bash"
+        cmd <- shell %||% "sh" # or "bash"
         arg <- NULL
     }
 
