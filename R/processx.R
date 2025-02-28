@@ -26,12 +26,11 @@ processx_command <- function(command, help, shell = NULL,
     }
 
     # build the command content script
-    content <- lapply(.subset2(command, "command_series"), function(cmd) {
+    content <- vapply(.subset2(command, "command_series"), function(cmd) {
         o <- cmd$build_command(help = help, verbose = verbose)
         paste(o, collapse = " ")
-    })
-
-    content <- Reduce(function(x, y) c(paste(x, "|"), y), content)
+    }, character(1L), USE.NAMES = FALSE)
+    content[-length(content)] <- paste(content, "|")
 
     # prepare the command -----------------------
     script <- tempfile(pkg_nm())
