@@ -20,12 +20,17 @@ knitr::opts_chunk$set(
 [![CRAN status](https://www.r-pkg.org/badges/version/blit)](https://CRAN.R-project.org/package=blit)
 <!-- badges: end -->
 
-The goal of blit is to make it easy to execute command line tool from R.
+The goal of `blit` is to make it easy to execute command line tool from R.
 
 ## Installation
 
-You can install the development version of blit from [GitHub](https://github.com/) with:
+You can install `blit` from `CRAN` using:
+```{r, eval=FALSE}
+install.packages("blit")
+```
 
+Alternatively, install the development version from
+[GitHub](https://github.com/) with:
 ``` r
 # install.packages("devtools")
 devtools::install_github("WangLabCSU/blit")

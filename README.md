@@ -10,11 +10,18 @@
 status](https://www.r-pkg.org/badges/version/blit)](https://CRAN.R-project.org/package=blit)
 <!-- badges: end -->
 
-The goal of blit is to make it easy to execute command line tool from R.
+The goal of `blit` is to make it easy to execute command line tool from
+R.
 
 ## Installation
 
-You can install the development version of blit from
+You can install `blit` from `CRAN` using:
+
+``` r
+install.packages("blit")
+```
+
+Alternatively, install the development version from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -188,8 +195,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command: /usr/bin/gzip -c /tmp/RtmpzD91BC/file2cc4451879abab |
-#> /usr/bin/gzip -d > /tmp/RtmpzD91BC/file2cc4453e58cc90
+#> Running command: /usr/bin/gzip -c /tmp/RtmpMpafpi/file2cd9bb567d1420 |
+#> /usr/bin/gzip -d > /tmp/RtmpMpafpi/file2cd9bb358450c3
 #> [1] 0
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
@@ -243,11 +250,11 @@ ping("8.8.8.8") |> cmd_run(timeout = 5) # terminate it after 5s
 #> Running command: /usr/bin/ping 8.8.8.8
 #> 
 #> PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=42.7 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=44.6 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=42.8 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=44.3 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=44.1 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=46.1 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=43.8 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=44.9 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=44.9 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=44.8 ms
 #> Warning: System command timed out
 #> [1] -9
 ```

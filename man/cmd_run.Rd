@@ -14,7 +14,7 @@ cmd_run(
   stdout_callback = NULL,
   stderr_callback = NULL,
   timeout = NULL,
-  spinner = TRUE,
+  spinner = FALSE,
   verbose = TRUE
 )
 
