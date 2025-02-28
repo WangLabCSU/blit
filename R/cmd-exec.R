@@ -7,7 +7,7 @@
 #' @return A `command` object.
 #' @seealso
 #' - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
-#' - [`cmd_run()`]/[`cmd_background()`]/[`cmd_help()`]
+#' - [`cmd_run()`]/[`cmd_help()`]
 #' @export
 exec <- make_command("exec", function(cmd, ...) {
     assert_string(cmd, allow_empty = FALSE)

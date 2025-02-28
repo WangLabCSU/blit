@@ -23,11 +23,10 @@ License: GPL (>= 3)
 Imports: 
     cli,
     data.table,
+    processx,
     R6,
     rlang (>= 1.1.0),
-    sys,
-    utils,
-    withr
+    utils
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

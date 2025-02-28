@@ -14,8 +14,9 @@ make_command
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-Command-new}{\code{Command$new()}}
-\item \href{#method-Command-evaluate}{\code{Command$evaluate()}}
-\item \href{#method-Command-build}{\code{Command$build()}}
+\item \href{#method-Command-build_command}{\code{Command$build_command()}}
+\item \href{#method-Command-get_cleaned}{\code{Command$get_cleaned()}}
+\item \href{#method-Command-reset_cleaned}{\code{Command$reset_cleaned()}}
 \item \href{#method-Command-print}{\code{Command$print()}}
 \item \href{#method-Command-clone}{\code{Command$clone()}}
 }
@@ -41,25 +42,12 @@ the main command and other parameters.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Command-evaluate"></a>}}
-\if{latex}{\out{\hypertarget{method-Command-evaluate}{}}}
-\subsection{Method \code{evaluate()}}{
-Evaluate the parameters to execute command.
+\if{html}{\out{<a id="method-Command-build_command"></a>}}
+\if{latex}{\out{\hypertarget{method-Command-build_command}{}}}
+\subsection{Method \code{build_command()}}{
+Build the command line
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Command$evaluate()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The object itself.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Command-build"></a>}}
-\if{latex}{\out{\hypertarget{method-Command-build}{}}}
-\subsection{Method \code{build()}}{
-Build parameters to run command.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Command$build(help = FALSE, verbose = TRUE, envir = caller_env())}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Command$build_command(help = FALSE, verbose = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -77,6 +65,32 @@ execution should be verbose.}
 }
 \subsection{Returns}{
 An atomic character combine the command and parameters.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Command-get_cleaned"></a>}}
+\if{latex}{\out{\hypertarget{method-Command-get_cleaned}{}}}
+\subsection{Method \code{get_cleaned()}}{
+Get the cleaned expression
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Command$get_cleaned()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of \code{\link[rlang:defusing-advanced]{quosures}}.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Command-reset_cleaned"></a>}}
+\if{latex}{\out{\hypertarget{method-Command-reset_cleaned}{}}}
+\subsection{Method \code{reset_cleaned()}}{
+Reset the cleaned expression
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Command$reset_cleaned()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+The object itself.
 }
 }
 \if{html}{\out{<hr>}}

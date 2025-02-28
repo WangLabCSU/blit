@@ -6,6 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/WangLabCSU/blit/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/WangLabCSU/blit/actions/workflows/R-CMD-check.yaml)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/blit)](https://CRAN.R-project.org/package=blit)
 <!-- badges: end -->
 
 The goal of blit is to make it easy to execute command line tool from R.
@@ -43,15 +45,19 @@ exec("echo", "$TEST") |> cmd_run()
 #> Running command: /usr/bin/echo $TEST
 #> 
 #> blit is awesome
+#> - 
+#> [1] 0
 ```
 
-Alternatively, run it in the background. In this case, you can use
-`tools::pskill` to terminate the process:
+Alternatively, you can run it in the background. In this case, a
+[`process`](https://processx.r-lib.org/index.html) object will be
+returned. For more information, refer to the official site:
 
 ``` r
-pid <- exec("echo", "$TEST") |> cmd_background()
+proc <- exec("echo", "$TEST") |> cmd_background()
 #> Running command: /usr/bin/echo $TEST
-tools::pskill(pid)
+proc$kill()
+#> [1] FALSE
 Sys.unsetenv("TEST")
 ```
 
@@ -66,10 +72,12 @@ command:
 exec("echo", "$TEST") |>
     cmd_envvar(TEST = "blit is very awesome") |>
     cmd_run()
-#> Setting environment variables: TEST
+#> Environment Variables: TEST
 #> Running command: /usr/bin/echo $TEST
 #> 
 #> blit is very awesome
+#> - 
+#> [1] 0
 ```
 
 `blit` provides several built-in functions for directly executing
@@ -124,18 +132,7 @@ python() |> cmd_help()
 #>          when given twice, print more information about the build
 #> -W arg : warning control; arg is action:message:category:module:lineno
 #>          also PYTHONWARNINGS=arg
-#> -x     : skip first line of source, allowing use of non-Unix forms of #!cmd
-#> -X opt : set implementation-specific option
-#> --check-hash-based-pycs always|default|never:
-#>          control how Python invalidates hash-based .pyc files
-#> --help-env: print help about Python environment variables and exit
-#> --help-xoptions: print help about implementation-specific -X options and exit
-#> --help-all: print complete help information and exit
-#> 
-#> Arguments:
-#> file   : program read from script file
-#> -      : program read from stdin (default; interactive mode if a tty)
-#> arg ...: arguments passed to program in sys.argv[1:]
+#> -x     : skip first line of source, allowing us
 ```
 
 ``` r
@@ -171,10 +168,7 @@ perl() |> cmd_help()
 #>   -V[:configvar]        print configuration summary (or a single Config.pm variable)
 #>   -w                    enable many useful warnings
 #>   -W                    enable all warnings
-#>   -x[directory]         ignore text before #!perl line (optionally cd to directory)
-#>   -X                    disable all warnings
-#>   
-#> Run 'perldoc perl' for more help with Perl.
+#>   -x[directory]         ignore text before
 ```
 
 And it is very easily to extend for other commands.
@@ -196,8 +190,11 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command: /usr/bin/gzip -c /tmp/RtmpG5r5XF/file28021147ef8184 |
-#> /usr/bin/gzip -d > /tmp/RtmpG5r5XF/file28021140b72785
+#> Running command: /usr/bin/gzip -c /tmp/Rtmpk0Pd4L/file2cbf164675696a |
+#> /usr/bin/gzip -d > /tmp/Rtmpk0Pd4L/file2cbf164e1e4d59
+#> 
+#> - 
+#> [1] 0
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```
@@ -246,18 +243,15 @@ Ping <- R6::R6Class(
 ping <- make_command("ping", function(..., ping = NULL) {
     Ping$new(cmd = ping, ...)
 })
-ping("8.8.8.8") |> cmd_run(timeout = 5) # terminate it after 5s
+ping("8.8.8.8") |> cmd_run(timeout = 5, spinner = FALSE) # terminate it after 5s
 #> Running command: /usr/bin/ping 8.8.8.8
 #> 
 #> PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=42.3 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=43.7 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=48.9 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=44.0 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=44.1 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=6 ttl=106 time=43.0 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=7 ttl=106 time=42.9 ms
-#> Error: Program 'sh' terminated (timeout reached: 5.00sec)
+#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=43.0 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=44.0 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=44.3 ms
+#> Warning: System command timed out
+#> [1] -9
 ```
 
 For the `ping` command, the `name` field is sufficient. However, for
@@ -294,11 +288,11 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] blit_0.1.0
+#> [1] blit_0.1.0.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] compiler_4.4.2    R6_2.5.1          fastmap_1.2.0     cli_3.6.3        
-#>  [5] tools_4.4.2       htmltools_0.5.8.1 withr_3.0.2       yaml_2.3.10      
+#>  [1] processx_3.8.6    compiler_4.4.2    R6_2.5.1          fastmap_1.2.0    
+#>  [5] cli_3.6.3         tools_4.4.2       htmltools_0.5.8.1 yaml_2.3.10      
 #>  [9] rmarkdown_2.29    knitr_1.49        xfun_0.49         digest_0.6.37    
-#> [13] rlang_1.1.4       sys_3.4.3         evaluate_1.0.1
+#> [13] ps_1.8.1          rlang_1.1.4       evaluate_1.0.1
 ```
