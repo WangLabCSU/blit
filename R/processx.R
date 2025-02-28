@@ -170,7 +170,7 @@ BlitProcess <- R6Class(
         },
         .blit_wait_with_interrupt = function(timeout = NULL, spinner = FALSE) {
             out <- rlang::try_fetch(
-                self$.blit_wait(timeout, spinner),
+                private$.blit_wait(timeout, spinner),
                 interrupt = function(cnd) {
                     rlang::try_fetch(private$.blit_kill(),
                         error = function(e) NULL
@@ -188,26 +188,6 @@ BlitProcess <- R6Class(
                 )
             }
             out
-        },
-        .blit_wait = function(timeout = NULL, spinner = FALSE) {
-            ## We make sure that the process is eliminated
-            on.exit(private$.blit_kill(), add = TRUE)
-            on.exit(private$.blit_complete(), add = TRUE)
-            if (self$has_output_connection()) {
-                private$.blit_stdout_prepare()
-            }
-            if (self$has_error_connection()) {
-                private$.blit_stderr_prepare()
-            }
-            if (spinner) spin <- new_spin()
-            start_time <- self$get_start_time()
-
-            while (self$.blit_active_and_collect(timeout, spinner, start_time)) {
-                if (spinner) spin()
-            }
-            super$wait()
-            if (spinner) cat("\r \r")
-            self$get_exit_status()
         },
         .blit_active_and_collect = function(timeout = NULL, spinner = FALSE,
                                             start_time = self$get_start_time()) {
@@ -244,6 +224,26 @@ BlitProcess <- R6Class(
     ),
     private = list(
         .blit_timeout = FALSE,
+        .blit_wait = function(timeout = NULL, spinner = FALSE) {
+            ## We make sure that the process is eliminated
+            on.exit(private$.blit_kill(), add = TRUE)
+            on.exit(private$.blit_complete(), add = TRUE)
+            if (self$has_output_connection()) {
+                private$.blit_stdout_prepare()
+            }
+            if (self$has_error_connection()) {
+                private$.blit_stderr_prepare()
+            }
+            if (spinner) spin <- new_spin()
+            start_time <- self$get_start_time()
+
+            while (self$.blit_active_and_collect(timeout, spinner, start_time)) {
+                if (spinner) spin()
+            }
+            super$wait()
+            if (spinner) cat("\r \r")
+            self$get_exit_status()
+        },
         .blit_kill = function(close_connections = TRUE) {
             self$kill(close_connections = close_connections)
             if (private$cleanup_tree) {

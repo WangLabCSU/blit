@@ -53,7 +53,8 @@ cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
         stderr_callback = stderr_callback,
         verbose = verbose
     )
-    proc$.blit_wait_with_interrupt(timeout, isTRUE(spinner))
+    out <- proc$.blit_wait_with_interrupt(timeout, isTRUE(spinner))
+    invisible(out)
 }
 
 #' @return
