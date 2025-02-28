@@ -36,7 +36,7 @@
 #' @export
 cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
                     stdout_callback = NULL, stderr_callback = NULL,
-                    timeout = NULL, spinner = TRUE, verbose = TRUE) {
+                    timeout = NULL, spinner = FALSE, verbose = TRUE) {
     assert_number_whole(timeout, allow_null = TRUE)
     stdout <- check_io(stdout)
     if (!is.null(stderr)) stderr <- check_io(stderr)

@@ -45,7 +45,6 @@ exec("echo", "$TEST") |> cmd_run()
 #> Running command: /usr/bin/echo $TEST
 #> 
 #> blit is awesome
-#> - 
 #> [1] 0
 ```
 
@@ -76,7 +75,6 @@ exec("echo", "$TEST") |>
 #> Running command: /usr/bin/echo $TEST
 #> 
 #> blit is very awesome
-#> - 
 #> [1] 0
 ```
 
@@ -190,10 +188,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command: /usr/bin/gzip -c /tmp/Rtmpk0Pd4L/file2cbf164675696a |
-#> /usr/bin/gzip -d > /tmp/Rtmpk0Pd4L/file2cbf164e1e4d59
-#> 
-#> - 
+#> Running command: /usr/bin/gzip -c /tmp/RtmpzD91BC/file2cc4451879abab |
+#> /usr/bin/gzip -d > /tmp/RtmpzD91BC/file2cc4453e58cc90
 #> [1] 0
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
@@ -243,13 +239,15 @@ Ping <- R6::R6Class(
 ping <- make_command("ping", function(..., ping = NULL) {
     Ping$new(cmd = ping, ...)
 })
-ping("8.8.8.8") |> cmd_run(timeout = 5, spinner = FALSE) # terminate it after 5s
+ping("8.8.8.8") |> cmd_run(timeout = 5) # terminate it after 5s
 #> Running command: /usr/bin/ping 8.8.8.8
 #> 
 #> PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=43.0 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=44.0 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=44.3 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=42.7 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=44.6 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=42.8 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=44.3 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=44.1 ms
 #> Warning: System command timed out
 #> [1] -9
 ```

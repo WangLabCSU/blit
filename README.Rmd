@@ -149,7 +149,7 @@ Ping <- R6::R6Class(
 ping <- make_command("ping", function(..., ping = NULL) {
     Ping$new(cmd = ping, ...)
 })
-ping("8.8.8.8") |> cmd_run(timeout = 5, spinner = FALSE) # terminate it after 5s
+ping("8.8.8.8") |> cmd_run(timeout = 5) # terminate it after 5s
 ```
 
 For the `ping` command, the `name` field is sufficient. However, for programs
