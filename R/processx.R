@@ -185,6 +185,7 @@ BlitProcess <- R6Class(
                 cli::cli_warn("System command timed out",
                     class = "system_command_timeout"
                 )
+                private$.blit_timeout <- FALSE
             }
             out
         },
