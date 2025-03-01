@@ -196,8 +196,12 @@ BlitProcess <- R6Class(
             }
             out
         },
+
+        # @param poll_timeout Timeout in milliseconds, for the wait or the I/O
+        # polling.
         .blit_active_and_collect = function(timeout = NULL,
-                                            start_time = self$get_start_time()) {
+                                            start_time = self$get_start_time(),
+                                            poll_timeout = 200) {
             if (out <- self$is_alive()) {
                 # Timeout? Maybe finished by now...
                 if (!is.null(timeout) &&
@@ -215,9 +219,7 @@ BlitProcess <- R6Class(
                 if (!is.null(timeout) && is.finite(timeout)) {
                     remains <- timeout - (Sys.time() - start_time)
                     remains <- max(0, as.integer(as.numeric(remains) * 1000))
-                    remains <- min(remains, 200)
-                } else {
-                    remains <- 200
+                    poll_timeout <- min(remains, poll_timeout)
                 }
                 polled <- self$poll_io(remains)
 
