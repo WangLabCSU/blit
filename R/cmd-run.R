@@ -181,14 +181,20 @@ check_io <- function(x, background = FALSE, help = FALSE,
         }
         if (isOpen(x)) {
             if (!isOpen(x, "write")) {
-                cli::cli_abort("Cannot write into the connection {.arg {arg}}")
+                cli::cli_abort(
+                    "Cannot write into the connection {.arg {arg}}",
+                    call = call
+                )
             }
+        } else if (inherits(x, "AsIs")) {
+            x <- open(x, open = "a+b")
         } else {
-            x <- open(x, open = "w")
+            x <- open(x, open = "w+b")
         }
         return(x)
     }
-    cli::cli_abort("{.arg {arg}} cannot be a {.obj_type_friendly {x}}",
+    cli::cli_abort(
+        "{.arg {arg}} cannot be a {.obj_type_friendly {x}}",
         call = call
     )
 }

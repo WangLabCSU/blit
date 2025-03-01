@@ -349,7 +349,7 @@ BlitProcess <- R6Class(
                     private$.blit_stdout_con <- stdout
                 } else {
                     if (inherits(stdout, "AsIs")) {
-                        private$.blit_stdout_con <- file(stdout, open = "a")
+                        private$.blit_stdout_con <- file(stdout, open = "a+b")
                     } else {
                         private$.blit_stdout_con <- file(stdout, open = "w+b")
                     }
