@@ -196,7 +196,7 @@ BlitProcess <- R6Class(
             }
             out
         },
-        .blit_active_and_collect = function(timeout = NULL, spinner = FALSE,
+        .blit_active_and_collect = function(timeout = NULL,
                                             start_time = self$get_start_time()) {
             if (out <- self$is_alive()) {
                 # Timeout? Maybe finished by now...
@@ -207,6 +207,7 @@ BlitProcess <- R6Class(
                     private$.blit_timeout <- TRUE
                     return(FALSE)
                 }
+
                 # Otherwise just poll for 200ms, or less if a timeout is sooner.
                 # We cannot poll until the end, even if there is not spinner,
                 # because RStudio does not send a SIGINT to the R process,
@@ -214,7 +215,7 @@ BlitProcess <- R6Class(
                 if (!is.null(timeout) && is.finite(timeout)) {
                     remains <- timeout - (Sys.time() - start_time)
                     remains <- max(0, as.integer(as.numeric(remains) * 1000))
-                    if (spinner) remains <- min(remains, 200)
+                    remains <- min(remains, 200)
                 } else {
                     remains <- 200
                 }
@@ -241,7 +242,7 @@ BlitProcess <- R6Class(
             if (spinner) spin <- new_spin()
             start_time <- self$get_start_time()
 
-            while (self$.blit_active_and_collect(timeout, spinner, start_time)) {
+            while (self$.blit_active_and_collect(timeout, start_time)) {
                 if (spinner) spin()
             }
             super$wait()
