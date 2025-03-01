@@ -20,7 +20,7 @@
 #' For `cmd_background()`, only a string (file path), or a single boolean value
 #' can be used.
 #'
-#' `stderr` can also accept `NULL`, which means  redirect it to the same
+#' `stderr` can also accept `NULL`, which means redirect it to the same
 #' connection (i.e. pipe or file) as `stdout`.
 #'
 #' @param stdin should the input be diverted? A character string naming a file.

@@ -48,7 +48,7 @@ For \code{cmd_help()}, only a string (file path), or \code{connection} can be us
 For \code{cmd_background()}, only a string (file path), or a single boolean value
 can be used.
 
-\code{stderr} can also accept \code{NULL}, which means  redirect it to the same
+\code{stderr} can also accept \code{NULL}, which means redirect it to the same
 connection (i.e. pipe or file) as \code{stdout}.}
 
 \item{stdin}{should the input be diverted? A character string naming a file.}
