@@ -1,5 +1,4 @@
-# Used to the working directory, then this method call `system2` to invoke the
-# command.
+# Transform the `command` object to a `processx::process` object
 #' @param shell For windows, a string of "cmd" or "powershell", for others, a
 #' string of "sh" or "bash".
 #' @importFrom rlang caller_call
