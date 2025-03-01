@@ -38,8 +38,8 @@ cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
                     stdout_callback = NULL, stderr_callback = NULL,
                     timeout = NULL, spinner = FALSE, verbose = TRUE) {
     assert_number_whole(timeout, allow_null = TRUE)
-    stdout <- check_io(stdout)
-    if (!is.null(stderr)) stderr <- check_io(stderr)
+    stdout <- check_std_io(stdout)
+    if (!is.null(stderr)) stderr <- check_std_io(stderr)
     if (!is.null(timeout)) {
         timeout <- as.difftime(timeout, units = "secs")
     }
@@ -67,12 +67,12 @@ cmd_help <- function(command, stdout, stderr,
     if (missing(stdout)) {
         stdout <- TRUE
     } else {
-        stdout <- check_io(stdout, help = TRUE)
+        stdout <- check_std_io(stdout, help = TRUE)
     }
     if (missing(stderr)) {
         stderr <- TRUE
     } else if (!is.null(stderr)) {
-        stderr <- check_io(stderr, help = TRUE)
+        stderr <- check_std_io(stderr, help = TRUE)
     }
     proc <- processx_command(
         command,
@@ -100,7 +100,7 @@ cmd_background <- function(command, stdout, stderr, stdin = NULL,
     if (missing(stdout)) {
         stdout <- FALSE
     } else {
-        stdout <- check_io(stdout, background = TRUE)
+        stdout <- check_std_io(stdout, background = TRUE)
         if (isTRUE(stdout)) {
             if (processx::is_valid_fd(1L)) {
                 cli::cli_warn(
@@ -122,7 +122,7 @@ cmd_background <- function(command, stdout, stderr, stdin = NULL,
     if (missing(stderr)) {
         stderr <- FALSE
     } else if (!is.null(stderr)) {
-        stderr <- check_io(stderr, background = TRUE)
+        stderr <- check_std_io(stderr, background = TRUE)
         if (isTRUE(stderr)) {
             if (processx::is_valid_fd(2L)) {
                 cli::cli_warn(paste(
@@ -150,8 +150,8 @@ cmd_background <- function(command, stdout, stderr, stdin = NULL,
 
 # For `stdout` and `stderr`
 #' @importFrom rlang caller_arg caller_call
-check_io <- function(x, background = FALSE, help = FALSE,
-                     arg = caller_arg(x), call = caller_call()) {
+check_std_io <- function(x, background = FALSE, help = FALSE,
+                         arg = caller_arg(x), call = caller_call()) {
     if (rlang::is_string(x)) {
         if (!nzchar(x)) {
             cli::cli_abort(
