@@ -77,7 +77,7 @@ processx_command <- function(command, help, shell = NULL,
         if (!dir.exists(wd) &&
             !dir.create(wd, showWarnings = FALSE)) {
             cli::cli_abort(
-                "Cannot create working directory {.path {wd}}"
+                "Cannot create working directory {.path {wd}}", call = call
             )
         }
         if (verbose) {
