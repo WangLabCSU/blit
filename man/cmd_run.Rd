@@ -37,7 +37,9 @@ Possible values are:
 \itemize{
 \item \code{TRUE}: Print the child output in R console.
 \item \code{FALSE}: Suppress output stream
-\item \strong{string}: Name or path of file to redirect output
+\item \strong{string}: Name or path of file to redirect output. Note that if you
+specify a relative path, it will be relative to the current working
+directory, even if you specify another directory usingg \code{\link[=cmd_wd]{cmd_wd()}}.
 \item \code{connection}: A writable R \code{\link{connection}} object.
 }
 

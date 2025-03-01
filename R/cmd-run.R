@@ -10,7 +10,9 @@
 #'
 #'  - `TRUE`: Print the child output in R console.
 #'  - `FALSE`: Suppress output stream
-#'  - **string**: Name or path of file to redirect output
+#'  - **string**: Name or path of file to redirect output. Note that if you
+#'    specify a relative path, it will be relative to the current working
+#'    directory, even if you specify another directory usingg [`cmd_wd()`].
 #'  - `connection`: A writable R [`connection`] object.
 #'
 #' For `cmd_help()`, only a string (file path), or `connection` can be used.
