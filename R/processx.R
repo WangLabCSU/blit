@@ -221,7 +221,7 @@ BlitProcess <- R6Class(
                     remains <- max(0, as.integer(as.numeric(remains) * 1000))
                     poll_timeout <- min(remains, poll_timeout)
                 }
-                polled <- self$poll_io(remains)
+                polled <- self$poll_io(poll_timeout)
 
                 # If output/error, then collect it
                 if (any(polled == "ready")) {
