@@ -53,7 +53,7 @@ cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
         stderr_callback = stderr_callback,
         verbose = verbose
     )
-    out <- proc$.blit_wait_with_interrupt(timeout, isTRUE(spinner))
+    out <- proc$.blit_run(timeout, isTRUE(spinner))
     invisible(out)
 }
 
@@ -84,7 +84,7 @@ cmd_help <- function(command, stdout, stderr,
         stderr_callback = stderr_callback,
         verbose = verbose
     )
-    proc$.blit_wait_with_interrupt()
+    proc$.blit_run()
     invisible(command)
 }
 
@@ -94,16 +94,22 @@ cmd_help <- function(command, stdout, stderr,
 #' @rdname cmd_run
 cmd_background <- function(command, stdout, stderr, stdin = NULL,
                            verbose = TRUE) {
+    # for background process, we cannot use pipe, since if the user don't
+    # read out the standard output and/or error of the pipes, the background
+    # process will stop running! So we always use `stdout = ""`/`stderr = ""`
     if (missing(stdout)) {
         stdout <- FALSE
     } else {
         stdout <- check_io(stdout, background = TRUE)
         if (isTRUE(stdout)) {
             if (processx::is_valid_fd(1L)) {
-                cli::cli_warn(paste(
-                    "Direct printing to the R process's stdout of a",
-                    "background process will mess up the R console"
-                ))
+                cli::cli_warn(
+                    paste(
+                        "Direct printing to the R process's stdout of a",
+                        "background process will mess up the R console"
+                    ),
+                    .frequency = "regularly"
+                )
                 stdout <- ""
             } else {
                 cli::cli_abort(c(
