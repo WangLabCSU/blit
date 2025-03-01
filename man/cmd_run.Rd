@@ -39,7 +39,7 @@ Possible values are:
 \item \code{FALSE}: Suppress output stream
 \item \strong{string}: Name or path of file to redirect output. Note that if you
 specify a relative path, it will be relative to the current working
-directory, even if you specify another directory usingg \code{\link[=cmd_wd]{cmd_wd()}}.
+directory, even if you specify another directory using \code{\link[=cmd_wd]{cmd_wd()}}.
 \item \code{connection}: A writable R \code{\link{connection}} object.
 }
 
