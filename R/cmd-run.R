@@ -179,6 +179,13 @@ check_io <- function(x, background = FALSE, help = FALSE,
                 call = call
             )
         }
+        if (isOpen(x)) {
+            if (!isOpen(x, "write")) {
+                cli::cli_abort("Cannot write into the connection {.arg {arg}}")
+            }
+        } else {
+            x <- open(x, open = "w")
+        }
         return(x)
     }
     cli::cli_abort("{.arg {arg}} cannot be a {.obj_type_friendly {x}}",

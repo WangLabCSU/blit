@@ -345,12 +345,20 @@ BlitProcess <- R6Class(
                     cat(text, sep = "\n")
                 }
             } else {
-                private$.blit_stdout_con <- file(stdout, open = "w+b")
+                if (inherits(stdout, "connection")) {
+                    private$.blit_stdout_con <- stdout
+                } else {
+                    if (inherits(stdout, "AsIs")) {
+                        private$.blit_stdout_con <- file(stdout, open = "a")
+                    } else {
+                        private$.blit_stdout_con <- file(stdout, open = "w+b")
+                    }
+                    private$.blit_stdout_done <- function() {
+                        close(private$.blit_stdout_con)
+                    }
+                }
                 private$.blit_stdout_push <- function(text) {
                     cat(text, file = private$.blit_stdout_con, sep = "\n")
-                }
-                private$.blit_stdout_done <- function() {
-                    close(private$.blit_stdout_con)
                 }
             }
             private$.blit_stdout_remain <- ""
@@ -394,14 +402,21 @@ BlitProcess <- R6Class(
                 private$.blit_stderr_push <- function(text) {
                     cat(cli::col_red(text), sep = "\n")
                 }
-                private$.blit_stderr_done <- function() NULL
             } else {
-                private$.blit_stderr_con <- file(stderr, open = "w+b")
+                if (inherits(stderr, "connection")) {
+                    private$.blit_stderr_con <- stderr
+                } else {
+                    if (inherits(stderr, "AsIs")) {
+                        private$.blit_stderr_con <- file(stderr, open = "a+b")
+                    } else {
+                        private$.blit_stderr_con <- file(stderr, open = "w+b")
+                    }
+                    private$.blit_stderr_done <- function() {
+                        close(private$.blit_stderr_con)
+                    }
+                }
                 private$.blit_stderr_push <- function(text) {
                     cat(text, file = private$.blit_stderr_con, sep = "\n")
-                }
-                private$.blit_stderr_done <- function() {
-                    close(private$.blit_stderr_con)
                 }
             }
             private$.blit_stderr_remain <- ""
