@@ -124,7 +124,7 @@ cmd_background <- function(command, stdout, stderr, stdin = NULL,
     } else if (!is.null(stderr)) {
         stderr <- check_io(stderr, background = TRUE)
         if (isTRUE(stderr)) {
-            if (processx::is_valid_fd(1L)) {
+            if (processx::is_valid_fd(2L)) {
                 cli::cli_warn(paste(
                     "Direct printing to the R process's stderr of a",
                     "background process will mess up the R console"
