@@ -10,6 +10,7 @@
 #' @inheritParams python
 #' @seealso <https://github.com/jenniferlu717/KrakenTools>
 #' @inherit exec return seealso
+#' @family command
 #' @export
 kraken_tools <- make_command(
     "kraken_tools",

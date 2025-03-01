@@ -20,8 +20,11 @@ A \code{command} object.
 Run cellranger
 }
 \seealso{
-\itemize{
-\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
-\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
+Other \code{commands}:
+\code{\link{allele_counter}()},
+\code{\link{fastq_pair}()},
+\code{\link{gistic2}()},
+\code{\link{kraken2}()},
+\code{\link{kraken_tools}()}
 }
-}
+\concept{command}

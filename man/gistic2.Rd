@@ -42,4 +42,12 @@ deletion, and it lists genes found in each "wide peak" region.
 }
 \seealso{
 \url{https://broadinstitute.github.io/gistic2/}
+
+Other \code{commands}:
+\code{\link{allele_counter}()},
+\code{\link{cellranger}()},
+\code{\link{fastq_pair}()},
+\code{\link{kraken2}()},
+\code{\link{kraken_tools}()}
 }
+\concept{command}

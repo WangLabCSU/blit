@@ -45,4 +45,12 @@ they demand paired end files have the same number of reads.
 }
 \seealso{
 \url{https://github.com/linsalrob/fastq-pair}
+
+Other \code{commands}:
+\code{\link{allele_counter}()},
+\code{\link{cellranger}()},
+\code{\link{gistic2}()},
+\code{\link{kraken2}()},
+\code{\link{kraken_tools}()}
 }
+\concept{command}

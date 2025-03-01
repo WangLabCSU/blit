@@ -45,9 +45,18 @@ the information within those k-mers to query a database. That database maps
 k-mers to the lowest common ancestor (LCA) of all genomes known to contain a
 given k-mer.
 }
-\seealso{
+\references{
 \itemize{
 \item \url{https://github.com/DerrickWood/kraken2/wiki/Manual}
 \item \url{https://benlangmead.github.io/aws-indexes/k2}
 }
 }
+\seealso{
+Other \code{commands}:
+\code{\link{allele_counter}()},
+\code{\link{cellranger}()},
+\code{\link{fastq_pair}()},
+\code{\link{gistic2}()},
+\code{\link{kraken_tools}()}
+}
+\concept{command}

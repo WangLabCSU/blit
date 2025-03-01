@@ -17,6 +17,18 @@ A \code{command} object.
 \description{
 Invoke a System Command
 }
+\section{\code{command} collections}{
+
+\itemize{
+\item \code{\link[=allele_counter]{allele_counter()}}
+\item \code{\link[=cellranger]{cellranger()}}
+\item \code{\link[=fastq_pair]{fastq_pair()}}
+\item \code{\link[=gistic2]{gistic2()}}
+\item \code{\link[=kraken_tools]{kraken_tools()}}
+\item \code{\link[=kraken2]{kraken2()}}
+}
+}
+
 \examples{
 cmd_run(exec("echo", "$PATH"))
 }

@@ -5,6 +5,7 @@
 #' @examples
 #' cmd_run(exec("echo", "$PATH"))
 #' @return A `command` object.
+#' @eval rd_collect_family("command", "`command` collections")
 #' @seealso
 #' - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
 #' - [`cmd_run()`]/[`cmd_help()`]

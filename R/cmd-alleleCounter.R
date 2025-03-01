@@ -10,6 +10,7 @@
 #' @param ... `r rd_dots("alleleCounter")`.
 #' @param alleleCounter `r rd_cmd("alleleCounter")`.
 #' @seealso <https://github.com/cancerit/alleleCount>
+#' @family command
 #' @inherit exec return seealso seealso
 #' @export
 allele_counter <- make_command(

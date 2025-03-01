@@ -26,6 +26,7 @@
 #' @param gistic2 `r rd_cmd("gistic2")`.
 #' @seealso <https://broadinstitute.github.io/gistic2/>
 #' @inherit exec return seealso
+#' @family command
 #' @export
 gistic2 <- make_command(
     "gistic2",

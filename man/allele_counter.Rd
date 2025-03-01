@@ -35,4 +35,12 @@ between some other projects, specifically \code{AscatNGS} and \code{Battenberg}.
 }
 \seealso{
 \url{https://github.com/cancerit/alleleCount}
+
+Other \code{commands}:
+\code{\link{cellranger}()},
+\code{\link{fastq_pair}()},
+\code{\link{gistic2}()},
+\code{\link{kraken2}()},
+\code{\link{kraken_tools}()}
 }
+\concept{command}

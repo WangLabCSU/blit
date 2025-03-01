@@ -18,6 +18,7 @@
 #' @param fastq_pair `r rd_cmd("fastq_pair")`.
 #' @seealso <https://github.com/linsalrob/fastq-pair>
 #' @inherit exec return seealso
+#' @family command
 #' @export
 fastq_pair <- make_command(
     "fastq_pair",

@@ -5,24 +5,27 @@
 #' - `cmd_background`: Run the command in the background.
 #'
 #' @param command A `command` object.
-#' @param stdout,stderr How output streams of the child process are processed.
-#' Possible values are:
+#' @param stdout,stderr Specifies how the output streams of the child process
+#' are handled. Possible values include:
 #'
-#'  - `TRUE`: Print the child output in R console.
-#'  - `FALSE`: Suppress output stream
-#'  - **string**: Name or path of file to redirect output. Note that if you
-#'    specify a relative path, it will be relative to the current working
-#'    directory, even if you specify another directory using [`cmd_wd()`].
-#'  - `connection`: A writable R [`connection`] object.
+#'  - `TRUE`: Prints the child process output to the R console.
+#'  - `FALSE`: Suppresses the output stream.
+#'  - **string**: A file name or path to redirect the output. If a relative path
+#'    is specified, it remains relative to the current working directory, even
+#'    if a different directory is set using [`cmd_wd()`].
+#'  - `connection`: A writable R [`connection`] object. If the connection is not
+#'    [`open()`], it will be automatically opened.
 #'
-#' For `cmd_help()`, only a string (file path), or `connection` can be used.
+#' For `cmd_help()`, only a file path (string) or a `connection` can be used.
 #'
-#' For `cmd_background()`, only a string (file path), or a single boolean value
-#' can be used.
+#' For `cmd_background()`, only a file path (string) or a single boolean value
+#' is allowed.
 #'
-#' `stderr` can also accept `NULL`, which means redirect it to the same
-#' connection (i.e. pipe or file) as `stdout`.
+#' When using a `connection` (if not already open) or a `string`, wrapping it
+#' with [`I()`] prevents overwriting existing content.
 #'
+#' The `stderr` parameter also accepts `NULL`, which redirects it to the same
+#' connection (i.e., pipe or file) as `stdout`.
 #' @param stdin should the input be diverted? A character string naming a file.
 #' @param stdout_callback,stderr_callback `NULL`, or a function to call for
 #'   every line of the standard output/error.
@@ -184,7 +187,7 @@ check_std_io <- function(x, background = FALSE, help = FALSE,
         if (isOpen(x)) {
             if (!isOpen(x, "write")) {
                 cli::cli_abort(
-                    "Cannot write into the connection {.arg {arg}}",
+                    "Cannot write into the {.cls connection} {.arg {arg}}",
                     call = call
                 )
             }

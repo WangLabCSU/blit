@@ -24,4 +24,12 @@ analysis of Kraken results.
 }
 \seealso{
 \url{https://github.com/jenniferlu717/KrakenTools}
+
+Other \code{commands}:
+\code{\link{allele_counter}()},
+\code{\link{cellranger}()},
+\code{\link{fastq_pair}()},
+\code{\link{gistic2}()},
+\code{\link{kraken2}()}
 }
+\concept{command}

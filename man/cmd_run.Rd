@@ -32,24 +32,28 @@ cmd_background(command, stdout, stderr, stdin = NULL, verbose = TRUE)
 \arguments{
 \item{command}{A \code{command} object.}
 
-\item{stdout, stderr}{How output streams of the child process are processed.
-Possible values are:
+\item{stdout, stderr}{Specifies how the output streams of the child process
+are handled. Possible values include:
 \itemize{
-\item \code{TRUE}: Print the child output in R console.
-\item \code{FALSE}: Suppress output stream
-\item \strong{string}: Name or path of file to redirect output. Note that if you
-specify a relative path, it will be relative to the current working
-directory, even if you specify another directory using \code{\link[=cmd_wd]{cmd_wd()}}.
-\item \code{connection}: A writable R \code{\link{connection}} object.
+\item \code{TRUE}: Prints the child process output to the R console.
+\item \code{FALSE}: Suppresses the output stream.
+\item \strong{string}: A file name or path to redirect the output. If a relative path
+is specified, it remains relative to the current working directory, even
+if a different directory is set using \code{\link[=cmd_wd]{cmd_wd()}}.
+\item \code{connection}: A writable R \code{\link{connection}} object. If the connection is not
+\code{\link[=open]{open()}}, it will be automatically opened.
 }
 
-For \code{cmd_help()}, only a string (file path), or \code{connection} can be used.
+For \code{cmd_help()}, only a file path (string) or a \code{connection} can be used.
 
-For \code{cmd_background()}, only a string (file path), or a single boolean value
-can be used.
+For \code{cmd_background()}, only a file path (string) or a single boolean value
+is allowed.
 
-\code{stderr} can also accept \code{NULL}, which means redirect it to the same
-connection (i.e. pipe or file) as \code{stdout}.}
+When using a \code{connection} (if not already open) or a \code{string}, wrapping it
+with \code{\link[=I]{I()}} prevents overwriting existing content.
+
+The \code{stderr} parameter also accepts \code{NULL}, which redirects it to the same
+connection (i.e., pipe or file) as \code{stdout}.}
 
 \item{stdin}{should the input be diverted? A character string naming a file.}
 
