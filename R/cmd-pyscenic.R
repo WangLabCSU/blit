@@ -5,6 +5,7 @@
 #' @param pyscenic `r rd_cmd("pyscenic")`.
 #' @inherit exec return seealso
 #' @references <https://github.com/aertslab/pySCENIC>
+#' @family command
 #' @export
 pyscenic <- make_command(
     "pyscenic",

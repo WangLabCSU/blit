@@ -21,4 +21,17 @@ Run seqkit
 }
 \seealso{
 \url{https://bioinf.shenwei.me/seqkit/}
+
+Other \code{commands}:
+\code{\link{allele_counter}()},
+\code{\link{cellranger}()},
+\code{\link{fastq_pair}()},
+\code{\link{gistic2}()},
+\code{\link{kraken2}()},
+\code{\link{kraken_tools}()},
+\code{\link{perl}()},
+\code{\link{pyscenic}()},
+\code{\link{python}()},
+\code{\link{trust4}()}
 }
+\concept{command}

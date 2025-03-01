@@ -21,4 +21,17 @@ systems more effectively.
 }
 \seealso{
 \url{https://www.python.org/}
+
+Other \code{commands}:
+\code{\link{allele_counter}()},
+\code{\link{cellranger}()},
+\code{\link{fastq_pair}()},
+\code{\link{gistic2}()},
+\code{\link{kraken2}()},
+\code{\link{kraken_tools}()},
+\code{\link{perl}()},
+\code{\link{pyscenic}()},
+\code{\link{seqkit}()},
+\code{\link{trust4}()}
 }
+\concept{command}

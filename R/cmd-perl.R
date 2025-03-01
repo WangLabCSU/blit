@@ -5,6 +5,7 @@
 #' @param perl `r rd_cmd("perl")`.
 #' @seealso <https://www.perl.org/>
 #' @inherit exec return seealso
+#' @family command
 #' @export
 perl <- make_command(
     "perl",

@@ -76,4 +76,17 @@ data
 }
 \seealso{
 \url{https://github.com/liulab-dfci/TRUST4}
+
+Other \code{commands}:
+\code{\link{allele_counter}()},
+\code{\link{cellranger}()},
+\code{\link{fastq_pair}()},
+\code{\link{gistic2}()},
+\code{\link{kraken2}()},
+\code{\link{kraken_tools}()},
+\code{\link{perl}()},
+\code{\link{pyscenic}()},
+\code{\link{python}()},
+\code{\link{seqkit}()}
 }
+\concept{command}

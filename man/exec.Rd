@@ -26,6 +26,11 @@ Invoke a System Command
 \item \code{\link[=gistic2]{gistic2()}}
 \item \code{\link[=kraken_tools]{kraken_tools()}}
 \item \code{\link[=kraken2]{kraken2()}}
+\item \code{\link[=perl]{perl()}}
+\item \code{\link[=pyscenic]{pyscenic()}}
+\item \code{\link[=python]{python()}}
+\item \code{\link[=seqkit]{seqkit()}}
+\item \code{\link[=trust4]{trust4()}}
 }
 }
 

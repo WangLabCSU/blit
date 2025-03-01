@@ -21,6 +21,7 @@
 #' @param trust4 `r rd_cmd("run-trust4")`.
 #' @seealso <https://github.com/liulab-dfci/TRUST4>
 #' @inherit exec return seealso
+#' @family command
 #' @export
 trust4 <- make_command(
     "trust4",

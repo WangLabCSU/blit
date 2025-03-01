@@ -4,6 +4,7 @@
 #' @param seqkit `r rd_cmd("seqkit")`.
 #' @seealso <https://bioinf.shenwei.me/seqkit/>
 #' @inherit exec return seealso
+#' @family command
 #' @export
 seqkit <- make_command(
     "seqkit",

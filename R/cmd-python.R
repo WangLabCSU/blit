@@ -5,6 +5,7 @@
 #' @param python `r rd_cmd("python")`.
 #' @seealso <https://www.python.org/>
 #' @inherit exec return seealso
+#' @family command
 #' @export
 python <- make_command(
     "python",

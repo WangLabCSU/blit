@@ -21,4 +21,17 @@ years of development.
 }
 \seealso{
 \url{https://www.perl.org/}
+
+Other \code{commands}:
+\code{\link{allele_counter}()},
+\code{\link{cellranger}()},
+\code{\link{fastq_pair}()},
+\code{\link{gistic2}()},
+\code{\link{kraken2}()},
+\code{\link{kraken_tools}()},
+\code{\link{pyscenic}()},
+\code{\link{python}()},
+\code{\link{seqkit}()},
+\code{\link{trust4}()}
 }
+\concept{command}
