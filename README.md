@@ -8,6 +8,7 @@
 [![R-CMD-check](https://github.com/WangLabCSU/blit/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/WangLabCSU/blit/actions/workflows/R-CMD-check.yaml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/blit)](https://CRAN.R-project.org/package=blit)
+[![](https://cranlogs.r-pkg.org/badges/blit)](https://cran.r-project.org/package=blit)
 <!-- badges: end -->
 
 The goal of `blit` is to make it easy to execute command line tool from
@@ -52,7 +53,6 @@ exec("echo", "$TEST") |> cmd_run()
 #> Running command: /usr/bin/echo $TEST
 #> 
 #> blit is awesome
-#> [1] 0
 ```
 
 Alternatively, you can run it in the background. In this case, a
@@ -82,7 +82,6 @@ exec("echo", "$TEST") |>
 #> Running command: /usr/bin/echo $TEST
 #> 
 #> blit is very awesome
-#> [1] 0
 ```
 
 `blit` provides several built-in functions for directly executing
@@ -137,7 +136,18 @@ python() |> cmd_help()
 #>          when given twice, print more information about the build
 #> -W arg : warning control; arg is action:message:category:module:lineno
 #>          also PYTHONWARNINGS=arg
-#> -x     : skip first line of source, allowing us
+#> -x     : skip first line of source, allowing use of non-Unix forms of #!cmd
+#> -X opt : set implementation-specific option
+#> --check-hash-based-pycs always|default|never:
+#>          control how Python invalidates hash-based .pyc files
+#> --help-env: print help about Python environment variables and exit
+#> --help-xoptions: print help about implementation-specific -X options and exit
+#> --help-all: print complete help information and exit
+#> 
+#> Arguments:
+#> file   : program read from script file
+#> -      : program read from stdin (default; interactive mode if a tty)
+#> arg ...: arguments passed to program in sys.argv[1:]
 ```
 
 ``` r
@@ -173,7 +183,10 @@ perl() |> cmd_help()
 #>   -V[:configvar]        print configuration summary (or a single Config.pm variable)
 #>   -w                    enable many useful warnings
 #>   -W                    enable all warnings
-#>   -x[directory]         ignore text before
+#>   -x[directory]         ignore text before #!perl line (optionally cd to directory)
+#>   -X                    disable all warnings
+#>   
+#> Run 'perldoc perl' for more help with Perl.
 ```
 
 And it is very easily to extend for other commands.
@@ -195,9 +208,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command: /usr/bin/gzip -c /tmp/RtmpMpafpi/file2cd9bb567d1420 |
-#> /usr/bin/gzip -d > /tmp/RtmpMpafpi/file2cd9bb358450c3
-#> [1] 0
+#> Running command: /usr/bin/gzip -c /tmp/RtmpPN24Vc/file308a021c97565d |
+#> /usr/bin/gzip -d > /tmp/RtmpPN24Vc/file308a025afc1a73
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```
@@ -250,13 +262,12 @@ ping("8.8.8.8") |> cmd_run(timeout = 5) # terminate it after 5s
 #> Running command: /usr/bin/ping 8.8.8.8
 #> 
 #> PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=46.1 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=43.8 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=44.9 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=44.9 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=44.8 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=43.0 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=42.5 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=45.1 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=49.7 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=42.7 ms
 #> Warning: System command timed out
-#> [1] -9
 ```
 
 For the `ping` command, the `name` field is sufficient. However, for
