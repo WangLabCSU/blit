@@ -243,9 +243,15 @@ BlitProcess <- R6Class(
             on.exit(private$.blit_kill(), add = TRUE)
             if (spinner) spin <- new_spin()
             start_time <- self$get_start_time()
-
-            while (self$.blit_active_and_collect(timeout, start_time)) {
-                if (spinner) spin()
+            if (spinner) {
+                # for spinner, always use 200 `poll_timeout`
+                while (self$.blit_active_and_collect(timeout, start_time, 200)) {
+                    spin()
+                }
+            } else {
+                while (self$.blit_active_and_collect(timeout, start_time)) {
+                    spin()
+                }
             }
             super$wait()
             if (spinner) cat("\r \r")
