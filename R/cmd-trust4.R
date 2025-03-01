@@ -19,8 +19,11 @@
 #'  - `trust4_imgt_annot`: `r rd_dots("trust4_imgt_annot")`.
 #' @inheritParams allele_counter
 #' @param trust4 `r rd_cmd("run-trust4")`.
-#' @seealso <https://github.com/liulab-dfci/TRUST4>
-#' @inherit exec return seealso
+#' @seealso 
+#' - <https://github.com/liulab-dfci/TRUST4>
+#'
+#' `r rd_seealso()`
+#' @inherit exec return
 #' @family command
 #' @export
 trust4 <- make_command(

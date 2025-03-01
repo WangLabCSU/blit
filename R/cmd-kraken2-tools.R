@@ -8,8 +8,11 @@
 #' `r oxford_comma(code_quote(KrakenToolsScripts))`.
 #' @param ... `r rd_dots("kraken_tools")`.
 #' @inheritParams python
-#' @seealso <https://github.com/jenniferlu717/KrakenTools>
-#' @inherit exec return seealso
+#' @seealso 
+#' - <https://github.com/jenniferlu717/KrakenTools>
+#' 
+#' `r rd_seealso()`
+#' @inherit exec return
 #' @family command
 #' @export
 kraken_tools <- make_command(

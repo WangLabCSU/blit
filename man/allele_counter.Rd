@@ -20,7 +20,7 @@ allele_counter(
 
 \item{ofile}{A string of path to the output file.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{alleleCounter} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(alleleCounter())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{alleleCounter} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(alleleCounter())}.}
 
 \item{odir}{A string of path to the output directory.}
 
@@ -34,7 +34,11 @@ The \code{alleleCount} program primarily exists to prevent code duplication
 between some other projects, specifically \code{AscatNGS} and \code{Battenberg}.
 }
 \seealso{
-\url{https://github.com/cancerit/alleleCount}
+\itemize{
+\item \url{https://github.com/cancerit/alleleCount}
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
+}
 
 Other \code{commands}:
 \code{\link{cellranger}()},
@@ -45,6 +49,7 @@ Other \code{commands}:
 \code{\link{perl}()},
 \code{\link{pyscenic}()},
 \code{\link{python}()},
+\code{\link{samtools}()},
 \code{\link{seqkit}()},
 \code{\link{trust4}()}
 }

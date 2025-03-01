@@ -3,8 +3,11 @@
 #' @param subcmd Sub-Command of pyscenic.
 #' @param ... `r rd_dots("pyscenic subcmd")`.
 #' @param pyscenic `r rd_cmd("pyscenic")`.
-#' @inherit exec return seealso
-#' @references <https://github.com/aertslab/pySCENIC>
+#' @inherit exec return
+#' @seealso 
+#' - <https://github.com/aertslab/pySCENIC>
+#' 
+#' `r rd_seealso()`
 #' @family command
 #' @export
 pyscenic <- make_command(

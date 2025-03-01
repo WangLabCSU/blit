@@ -9,7 +9,7 @@ exec(cmd, ...)
 \arguments{
 \item{cmd}{Command to be invoked, as a character string.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{cmd} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{cmd} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}.}
 }
 \value{
 A \code{command} object.
@@ -29,6 +29,7 @@ Invoke a System Command
 \item \code{\link[=perl]{perl()}}
 \item \code{\link[=pyscenic]{pyscenic()}}
 \item \code{\link[=python]{python()}}
+\item \code{\link[=samtools]{samtools()}}
 \item \code{\link[=seqkit]{seqkit()}}
 \item \code{\link[=trust4]{trust4()}}
 }

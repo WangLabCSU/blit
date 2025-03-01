@@ -9,7 +9,7 @@ seqkit(subcmd = NULL, ..., seqkit = NULL)
 \arguments{
 \item{subcmd}{Sub-Command of seqkit.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \verb{seqkit subcmd} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \verb{cmd_help(seqkit subcmd())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \verb{seqkit subcmd} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \verb{cmd_help(seqkit subcmd())}.}
 
 \item{seqkit}{A string of path to \code{seqkit} command.}
 }
@@ -20,7 +20,11 @@ A \code{command} object.
 Run seqkit
 }
 \seealso{
-\url{https://bioinf.shenwei.me/seqkit/}
+\itemize{
+\item \url{https://bioinf.shenwei.me/seqkit/}
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
+}
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
@@ -32,6 +36,7 @@ Other \code{commands}:
 \code{\link{perl}()},
 \code{\link{pyscenic}()},
 \code{\link{python}()},
+\code{\link{samtools}()},
 \code{\link{trust4}()}
 }
 \concept{command}

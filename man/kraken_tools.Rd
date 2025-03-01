@@ -11,7 +11,7 @@ kraken_tools(script, ..., python = NULL)
 \item{script}{Name of the kraken2 script. One of
 \code{"combine_kreports"}, \code{"combine_mpa"}, \code{"extract_kraken_reads"}, \code{"filter_bracken_out"}, \code{"fix_unmapped"}, \code{"kreport2krona"}, \code{"kreport2mpa"}, \code{"make_kreport"}, and \code{"make_ktaxonomy"}.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{kraken_tools} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(kraken_tools())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{kraken_tools} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(kraken_tools())}.}
 
 \item{python}{A string of path to \code{python} command.}
 }
@@ -23,7 +23,11 @@ These scripts are designed to help Kraken users with downstream
 analysis of Kraken results.
 }
 \seealso{
-\url{https://github.com/jenniferlu717/KrakenTools}
+\itemize{
+\item \url{https://github.com/jenniferlu717/KrakenTools}
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
+}
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
@@ -34,6 +38,7 @@ Other \code{commands}:
 \code{\link{perl}()},
 \code{\link{pyscenic}()},
 \code{\link{python}()},
+\code{\link{samtools}()},
 \code{\link{seqkit}()},
 \code{\link{trust4}()}
 }

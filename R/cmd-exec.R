@@ -7,8 +7,7 @@
 #' @return A `command` object.
 #' @eval rd_collect_family("command", "`command` collections")
 #' @seealso
-#' - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
-#' - [`cmd_run()`]/[`cmd_help()`]
+#' `r rd_seealso()`
 #' @export
 exec <- make_command("exec", function(cmd, ...) {
     assert_string(cmd, allow_empty = FALSE)

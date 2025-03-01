@@ -9,7 +9,7 @@ cellranger(subcmd = NULL, ..., cellranger = NULL)
 \arguments{
 \item{subcmd}{Sub-Command of cellranger.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \verb{cellranger subcmd} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \verb{cmd_help(cellranger subcmd())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \verb{cellranger subcmd} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \verb{cmd_help(cellranger subcmd())}.}
 
 \item{cellranger}{A string of path to \code{cellranger} command.}
 }
@@ -20,6 +20,11 @@ A \code{command} object.
 Run cellranger
 }
 \seealso{
+\itemize{
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
+}
+
 Other \code{commands}:
 \code{\link{allele_counter}()},
 \code{\link{fastq_pair}()},
@@ -29,6 +34,7 @@ Other \code{commands}:
 \code{\link{perl}()},
 \code{\link{pyscenic}()},
 \code{\link{python}()},
+\code{\link{samtools}()},
 \code{\link{seqkit}()},
 \code{\link{trust4}()}
 }

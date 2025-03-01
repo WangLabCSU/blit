@@ -19,21 +19,27 @@ processx_command <- function(command, help, shell = NULL,
         stderr_callback <- rlang::as_function(stderr_callback, call = call)
     }
 
+    # set working directory ---------------------
+    if (!is.null(wd <- .subset2(command, "wd"))) {
+        if (!dir.exists(wd) &&
+            !dir.create(wd, showWarnings = FALSE)) {
+            cli::cli_abort(
+                "Cannot create working directory {.path {wd}}",
+                call = call
+            )
+        }
+        if (verbose) {
+            cli::cli_inform("Working Directory: {.path {wd}")
+        }
+    }
+    command_series <- .subset2(command, "command_series")
+
     # for help document, we only display the last one
     if (help) {
-        command$command_series <- utils::tail(command$command_series, 1L)
+        command_series <- utils::tail(command_series, 1L)
     }
 
-    # build the command content script
-    content <- vapply(.subset2(command, "command_series"), function(cmd) {
-        o <- cmd$build_command(help = help, verbose = verbose)
-        paste(o, collapse = " ")
-    }, character(1L), USE.NAMES = FALSE)
-    if (length(content) > 1L) {
-        content[-length(content)] <- paste(content[-length(content)], "|")
-    }
-
-    # prepare the command -----------------------
+    # prepare the shell -------------------------
     script <- tempfile(pkg_nm())
     if (.Platform$OS.type == "windows") {
         # https://stackoverflow.com/questions/605686/how-to-write-a-multiline-command
@@ -55,35 +61,34 @@ processx_command <- function(command, help, shell = NULL,
         arg <- NULL
     }
 
-    # write the content to the script ----------
-    writeLines(content, script, sep = "\n")
-    # ensure file has execute permission
-    if (file.access(script, mode = 1L) != 0L) {
-        Sys.chmod(script, "555")
-    }
-
     # setting environment variables -------------
     if (length(envvar <- .subset2(command, "envvar"))) {
         if (verbose) {
-            cli::cli_inform("Environment Variables: {.field {names(envvar)}}")
-        }
-        envvar <- c("current", unlist(envvar, recursive = FALSE))
-    } else {
-        envvar <- NULL
-    }
-
-    # set working directory ---------------------
-    if (!is.null(wd <- .subset2(command, "wd"))) {
-        if (!dir.exists(wd) &&
-            !dir.create(wd, showWarnings = FALSE)) {
-            cli::cli_abort(
-                "Cannot create working directory {.path {wd}}",
-                call = call
+            cli::cli_inform(
+                "Setting environment variables: {.field {names(envvar)}}"
             )
         }
-        if (verbose) {
-            cli::cli_inform("Working Directory: {.path {wd}")
-        }
+        old <- as.list(Sys.getenv(names(envvar),
+            names = TRUE, unset = NA_character_
+        ))
+        on.exit(set_envvar(old), add = TRUE)
+        set_envvar(envvar)
+    }
+
+    # build the command content script ---------
+    content <- vapply(command_series, function(cmd) {
+        o <- cmd$build_command(help = help, verbose = verbose)
+        paste(o, collapse = " ")
+    }, character(1L), USE.NAMES = FALSE)
+    if (length(content) > 1L) {
+        content[-length(content)] <- paste(content[-length(content)], "|")
+    }
+
+    # write the content to the script -----------
+    writeLines(content, script, sep = "\n")
+    # ensure the file is executable
+    if (file.access(script, mode = 1L) != 0L) {
+        Sys.chmod(script, "555")
     }
 
     if (verbose) {
@@ -93,7 +98,7 @@ processx_command <- function(command, help, shell = NULL,
         cli::cat_line()
     }
 
-    cleaned <- lapply(.subset2(command, "command_series"), function(cmd) {
+    cleaned <- lapply(command_series, function(cmd) {
         out <- cmd$get_cleaned()
         cmd$reset_cleaned()
         out
@@ -116,7 +121,7 @@ processx_command <- function(command, help, shell = NULL,
     BlitProcess$new(
         cmd, c(arg, script),
         wd = wd,
-        env = envvar,
+        env = NULL,
         stdout = stdout,
         stderr = stderr,
         stdin = stdin,

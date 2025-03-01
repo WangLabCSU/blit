@@ -9,7 +9,7 @@ pyscenic(subcmd = NULL, ..., pyscenic = NULL)
 \arguments{
 \item{subcmd}{Sub-Command of pyscenic.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \verb{pyscenic subcmd} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \verb{cmd_help(pyscenic subcmd())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \verb{pyscenic subcmd} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \verb{cmd_help(pyscenic subcmd())}.}
 
 \item{pyscenic}{A string of path to \code{pyscenic} command.}
 }
@@ -19,10 +19,13 @@ A \code{command} object.
 \description{
 Run pyscenic
 }
-\references{
-\url{https://github.com/aertslab/pySCENIC}
-}
 \seealso{
+\itemize{
+\item \url{https://github.com/aertslab/pySCENIC}
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
+}
+
 Other \code{commands}:
 \code{\link{allele_counter}()},
 \code{\link{cellranger}()},
@@ -32,6 +35,7 @@ Other \code{commands}:
 \code{\link{kraken_tools}()},
 \code{\link{perl}()},
 \code{\link{python}()},
+\code{\link{samtools}()},
 \code{\link{seqkit}()},
 \code{\link{trust4}()}
 }

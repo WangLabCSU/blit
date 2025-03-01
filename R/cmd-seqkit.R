@@ -2,8 +2,11 @@
 #' @param subcmd Sub-Command of seqkit.
 #' @param ... `r rd_dots("seqkit subcmd")`.
 #' @param seqkit `r rd_cmd("seqkit")`.
-#' @seealso <https://bioinf.shenwei.me/seqkit/>
-#' @inherit exec return seealso
+#' @seealso
+#' - <https://bioinf.shenwei.me/seqkit/>
+#'
+#' `r rd_seealso()`
+#' @inherit exec return
 #' @family command
 #' @export
 seqkit <- make_command(

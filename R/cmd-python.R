@@ -3,8 +3,11 @@
 #'
 #' @param ... `r rd_dots("python")`.
 #' @param python `r rd_cmd("python")`.
-#' @seealso <https://www.python.org/>
-#' @inherit exec return seealso
+#' @seealso 
+#' - <https://www.python.org/>
+#' 
+#' `r rd_seealso()`
+#' @inherit exec return
 #' @family command
 #' @export
 python <- make_command(

@@ -36,8 +36,8 @@ trust4_gene_names(imgt_annot, ofile = "bcr_tcr_gene_name.txt", odir = getwd())
 V/D/J/C genes.}
 
 \item{...}{\itemize{
-\item \code{trust4}: <\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{run-trust4} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(run-trust4())}.
-\item \code{trust4_imgt_annot}: <\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{trust4_imgt_annot} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(trust4_imgt_annot())}.
+\item \code{trust4}: <\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{run-trust4} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(run-trust4())}.
+\item \code{trust4_imgt_annot}: <\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{trust4_imgt_annot} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(trust4_imgt_annot())}.
 }}
 
 \item{file2}{Path to the second paired-end read fastq file, only used for
@@ -75,7 +75,11 @@ TRUST4: immune repertoire reconstruction from bulk and single-cell RNA-seq
 data
 }
 \seealso{
-\url{https://github.com/liulab-dfci/TRUST4}
+\itemize{
+\item \url{https://github.com/liulab-dfci/TRUST4}
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
+}
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
@@ -87,6 +91,7 @@ Other \code{commands}:
 \code{\link{perl}()},
 \code{\link{pyscenic}()},
 \code{\link{python}()},
+\code{\link{samtools}()},
 \code{\link{seqkit}()}
 }
 \concept{command}

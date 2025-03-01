@@ -3,8 +3,11 @@
 #'
 #' @param ... `r rd_dots("perl")`.
 #' @param perl `r rd_cmd("perl")`.
-#' @seealso <https://www.perl.org/>
-#' @inherit exec return seealso
+#' @seealso 
+#' - <https://www.perl.org/>
+#'
+#' `r rd_seealso()`
+#' @inherit exec return
 #' @family command
 #' @export
 perl <- make_command(

@@ -9,8 +9,8 @@ rd_dots <- function(cmd, details = TRUE) {
             "Additional arguments passed to `%s` command.",
             "Empty arguments are automatically trimmed.",
             "If a single argument, such as a file path, contains spaces,",
-            "it must be quoted, for example using [`shQuote`]"
-        ), 
+            "it must be quoted, for example using [`shQuote()`]"
+        ),
         cmd
     )
     if (details) {
@@ -65,5 +65,13 @@ rd_collect_family <- function(family,
         "\\itemize{",
         sprintf("  \\item %s", items),
         "}"
+    )
+}
+
+rd_seealso <- function() {
+    paste(
+        "- [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]",
+        "- [`cmd_run()`]/[`cmd_help()`]",
+        sep = "\n"
     )
 }

@@ -12,7 +12,7 @@ gistic2(seg, refgene, ..., odir = getwd(), gistic2 = NULL)
 \item{refgene}{Path to reference genome data input file (REQUIRED, see below
 for file description).}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{gistic2} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(gistic2())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{gistic2} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(gistic2())}.}
 
 \item{odir}{A string of path to the output directory.}
 
@@ -41,7 +41,11 @@ identifies the samples that exhibit each significant amplification or
 deletion, and it lists genes found in each "wide peak" region.
 }
 \seealso{
-\url{https://broadinstitute.github.io/gistic2/}
+\itemize{
+\item \url{https://broadinstitute.github.io/gistic2/}
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
+}
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
@@ -52,6 +56,7 @@ Other \code{commands}:
 \code{\link{perl}()},
 \code{\link{pyscenic}()},
 \code{\link{python}()},
+\code{\link{samtools}()},
 \code{\link{seqkit}()},
 \code{\link{trust4}()}
 }

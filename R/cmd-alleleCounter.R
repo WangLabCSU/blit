@@ -9,9 +9,12 @@
 #' @param odir A string of path to the output directory.
 #' @param ... `r rd_dots("alleleCounter")`.
 #' @param alleleCounter `r rd_cmd("alleleCounter")`.
-#' @seealso <https://github.com/cancerit/alleleCount>
 #' @family command
-#' @inherit exec return seealso seealso
+#' @inherit exec return
+#' @seealso
+#' - <https://github.com/cancerit/alleleCount>
+#'
+#' `r rd_seealso()`
 #' @export
 allele_counter <- make_command(
     "allele_counter",

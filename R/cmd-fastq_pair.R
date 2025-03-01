@@ -16,8 +16,11 @@
 #' @param hash_table_size Size of hash table to use.
 #' @param max_hash_table_size Maximal hash table size to use.
 #' @param fastq_pair `r rd_cmd("fastq_pair")`.
-#' @seealso <https://github.com/linsalrob/fastq-pair>
-#' @inherit exec return seealso
+#' @seealso 
+#' - <https://github.com/linsalrob/fastq-pair>
+#' 
+#' `r rd_seealso()`
+#' @inherit exec return 
 #' @family command
 #' @export
 fastq_pair <- make_command(

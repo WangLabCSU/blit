@@ -19,7 +19,7 @@ fastq_read_pair(fastq_files)
 \arguments{
 \item{fq1, fq2}{A string of fastq file path.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{fastq_pair} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(fastq_pair())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{fastq_pair} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(fastq_pair())}.}
 
 \item{hash_table_size}{Size of hash table to use.}
 
@@ -44,7 +44,11 @@ party source (e.g. the SRA) there are different numbers of reads in each file
 they demand paired end files have the same number of reads.
 }
 \seealso{
-\url{https://github.com/linsalrob/fastq-pair}
+\itemize{
+\item \url{https://github.com/linsalrob/fastq-pair}
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
+}
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
@@ -55,6 +59,7 @@ Other \code{commands}:
 \code{\link{perl}()},
 \code{\link{pyscenic}()},
 \code{\link{python}()},
+\code{\link{samtools}()},
 \code{\link{seqkit}()},
 \code{\link{trust4}()}
 }

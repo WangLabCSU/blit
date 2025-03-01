@@ -19,7 +19,7 @@ kraken2(
 \arguments{
 \item{fq1, fq2}{A string of fastq file path.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{kraken2} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(kraken2())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{kraken2} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(kraken2())}.}
 
 \item{ofile}{A string of path to save kraken2 output.}
 
@@ -45,13 +45,14 @@ the information within those k-mers to query a database. That database maps
 k-mers to the lowest common ancestor (LCA) of all genomes known to contain a
 given k-mer.
 }
-\references{
+\seealso{
 \itemize{
 \item \url{https://github.com/DerrickWood/kraken2/wiki/Manual}
 \item \url{https://benlangmead.github.io/aws-indexes/k2}
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
 }
-}
-\seealso{
+
 Other \code{commands}:
 \code{\link{allele_counter}()},
 \code{\link{cellranger}()},
@@ -61,6 +62,7 @@ Other \code{commands}:
 \code{\link{perl}()},
 \code{\link{pyscenic}()},
 \code{\link{python}()},
+\code{\link{samtools}()},
 \code{\link{seqkit}()},
 \code{\link{trust4}()}
 }

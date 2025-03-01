@@ -8,7 +8,7 @@ years of development.}
 perl(..., perl = NULL)
 }
 \arguments{
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{perl} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link{shQuote}}. Details see: \code{cmd_help(perl())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{perl} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(perl())}.}
 
 \item{perl}{A string of path to \code{perl} command.}
 }
@@ -20,7 +20,11 @@ Perl is a highly capable, feature-rich programming language with over 36
 years of development.
 }
 \seealso{
-\url{https://www.perl.org/}
+\itemize{
+\item \url{https://www.perl.org/}
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
+}
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
@@ -31,6 +35,7 @@ Other \code{commands}:
 \code{\link{kraken_tools}()},
 \code{\link{pyscenic}()},
 \code{\link{python}()},
+\code{\link{samtools}()},
 \code{\link{seqkit}()},
 \code{\link{trust4}()}
 }
