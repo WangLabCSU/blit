@@ -149,7 +149,7 @@ BlitProcess <- R6Class(
             } else if (isTRUE(stdout) || inherits(stdout, "connection")) {
                 # we need echo the stdout
                 stdout <- "|"
-            } else if (!is.null(stdout_callback)) {
+            } else if (!is.null(.blit_stdout_callback)) {
                 stdout <- "|"
             }
 
@@ -162,7 +162,7 @@ BlitProcess <- R6Class(
                 stderr <- "2>&1"
             } else if (isTRUE(stderr) || inherits(stderr, "connection")) {
                 stderr <- "|"
-            } else if (!is.null(stderr_callback)) {
+            } else if (!is.null(.blit_stderr_callback)) {
                 stderr <- "|"
             }
             private$.blit_cleanup <- .blit_cleanup
