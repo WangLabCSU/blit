@@ -77,7 +77,8 @@ processx_command <- function(command, help, shell = NULL,
         if (!dir.exists(wd) &&
             !dir.create(wd, showWarnings = FALSE)) {
             cli::cli_abort(
-                "Cannot create working directory {.path {wd}}", call = call
+                "Cannot create working directory {.path {wd}}",
+                call = call
             )
         }
         if (verbose) {
@@ -241,16 +242,15 @@ BlitProcess <- R6Class(
             # We make sure that the process is eliminated and the connections
             # are closed
             on.exit(private$.blit_kill(), add = TRUE)
-            if (spinner) spin <- new_spin()
             start_time <- self$get_start_time()
             if (spinner) {
+                spin <- new_spin()
                 # for spinner, always use 200 `poll_timeout`
                 while (self$.blit_active_and_collect(timeout, start_time, 200)) {
                     spin()
                 }
             } else {
                 while (self$.blit_active_and_collect(timeout, start_time)) {
-                    spin()
                 }
             }
             super$wait()
