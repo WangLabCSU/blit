@@ -5,9 +5,11 @@
 \title{Python is a programming language that lets you work quickly and integrate
 systems more effectively.}
 \usage{
-samtools(..., samtools = NULL)
+samtools(subcmd = NULL, ..., samtools = NULL)
 }
 \arguments{
+\item{subcmd}{Sub-Command of samtools. Details see: \code{cmd_help(samtools())}.}
+
 \item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{samtools} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(samtools())}.}
 
 \item{samtools}{A string of path to \code{samtools} command.}

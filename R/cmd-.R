@@ -109,12 +109,7 @@ Command <- R6Class("Command",
 
         #' @description Create a new `Command` object.
         #' @param ... Additional argument passed into command.
-        #' @param .subcmd A sub-command string that is always inserted between
-        #' the main command and other parameters.
-        initialize = function(..., .subcmd = NULL) {
-            # if provided subcmd, we assign it into our object
-            private$subcmd <- .subcmd
-
+        initialize = function(...) {
             # collect all parameters, we cannot evaluate it since if we want to
             # print help document, it's much possible there were some missing
             # argument we only evaluate necessary parameters
@@ -192,6 +187,7 @@ Command <- R6Class("Command",
         #' @return An atomic character combine the command and parameters.
         #' @importFrom rlang caller_env
         build_command = function(help = FALSE, verbose = TRUE) {
+            private$help <- help
             private$verbose <- verbose
             core_params <- private$.core_params
 
@@ -207,7 +203,9 @@ Command <- R6Class("Command",
             }
 
             # prepare command parameters -----------------------
-            if (isTRUE(help)) {
+            on.exit(private$params <- NULL, add = TRUE)
+            on.exit(private$dots <- NULL, add = TRUE)
+            if (help) {
                 private$params <- build_command_params(
                     private$setup_help_params(),
                     paste(
@@ -255,11 +253,9 @@ Command <- R6Class("Command",
                     names(core_params)
                 )]
             ))
-            private$params <- NULL
-            private$dots <- NULL
 
-            # combine command, subcmd, and params -------
-            c(command, private$subcmd, combined)
+            # combine the command and params
+            c(command, combined)
         },
 
         #' @description Get the cleaned expression
@@ -308,10 +304,8 @@ Command <- R6Class("Command",
 
         # these fields carry the state when executating the command, and
         # will always be re-calculated before using
-        verbose = NULL, params = NULL, dots = NULL, cleaned = NULL,
-
-        # @field subcmd A character string define the subcmd argument.
-        subcmd = NULL,
+        help = NULL, verbose = NULL,
+        params = NULL, dots = NULL, cleaned = NULL,
 
         # remove extra parameters used by internal
         trim_params = function(argv) setdiff(argv, private$extra_params),

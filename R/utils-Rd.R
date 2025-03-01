@@ -14,10 +14,12 @@ rd_dots <- function(cmd, details = TRUE) {
         cmd
     )
     if (details) {
-        doc <- sprintf("%s. Details see: `cmd_help(%s())`", doc, cmd)
+        doc <- sprintf("%s. Details see: %s", doc, rd_help(cmd))
     }
     doc
 }
+
+rd_help <- function(cmd) sprintf("`cmd_help(%s())`", cmd)
 
 #' @importFrom utils getFromNamespace
 rd_collect_family <- function(family,

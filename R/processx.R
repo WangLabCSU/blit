@@ -80,12 +80,16 @@ processx_command <- function(command, help, shell = NULL,
         o <- cmd$build_command(help = help, verbose = verbose)
         paste(o, collapse = " ")
     }, character(1L), USE.NAMES = FALSE)
+    if (!is.null(stdin)) {
+        content[1L] <- paste(content[1L], "<", shQuote(stdin))
+    }
     if (length(content) > 1L) {
         content[-length(content)] <- paste(content[-length(content)], "|")
     }
 
-    # write the content to the script -----------
+    # write the content to the script
     writeLines(content, script, sep = "\n")
+
     # ensure the file is executable
     if (file.access(script, mode = 1L) != 0L) {
         Sys.chmod(script, "555")
@@ -124,7 +128,7 @@ processx_command <- function(command, help, shell = NULL,
         env = NULL,
         stdout = stdout,
         stderr = stderr,
-        stdin = stdin,
+        stdin = NULL,
         .blit_stdout_callback = stdout_callback,
         .blit_stderr_callback = stderr_callback,
         .blit_cleanup = cleanup,

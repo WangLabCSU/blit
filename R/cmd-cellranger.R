@@ -12,7 +12,7 @@ cellranger <- make_command(
     function(subcmd = NULL, ..., cellranger = NULL) {
         assert_string(subcmd, allow_empty = FALSE, allow_null = TRUE)
         assert_string(cellranger, allow_empty = FALSE, allow_null = TRUE)
-        CellRanger$new(cmd = cellranger, ..., .subcmd = subcmd)
+        CellRanger$new(cmd = cellranger, ..., subcmd = subcmd)
     }
 )
 
@@ -21,6 +21,9 @@ CellRanger <- R6Class(
     inherit = Command,
     private = list(
         name = "cellranger",
-        setup_help_params = function() "--help"
+        setup_help_params = function() "--help",
+        combine_params = function(subcmd) {
+            c(subcmd, super$combine_params())
+        }
     )
 )
