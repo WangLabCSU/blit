@@ -29,7 +29,13 @@ is specified, it remains relative to the current working directory, even
 if a different directory is set using \code{\link[=cmd_wd]{cmd_wd()}}.
 \item \code{connection}: A writable R \code{\link{connection}} object. If the connection is not
 \code{\link[=open]{open()}}, it will be automatically opened.
-}}
+}
+
+The \code{stderrs} parameter also accepts \code{NULL}, which redirects it to the same
+connection (i.e., pipe or file) as \code{stdouts}.
+
+When a single string is specified, the stdout/stderr of all commands will be
+merged into this single file.}
 
 \item{stdins}{should the input be diverted? One of or a list of following
 values:

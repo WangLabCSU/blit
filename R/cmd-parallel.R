@@ -12,6 +12,12 @@
 #'  - `connection`: A writable R [`connection`] object. If the connection is not
 #'    [`open()`], it will be automatically opened.
 #'
+#' The `stderrs` parameter also accepts `NULL`, which redirects it to the same
+#' connection (i.e., pipe or file) as `stdouts`.
+#'
+#' When a single string is specified, the stdout/stderr of all commands will be
+#' merged into this single file.
+#'
 #' @param stdins should the input be diverted? One of or a list of following
 #' values:
 #'  - `NULL`: No standard input.
