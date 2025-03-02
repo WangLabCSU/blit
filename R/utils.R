@@ -25,6 +25,12 @@ exprs <- function(...) {
 
 fclass <- function(x) .subset(class(x), 1L)
 
+defer <- function(expr, after = TRUE, add = TRUE, envir = parent.frame()) {
+    expr <- rlang::enquo(expr)
+    thunk <- as.call(list(rlang::new_function(list(), expr)))
+    do.call(base::on.exit, list(thunk, add = add, after = after), envir = envir)
+}
+
 # utils function to collapse characters ---------------------------
 oxford_and <- function(chr, code = TRUE, quote = TRUE, sep = ", ") {
     oxford_comma(code_quote(chr, code, quote), sep = sep, final = "and")

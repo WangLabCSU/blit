@@ -50,5 +50,8 @@ variable updated.
 }
 }
 \seealso{
-\code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}
+\itemize{
+\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}/\code{\link[=cmd_background]{cmd_background()}}
+\item \code{\link[=cmd_parallel]{cmd_parallel()}}
+}
 }

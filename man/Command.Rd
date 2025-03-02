@@ -15,8 +15,8 @@ make_command
 \itemize{
 \item \href{#method-Command-new}{\code{Command$new()}}
 \item \href{#method-Command-build_command}{\code{Command$build_command()}}
-\item \href{#method-Command-get_cleaned}{\code{Command$get_cleaned()}}
-\item \href{#method-Command-reset_cleaned}{\code{Command$reset_cleaned()}}
+\item \href{#method-Command-get_cleaning}{\code{Command$get_cleaning()}}
+\item \href{#method-Command-reset_cleaning}{\code{Command$reset_cleaning()}}
 \item \href{#method-Command-print}{\code{Command$print()}}
 \item \href{#method-Command-clone}{\code{Command$clone()}}
 }
@@ -65,12 +65,12 @@ An atomic character combine the command and parameters.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Command-get_cleaned"></a>}}
-\if{latex}{\out{\hypertarget{method-Command-get_cleaned}{}}}
-\subsection{Method \code{get_cleaned()}}{
-Get the cleaned expression
+\if{html}{\out{<a id="method-Command-get_cleaning"></a>}}
+\if{latex}{\out{\hypertarget{method-Command-get_cleaning}{}}}
+\subsection{Method \code{get_cleaning()}}{
+Get the cleaning expression
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Command$get_cleaned()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Command$get_cleaning()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
@@ -78,12 +78,12 @@ A list of \code{\link[rlang:defusing-advanced]{quosures}}.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Command-reset_cleaned"></a>}}
-\if{latex}{\out{\hypertarget{method-Command-reset_cleaned}{}}}
-\subsection{Method \code{reset_cleaned()}}{
-Reset the cleaned expression
+\if{html}{\out{<a id="method-Command-reset_cleaning"></a>}}
+\if{latex}{\out{\hypertarget{method-Command-reset_cleaning}{}}}
+\subsection{Method \code{reset_cleaning()}}{
+Reset the cleaning expression
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Command$reset_cleaned()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Command$reset_cleaning()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{

@@ -11,7 +11,9 @@
 #' variable updated.
 #' - `cmd_envpath`: The `command` object self, with running environment variable
 #' `name` updated.
-#' @seealso [`cmd_run()`]/[`cmd_help()`]
+#' @seealso 
+#' - [`cmd_run()`]/[`cmd_help()`]/[`cmd_background()`]
+#' - [`cmd_parallel()`]
 #' @export
 cmd_wd <- function(command, wd = NULL) {
     assert_s3_class(command, "command")

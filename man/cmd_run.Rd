@@ -55,11 +55,20 @@ with \code{\link[=I]{I()}} prevents overwriting existing content.
 The \code{stderr} parameter also accepts \code{NULL}, which redirects it to the same
 connection (i.e., pipe or file) as \code{stdout}.}
 
-\item{stdin}{should the input be diverted? A character string naming a file.}
+\item{stdin}{should the input be diverted? Possible values include:
+\itemize{
+\item \code{NULL}: No standard input.
+\item \strong{string}: A file name or path to be used as standard input.
+}}
 
-\item{stdout_callback, stderr_callback}{NULL, or a function that is invoked
-for each line of standard output or error. Non-text (non-character) output
-will be directly ignored.}
+\item{stdout_callback, stderr_callback}{Possible values include:
+\itemize{
+\item \code{NULL}: no callback function.
+\item \code{function}: A function invoked for each line of standard output or error.
+Non-text (non-character) output will be ignored. The function should accept
+two arguments: one for the standard output or error and another for the
+running \code{\link[processx:process]{process}} object.
+}}
 
 \item{timeout}{Timeout in seconds. This is a limit for the elapsed time
 running command in the separate process.}
@@ -91,5 +100,8 @@ execution should be verbose.}
 }
 }
 \seealso{
-\code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\itemize{
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_parallel]{cmd_parallel()}}
+}
 }

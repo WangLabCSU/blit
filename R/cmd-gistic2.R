@@ -53,7 +53,7 @@ Gistic2 <- R6Class(
             odir <- build_opath(odir)
             seg_file <- tempfile("gistic2")
             data.table::fwrite(seg, file = seg_file, sep = "\t")
-            private$setup_exit(file.remove(seg_file))
+            private$setup_clean(file.remove(seg_file))
             c(
                 arg_internal("-seg", seg_file),
                 arg_internal("-refgene", refgene),

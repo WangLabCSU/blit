@@ -258,14 +258,14 @@ Command <- R6Class("Command",
             c(command, combined)
         },
 
-        #' @description Get the cleaned expression
+        #' @description Get the cleaning expression
         #' @return A list of [`quosures`][rlang::quo()].
-        get_cleaned = function() private$cleaned,
+        get_cleaning = function() private$cleaning,
 
-        #' @description Reset the cleaned expression
+        #' @description Reset the cleaning expression
         #' @return The object itself.
-        reset_cleaned = function() {
-            private$cleaned <- NULL
+        reset_cleaning = function() {
+            private$cleaning <- NULL
             invisible(self)
         },
 
@@ -305,15 +305,15 @@ Command <- R6Class("Command",
         # these fields carry the state when executating the command, and
         # will always be re-calculated before using
         help = NULL, verbose = NULL,
-        params = NULL, dots = NULL, cleaned = NULL,
+        params = NULL, dots = NULL, cleaning = NULL,
 
         # remove extra parameters used by internal
         trim_params = function(argv) setdiff(argv, private$extra_params),
 
         # @description Used to attach an expression to be evaluated when
         # exiting command finished.
-        setup_exit = function(...) {
-            private$cleaned <- c(private$cleaned, rlang::enquos(...))
+        setup_clean = function(...) {
+            private$cleaning <- c(private$cleaning, rlang::enquos(...))
             invisible(self)
         },
 

@@ -65,16 +65,16 @@ processx_command <- function(command, help, shell = NULL,
         cli::cat_line()
     }
 
-    cleaned <- lapply(command_series, function(cmd) {
-        out <- cmd$get_cleaned()
-        cmd$reset_cleaned()
+    cleaning_list <- lapply(command_series, function(cmd) {
+        out <- cmd$get_cleaning()
+        cmd$reset_cleaning()
         out
     })
-    cleaned <- unlist(cleaned, FALSE, FALSE)
+    cleaning_list <- unlist(cleaning_list, FALSE, FALSE)
     cleanup <- function() {
-        for (quo in cleaned) {
+        for (cleaning in cleaning_list) {
             rlang::try_fetch(
-                rlang::eval_tidy(quo),
+                rlang::eval_tidy(cleaning),
                 error = function(cnd) cli::cli_warn(conditionMessage(cnd))
             )
         }
@@ -198,11 +198,11 @@ BlitProcess <- R6Class(
             out <- rlang::try_fetch(
                 private$.blit_wait(timeout, spinner),
                 interrupt = function(cnd) {
-                    # in try_fetch, contition function are run before on.exit()
-                    # in the `expr`, so we always ensure we only kill the
-                    # process, but don't close the connections, so that
-                    # `$.blit_complete()` method will collect all the stdout and
-                    # stderr
+                    # in try_fetch, contition function are run before
+                    # `on.exit()` in the `expr`, so we always ensure we only
+                    # kill the process, but don't close the connections, so that
+                    # `$.blit_complete()` method register by `on.exit()` will
+                    # collect all the stdout and stderr
                     self$.blit_kill(close_connections = FALSE)
                     cli::cli_warn("System command interrupted",
                         class = "system_command_interrupt"
@@ -210,13 +210,16 @@ BlitProcess <- R6Class(
                     invokeRestart("abort")
                 }
             )
+            self$.blit_warn_timeout()
+            out
+        },
+        .blit_warn_timeout = function() {
             if (!is.null(private$.blit_timeout) && private$.blit_timeout) {
                 cli::cli_warn("System command timed out",
                     class = "system_command_timeout"
                 )
                 private$.blit_timeout <- NULL
             }
-            out
         },
 
         # @param poll_timeout Timeout in milliseconds, for the wait or the I/O

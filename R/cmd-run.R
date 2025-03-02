@@ -26,10 +26,16 @@
 #'
 #' The `stderr` parameter also accepts `NULL`, which redirects it to the same
 #' connection (i.e., pipe or file) as `stdout`.
-#' @param stdin should the input be diverted? A character string naming a file.
-#' @param stdout_callback,stderr_callback NULL, or a function that is invoked
-#' for each line of standard output or error. Non-text (non-character) output
-#' will be directly ignored.
+#' @param stdin should the input be diverted? Possible values include:
+#'  - `NULL`: No standard input.
+#'  - **string**: A file name or path to be used as standard input.
+#' @param stdout_callback,stderr_callback Possible values include:
+#'  - `NULL`: no callback function.
+#'  - `function`: A function invoked for each line of standard output or error.
+#' Non-text (non-character) output will be ignored. The function should accept
+#' two arguments: one for the standard output or error and another for the
+#' running [`process`][processx::process] object.
+#'
 #' @param timeout Timeout in seconds. This is a limit for the elapsed time
 #' running command in the separate process.
 #' @param spinner Whether to show a reassuring spinner while the process
@@ -38,7 +44,9 @@
 #' execution should be verbose.
 #' @return
 #' - `cmd_run`: Exit status invisiblely.
-#' @seealso [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
+#' @seealso
+#'  - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
+#'  - [`cmd_parallel()`]
 #' @export
 cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
                     stdout_callback = NULL, stderr_callback = NULL,
