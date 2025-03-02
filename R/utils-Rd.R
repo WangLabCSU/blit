@@ -73,7 +73,7 @@ rd_collect_family <- function(family,
 rd_seealso <- function() {
     paste(
         "- [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]",
-        "- [`cmd_run()`]/[`cmd_help()`]",
+        "- [`cmd_run()`]/[`cmd_help()`]/[`cmd_background()`]",
         sep = "\n"
     )
 }

@@ -20,14 +20,20 @@ cmd_run(
 
 cmd_help(
   command,
-  stdout,
-  stderr,
+  stdout = TRUE,
+  stderr = TRUE,
   stdout_callback = NULL,
   stderr_callback = NULL,
   verbose = TRUE
 )
 
-cmd_background(command, stdout, stderr, stdin = NULL, verbose = TRUE)
+cmd_background(
+  command,
+  stdout = FALSE,
+  stderr = FALSE,
+  stdin = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{command}{A \code{command} object.}
@@ -35,19 +41,25 @@ cmd_background(command, stdout, stderr, stdin = NULL, verbose = TRUE)
 \item{stdout, stderr}{Specifies how the output streams of the child process
 are handled. Possible values include:
 \itemize{
-\item \code{TRUE}: Prints the child process output to the R console.
+\item \code{TRUE}: Prints the child process output to the R console. Note that the
+subprocess does not inherit the terminal. If the command requires a
+terminal, use an empty string \code{""} instead.
 \item \code{FALSE}: Suppresses the output stream.
-\item \strong{string}: A file name or path to redirect the output. If a relative path
-is specified, it remains relative to the current working directory, even
-if a different directory is set using \code{\link[=cmd_wd]{cmd_wd()}}.
+\item \strong{string}: An empty string \code{""} inherits the standard output stream from
+the main R process (Printing in the R console). If the main R process
+lacks a standard output stream, such as in RGui on Windows, an error is
+thrown. Alternative, a file name or path to redirect the output. If a
+relative path is specified, it remains relative to the current working
+directory, even if a different directory is set using \code{\link[=cmd_wd]{cmd_wd()}}.
 \item \code{connection}: A writable R \code{\link{connection}} object. If the connection is not
 \code{\link[=open]{open()}}, it will be automatically opened.
 }
 
-For \code{cmd_help()}, only a file path (string) or a \code{connection} can be used.
+For \code{cmd_help()}, use \code{FALSE} will do nothing, since it always want to
+display the help document.
 
-For \code{cmd_background()}, only a file path (string) or a single boolean value
-is allowed.
+For \code{cmd_background()}, \code{connection} cannot be used, and \code{TRUE} will fallback
+to the empty string \code{""}, with a warning message.
 
 When using a \code{connection} (if not already open) or a \code{string}, wrapping it
 with \code{\link[=I]{I()}} prevents overwriting existing content.
@@ -58,7 +70,10 @@ connection (i.e., pipe or file) as \code{stdout}.}
 \item{stdin}{should the input be diverted? Possible values include:
 \itemize{
 \item \code{NULL}: No standard input.
-\item \strong{string}: A file name or path to be used as standard input.
+\item \strong{string}: An empty string \code{""} inherits the standard output stream from
+the main R process. If the main R process lacks a standard output stream,
+such as in RGui on Windows, an error is thrown. Alternative, a file name
+or path to be used as standard input.
 }}
 
 \item{stdout_callback, stderr_callback}{Possible values include:

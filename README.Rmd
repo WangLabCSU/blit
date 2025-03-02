@@ -56,13 +56,26 @@ exec("echo", "$TEST") |> cmd_run()
 ```
 
 Alternatively, you can run it in the background. In this case, a
-[`process`](https://processx.r-lib.org/index.html) object will be returned.  For
+[`process`](https://processx.r-lib.org/index.html) object will be returned. For
 more information, refer to the official site:
-```{r}
-proc <- exec("echo", "$TEST") |> cmd_background()
+```{r eval=FALSE}
+# We use some tricks to capture the output from the background process.
+# The actual implementation differs, but the output remains the same.
+proc <- exec("echo", "$TEST") |> cmd_background(stdout = "")
 proc$kill()
 Sys.unsetenv("TEST")
 ```
+
+```{r echo=FALSE}
+file <- tempfile()
+proc <- exec("echo", "$TEST") |> cmd_background(stdout = file)
+cat(readLines(file), sep = "\n")
+Sys.unsetenv("TEST")
+```
+
+`cmd_background()` is provided for complete. Instead of using this function, we
+suggest to use `cmd_parallel()` instead, which can run multiple commands in the
+background and ensure all process will be cleanned when process exit.
 
 Several functions allow you to control the environment when running the command:
 
@@ -78,6 +91,7 @@ exec("echo", "$TEST") |>
 
 `blit` provides several built-in functions for directly executing specific
 commands., these include:
+[samtools](https://www.htslib.org/),
 [alleleCounter](https://github.com/cancerit/alleleCount),
 [cellranger](https://www.10xgenomics.com/cn/support/software/cell-ranger/latest),
 [fastq_pair](https://github.com/linsalrob/fastq-pair),

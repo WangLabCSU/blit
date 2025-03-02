@@ -4,24 +4,32 @@
 #' @param stdouts,stderrs Specifies how the output streams of the child process
 #' are handled. One of or a list of following values:
 #'
-#'  - `TRUE`: Prints the child process output to the R console.
+#'  - `TRUE`: Prints the child process output to the R console. Note that the
+#'    subprocess does not inherit the terminal. If the command requires a
+#'    terminal, use an empty string `""` instead.
 #'  - `FALSE`: Suppresses the output stream.
-#'  - **string**: A file name or path to redirect the output. If a relative path
-#'    is specified, it remains relative to the current working directory, even
-#'    if a different directory is set using [`cmd_wd()`].
+#'  - **string**: An empty string `""` inherits the standard output stream from
+#'    the main R process (Printing in the R console). If the main R process
+#'    lacks a standard output stream, such as in RGui on Windows, an error is
+#'    thrown. Alternative, a file name or path to redirect the output. If a
+#'    relative path is specified, it remains relative to the current working
+#'    directory, even if a different directory is set using [`cmd_wd()`].
 #'  - `connection`: A writable R [`connection`] object. If the connection is not
 #'    [`open()`], it will be automatically opened.
 #'
 #' The `stderrs` parameter also accepts `NULL`, which redirects it to the same
 #' connection (i.e., pipe or file) as `stdouts`.
 #'
-#' When a single string is specified, the stdout/stderr of all commands will be
-#' merged into this single file.
+#' When a single file path is specified, the stdout/stderr of all commands will
+#' be merged into this single file.
 #'
 #' @param stdins should the input be diverted? One of or a list of following
 #' values:
 #'  - `NULL`: No standard input.
-#'  - **string**: A file name or path to be used as standard input.
+#'  - **string**: An empty string `""` inherits the standard output stream from
+#'    the main R process. If the main R process lacks a standard output stream,
+#'    such as in RGui on Windows, an error is thrown. Alternative, a file name
+#'    or path to be used as standard input.
 #' @param stdout_callbacks,stderr_callbacks One of or a list of following
 #' values:
 #'  - `NULL`: no callback function.
@@ -37,8 +45,7 @@
 #' @inheritParams cmd_run
 #' @return A list of exit status invisiblely.
 #' @seealso
-#'  - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
-#'  - [`cmd_run()`]/[`cmd_help()`]/[`cmd_background()`]
+#' `r rd_seealso()`
 #' @export
 cmd_parallel <- function(..., stdouts = FALSE, stderrs = FALSE, stdins = NULL,
                          stdout_callbacks = NULL, stderr_callbacks = NULL,
@@ -84,7 +91,6 @@ cmd_parallel <- function(..., stdouts = FALSE, stderrs = FALSE, stdins = NULL,
             pool_value <- .subset(pools, pool)
             # if i > n, we skip add task
             if (i <= n && is.na(pool_value)) {
-                cat(sprintf("Add command %d", i), sep = "\n")
                 # this pool can be used, we add task into this pool
                 # `.fn()` must return with `$collect_in_background()` method
                 # For Series, cannot subset with `[[`
@@ -170,13 +176,13 @@ cmd_parallel <- function(..., stdouts = FALSE, stderrs = FALSE, stdins = NULL,
     }
 
     # merging stdout_list
-    if (rlang::is_string(stdouts) && n > 1L) {
+    if (rlang::is_string(stdouts) && nzchar(stdouts) && n > 1L) {
         stdout_list <- stdout_list[file.exists(stdout_list)]
         concatenate_files(stdout_list, stdouts)
     }
 
     # merging stderr_list
-    if (rlang::is_string(stderrs) && n > 1L) {
+    if (rlang::is_string(stderrs) && nzchar(stderrs) && n > 1L) {
         stderr_list <- stderr_list[file.exists(stderr_list)]
         concatenate_files(stderr_list, stderrs)
     }
@@ -188,7 +194,7 @@ check_stdio_list <- function(x, n, n_arg, allow_null = FALSE,
                              arg = caller_arg(x), call = caller_call()) {
     if (length(x) == 1L || is.null(x)) {
         x <- check_stdio(x, allow_null = allow_null, arg = arg, call = call)
-        if (rlang::is_string(x) && n > 1L) {
+        if (rlang::is_string(x) && nzchar(x) && n > 1L) {
             return(vapply(seq_len(n), function(i) {
                 tempfile(pattern = sprintf("%s_%d", arg, i))
             }, character(1L), USE.NAMES = FALSE))
@@ -211,7 +217,10 @@ check_stdio_list <- function(x, n, n_arg, allow_null = FALSE,
 check_stdin_list <- function(x, n, n_arg,
                              arg = caller_arg(x), call = caller_call()) {
     if (length(x) == 1L || is.null(x)) {
-        x <- check_stdin(x, arg = arg, call = call)
+        x <- check_stdio(x,
+            allow_bool = FALSE, allow_connection = FALSE,
+            arg = arg, call = call
+        )
         return(rep_len(list(x), n))
     }
     if (length(x) != n) {
@@ -223,7 +232,10 @@ check_stdin_list <- function(x, n, n_arg,
             call = call
         )
     }
-    lapply(x, check_stdin, arg = arg, call = call)
+    lapply(x, check_stdio,
+        allow_bool = FALSE, allow_connection = FALSE,
+        arg = arg, call = call
+    )
 }
 
 check_callback_list <- function(x, n, n_arg,

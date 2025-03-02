@@ -50,7 +50,10 @@ processx_command <- function(command, help, shell = NULL,
         paste(o, collapse = " ")
     }, character(1L), USE.NAMES = FALSE)
     if (!is.null(stdin)) {
-        content[1L] <- paste(content[1L], "<", shQuote(stdin))
+        if (nzchar(stdin)) {
+            content[1L] <- paste(content[1L], "<", shQuote(stdin))
+            stdin <- if (processx::is_valid_fd(0L)) "" else NULL
+        }
     }
     if (length(content) > 1L) {
         content[-length(content)] <- sprintf("%s |", content[-length(content)])
@@ -86,7 +89,7 @@ processx_command <- function(command, help, shell = NULL,
         stdout = stdout,
         stderr = stderr,
         # try to inherit the terminal
-        stdin = if (processx::is_valid_fd(0L)) "" else NULL,
+        stdin = stdin,
         .blit_content = content,
         .blit_stdout_callback = stdout_callback,
         .blit_stderr_callback = stderr_callback,
@@ -148,14 +151,7 @@ BlitProcess <- R6Class(
 
             } else if (isFALSE(stdout)) {
                 stdout <- NULL
-            } else if (isTRUE(stdout)) {
-                if (processx::is_valid_fd(1L) &&
-                    is.null(.blit_stdout_callback)) {
-                    stdout <- ""
-                } else {
-                    stdout <- "|"
-                }
-            } else if (inherits(stdout, "connection")) {
+            } else if (isTRUE(stdout) || inherits(stdout, "connection")) {
                 # we need echo the stdout
                 stdout <- "|"
             } else if (!is.null(.blit_stdout_callback)) {
@@ -169,14 +165,7 @@ BlitProcess <- R6Class(
                 stderr <- NULL
             } else if (is.null(stderr)) {
                 stderr <- "2>&1"
-            } else if (isTRUE(stderr)) {
-                if (processx::is_valid_fd(2L) &&
-                    is.null(.blit_stderr_callback)) {
-                    stderr <- ""
-                } else {
-                    stderr <- "|"
-                }
-            } else if (inherits(stderr, "connection")) {
+            } else if (isTRUE(stderr) || inherits(stderr, "connection")) {
                 stderr <- "|"
             } else if (!is.null(.blit_stderr_callback)) {
                 stderr <- "|"

@@ -22,11 +22,16 @@ cmd_parallel(
 \item{stdouts, stderrs}{Specifies how the output streams of the child process
 are handled. One of or a list of following values:
 \itemize{
-\item \code{TRUE}: Prints the child process output to the R console.
+\item \code{TRUE}: Prints the child process output to the R console. Note that the
+subprocess does not inherit the terminal. If the command requires a
+terminal, use an empty string \code{""} instead.
 \item \code{FALSE}: Suppresses the output stream.
-\item \strong{string}: A file name or path to redirect the output. If a relative path
-is specified, it remains relative to the current working directory, even
-if a different directory is set using \code{\link[=cmd_wd]{cmd_wd()}}.
+\item \strong{string}: An empty string \code{""} inherits the standard output stream from
+the main R process (Printing in the R console). If the main R process
+lacks a standard output stream, such as in RGui on Windows, an error is
+thrown. Alternative, a file name or path to redirect the output. If a
+relative path is specified, it remains relative to the current working
+directory, even if a different directory is set using \code{\link[=cmd_wd]{cmd_wd()}}.
 \item \code{connection}: A writable R \code{\link{connection}} object. If the connection is not
 \code{\link[=open]{open()}}, it will be automatically opened.
 }
@@ -34,14 +39,17 @@ if a different directory is set using \code{\link[=cmd_wd]{cmd_wd()}}.
 The \code{stderrs} parameter also accepts \code{NULL}, which redirects it to the same
 connection (i.e., pipe or file) as \code{stdouts}.
 
-When a single string is specified, the stdout/stderr of all commands will be
-merged into this single file.}
+When a single file path is specified, the stdout/stderr of all commands will
+be merged into this single file.}
 
 \item{stdins}{should the input be diverted? One of or a list of following
 values:
 \itemize{
 \item \code{NULL}: No standard input.
-\item \strong{string}: A file name or path to be used as standard input.
+\item \strong{string}: An empty string \code{""} inherits the standard output stream from
+the main R process. If the main R process lacks a standard output stream,
+such as in RGui on Windows, an error is thrown. Alternative, a file name
+or path to be used as standard input.
 }}
 
 \item{stdout_callbacks, stderr_callbacks}{One of or a list of following

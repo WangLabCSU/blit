@@ -60,12 +60,20 @@ Alternatively, you can run it in the background. In this case, a
 returned. For more information, refer to the official site:
 
 ``` r
-proc <- exec("echo", "$TEST") |> cmd_background()
-#> Running command: /usr/bin/echo $TEST
+# We use some tricks to capture the output from the background process.
+# The actual implementation differs, but the output remains the same.
+proc <- exec("echo", "$TEST") |> cmd_background(stdout = "")
 proc$kill()
-#> [1] FALSE
 Sys.unsetenv("TEST")
 ```
+
+    #> Running command: /usr/bin/echo $TEST
+    #> blit is awesome
+
+`cmd_background()` is provided for complete. Instead of using this
+function, we suggest to use `cmd_parallel()` instead, which can run
+multiple commands in the background and ensure all process will be
+cleanned when process exit.
 
 Several functions allow you to control the environment when running the
 command:
@@ -78,14 +86,14 @@ command:
 exec("echo", "$TEST") |>
     cmd_envvar(TEST = "blit is very awesome") |>
     cmd_run()
-#> Environment Variables: TEST
+#> Setting environment variables: TEST
 #> Running command: /usr/bin/echo $TEST
 #> 
 #> blit is very awesome
 ```
 
 `blit` provides several built-in functions for directly executing
-specific commands., these include:
+specific commands., these include: [samtools](https://www.htslib.org/),
 [alleleCounter](https://github.com/cancerit/alleleCount),
 [cellranger](https://www.10xgenomics.com/cn/support/software/cell-ranger/latest),
 [fastq_pair](https://github.com/linsalrob/fastq-pair),
@@ -208,8 +216,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command: /usr/bin/gzip -c /tmp/RtmpPN24Vc/file308a021c97565d |
-#> /usr/bin/gzip -d > /tmp/RtmpPN24Vc/file308a025afc1a73
+#> Running command: /usr/bin/gzip -c /tmp/RtmpwYaXRQ/file3b5bd82898f2f1 |
+#> /usr/bin/gzip -d > /tmp/RtmpwYaXRQ/file3b5bd871ef6257
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```
@@ -262,11 +270,9 @@ ping("8.8.8.8") |> cmd_run(timeout = 5) # terminate it after 5s
 #> Running command: /usr/bin/ping 8.8.8.8
 #> 
 #> PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=43.0 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=42.5 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=45.1 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=49.7 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=42.7 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=44.1 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=44.1 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=44.5 ms
 #> Warning: System command timed out
 ```
 
@@ -307,8 +313,8 @@ sessionInfo()
 #> [1] blit_0.1.0.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] processx_3.8.6    compiler_4.4.2    R6_2.5.1          fastmap_1.2.0    
-#>  [5] cli_3.6.3         tools_4.4.2       htmltools_0.5.8.1 yaml_2.3.10      
-#>  [9] rmarkdown_2.29    knitr_1.49        xfun_0.49         digest_0.6.37    
-#> [13] ps_1.8.1          rlang_1.1.4       evaluate_1.0.1
+#>  [1] processx_3.8.6     compiler_4.4.2     R6_2.5.1           fastmap_1.2.0     
+#>  [5] cli_3.6.3          tools_4.4.2        htmltools_0.5.8.1  yaml_2.3.10       
+#>  [9] rmarkdown_2.29     data.table_1.16.99 knitr_1.49         xfun_0.49         
+#> [13] digest_0.6.37      ps_1.8.1           rlang_1.1.4        evaluate_1.0.1
 ```
