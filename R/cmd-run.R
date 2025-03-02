@@ -42,12 +42,13 @@
 cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
                     stdout_callback = NULL, stderr_callback = NULL,
                     timeout = NULL, spinner = FALSE, verbose = TRUE) {
-    assert_number_whole(timeout, allow_null = TRUE)
-    stdout <- check_std_io(stdout)
-    if (!is.null(stderr)) stderr <- check_std_io(stderr)
-    if (!is.null(timeout)) {
-        timeout <- as.difftime(timeout, units = "secs")
-    }
+    assert_s3_class(command, "command")
+    stdout <- check_stdio(stdout)
+    stderr <- check_stdio(stderr, allow_null = TRUE)
+    stdin <- check_stdin(stdin)
+    stdout_callback <- check_callback(stdout_callback)
+    stderr_callback <- check_callback(stderr_callback)
+    timeout <- check_timeout(timeout)
     proc <- processx_command(
         command,
         help = FALSE,
@@ -69,16 +70,19 @@ cmd_run <- function(command, stdout = TRUE, stderr = TRUE, stdin = NULL,
 cmd_help <- function(command, stdout, stderr,
                      stdout_callback = NULL, stderr_callback = NULL,
                      verbose = TRUE) {
+    assert_s3_class(command, "command")
     if (missing(stdout)) {
         stdout <- TRUE
     } else {
-        stdout <- check_std_io(stdout, help = TRUE)
+        stdout <- check_stdio(stdout, help = TRUE)
     }
     if (missing(stderr)) {
         stderr <- TRUE
-    } else if (!is.null(stderr)) {
-        stderr <- check_std_io(stderr, help = TRUE)
+    } else {
+        stderr <- check_stdio(stderr, allow_null = TRUE, help = TRUE)
     }
+    stdout_callback <- check_callback(stdout_callback)
+    stderr_callback <- check_callback(stderr_callback)
     proc <- processx_command(
         command,
         help = TRUE,
@@ -99,13 +103,14 @@ cmd_help <- function(command, stdout, stderr,
 #' @rdname cmd_run
 cmd_background <- function(command, stdout, stderr, stdin = NULL,
                            verbose = TRUE) {
+    assert_s3_class(command, "command")
     # for background process, we cannot use pipe, since if the user don't
     # read out the standard output and/or error of the pipes, the background
     # process will stop running! So we always use `stdout = ""`/`stderr = ""`
     if (missing(stdout)) {
         stdout <- FALSE
     } else {
-        stdout <- check_std_io(stdout, background = TRUE)
+        stdout <- check_stdio(stdout, background = TRUE)
         if (isTRUE(stdout)) {
             if (processx::is_valid_fd(1L)) {
                 cli::cli_warn(
@@ -126,14 +131,17 @@ cmd_background <- function(command, stdout, stderr, stdin = NULL,
     }
     if (missing(stderr)) {
         stderr <- FALSE
-    } else if (!is.null(stderr)) {
-        stderr <- check_std_io(stderr, background = TRUE)
+    } else {
+        stderr <- check_stdio(stderr, allow_null = TRUE, background = TRUE)
         if (isTRUE(stderr)) {
             if (processx::is_valid_fd(2L)) {
-                cli::cli_warn(paste(
-                    "Direct printing to the R process's stderr of a",
-                    "background process will mess up the R console"
-                ))
+                cli::cli_warn(
+                    paste(
+                        "Direct printing to the R process's stderr of a",
+                        "background process will mess up the R console"
+                    ),
+                    .frequency = "regularly"
+                )
                 stderr <- ""
             } else {
                 cli::cli_abort(c(
@@ -143,6 +151,7 @@ cmd_background <- function(command, stdout, stderr, stdin = NULL,
             }
         }
     }
+    stdin <- check_stdin(stdin)
     processx_command(
         command,
         help = FALSE,
@@ -155,12 +164,23 @@ cmd_background <- function(command, stdout, stderr, stdin = NULL,
 
 # For `stdout` and `stderr`
 #' @importFrom rlang caller_arg caller_call
-check_std_io <- function(x, background = FALSE, help = FALSE,
-                         arg = caller_arg(x), call = caller_call()) {
+check_stdio <- function(x, allow_null = FALSE,
+                        background = FALSE, help = FALSE,
+                        arg = caller_arg(x), call = caller_call()) {
+    if (is.null(x)) {
+        if (!allow_null) {
+            cli::cli_abort(
+                "{.code NULL} is not allowed in {.arg {arg}}",
+                call = call
+            )
+        }
+        return(x)
+    }
+
     if (rlang::is_string(x)) {
         if (!nzchar(x)) {
             cli::cli_abort(
-                "{.arg {arg}} cannot be an empty string",
+                "empty string is not allowed in {.arg {arg}}",
                 call = call
             )
         }
@@ -170,7 +190,7 @@ check_std_io <- function(x, background = FALSE, help = FALSE,
     if (rlang::is_bool(x)) {
         if (help) {
             cli::cli_abort(
-                "{.arg {arg}} cannot be a single boolean value",
+                "boolean value is not allowed in {.arg {arg}}",
                 call = call
             )
         }
@@ -180,16 +200,19 @@ check_std_io <- function(x, background = FALSE, help = FALSE,
     if (inherits(x, "connection")) {
         if (background) {
             cli::cli_abort(
-                "{.arg {arg}} cannot be a {.cls connection} object",
+                "{.cls connection} is not allowed in {.arg {arg}}",
                 call = call
             )
         }
         if (isOpen(x)) {
             if (!isOpen(x, "write")) {
-                cli::cli_abort(
-                    "Cannot write into the {.cls connection} {.arg {arg}}",
-                    call = call
-                )
+                cli::cli_abort(c(
+                    "{.cls connection} of {.arg {arg}} is not writable",
+                    i = paste(
+                        "You can provide a closed {.cls connection}",
+                        "or a opened writable {.cls connection}"
+                    )
+                ), call = call)
             }
         } else if (inherits(x, "AsIs")) {
             x <- open(x, open = "a+b")
@@ -202,4 +225,46 @@ check_std_io <- function(x, background = FALSE, help = FALSE,
         "{.arg {arg}} cannot be a {.obj_type_friendly {x}}",
         call = call
     )
+}
+
+check_stdin <- function(x, arg = caller_arg(x), call = caller_call()) {
+    if (is.null(x)) return(x) # styler: off
+    if (rlang::is_string(x)) {
+        if (!nzchar(x)) {
+            cli::cli_abort(
+                "empty string is not allowed in {.arg {arg}}",
+                call = call
+            )
+        }
+        return(x)
+    }
+    cli::cli_abort(
+        "{.arg {arg}} cannot be a {.obj_type_friendly {x}}",
+        call = call
+    )
+}
+
+check_callback <- function(x, arg = caller_arg(x), call = caller_call()) {
+    if (!is.null(x)) {
+        x <- rlang::as_function(x, arg = arg, call = call)
+    }
+    x
+}
+
+check_timeout <- function(x, arg = caller_arg(x), call = caller_call()) {
+    if (!is.null(x)) {
+        x <- rlang::try_fetch(
+            as.difftime(x, units = "secs"),
+            error = function(cnd) {
+                cli::cli_abort(
+                    paste(
+                        "{.arg {arg}} must be an object",
+                        "which can be coercible to {.cls difftime}"
+                    ),
+                    parent = cnd
+                )
+            }
+        )
+    }
+    x
 }

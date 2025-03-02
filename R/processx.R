@@ -8,16 +8,7 @@ processx_command <- function(command, help, shell = NULL,
                              stdout = TRUE, stderr = TRUE, stdin = NULL,
                              stdout_callback = NULL, stderr_callback = NULL,
                              verbose = TRUE, call = caller_call()) {
-    assert_s3_class(command, "command", call = call)
-    assert_string(stdin, allow_empty = FALSE, allow_null = TRUE, call = call)
     assert_bool(verbose, call = call)
-
-    if (!is.null(stdout_callback)) {
-        stdout_callback <- rlang::as_function(stdout_callback, call = call)
-    }
-    if (!is.null(stderr_callback)) {
-        stderr_callback <- rlang::as_function(stderr_callback, call = call)
-    }
 
     # set working directory ---------------------
     if (!is.null(wd <- .subset2(command, "wd"))) {
@@ -84,7 +75,9 @@ processx_command <- function(command, help, shell = NULL,
         content[1L] <- paste(content[1L], "<", shQuote(stdin))
     }
     if (length(content) > 1L) {
-        content[-length(content)] <- paste(content[-length(content)], "|")
+        content[-length(content)] <- paste(
+            "   ", content[-length(content)], "|"
+        )
     }
 
     # write the content to the script
@@ -123,12 +116,14 @@ processx_command <- function(command, help, shell = NULL,
 
     # execute the command ----------------------
     BlitProcess$new(
-        cmd, c(arg, script),
+        cmd, 
+        c(arg, script),
         wd = wd,
         env = NULL,
         stdout = stdout,
         stderr = stderr,
         stdin = NULL,
+        .blit_content = content,
         .blit_stdout_callback = stdout_callback,
         .blit_stderr_callback = stderr_callback,
         .blit_cleanup = cleanup,
@@ -144,7 +139,9 @@ BlitProcess <- R6Class(
         initialize = function(..., stdout, stderr,
                               .blit_stdout_callback,
                               .blit_stderr_callback,
+                              .blit_content = NULL,
                               .blit_cleanup = NULL) {
+            private$.blit_content <- .blit_content
             private$.blit_stdout <- stdout
             private$.blit_stdout_callback <- .blit_stdout_callback
             private$.blit_stderr <- stderr
@@ -182,16 +179,17 @@ BlitProcess <- R6Class(
             if (self$has_output_connection()) private$.blit_stdout_prepare()
             if (self$has_error_connection()) private$.blit_stderr_prepare()
         },
+        .blit_get_content = function() private$.blit_content,
         .blit_run = function(timeout = NULL, spinner = FALSE) {
             out <- rlang::try_fetch(
                 private$.blit_wait(timeout, spinner),
                 interrupt = function(cnd) {
                     # in try_fetch, contition function are run before on.exit()
-                    # in the expr, so we always ensure we only kill the process,
-                    # but don't close the connections, so that
+                    # in the `expr`, so we always ensure we only kill the
+                    # process, but don't close the connections, so that
                     # `$.blit_complete()` method will collect all the stdout and
                     # stderr
-                    private$.blit_kill(close_connections = FALSE)
+                    self$.blit_kill(close_connections = FALSE)
                     cli::cli_warn("System command interrupted",
                         class = "system_command_interrupt"
                     )
@@ -217,7 +215,7 @@ BlitProcess <- R6Class(
                 if (!is.null(timeout) &&
                     is.finite(timeout) &&
                     Sys.time() - start_time > timeout) {
-                    private$.blit_kill(close_connections = FALSE)
+                    self$.blit_kill(close_connections = FALSE)
                     private$.blit_timeout <- TRUE
                     return(FALSE)
                 }
@@ -240,17 +238,28 @@ BlitProcess <- R6Class(
                 }
             }
             out
+        },
+        .blit_kill = function(close_connections = TRUE) {
+            self$kill(close_connections = close_connections)
+            if (private$cleanup_tree) {
+                self$kill_tree(close_connections = close_connections)
+            }
+        },
+        .blit_complete = function() {
+            private$.blit_complete_collect()
+            private$.blit_complete_cleanup()
         }
     ),
     private = list(
+        .blit_content = NULL,
         .blit_timeout = FALSE,
         .blit_wait = function(timeout = NULL, spinner = FALSE) {
             # We make sure that all stdout and stderr have been collected
-            on.exit(private$.blit_complete(), add = TRUE)
+            on.exit(self$.blit_complete(), add = TRUE)
 
             # We make sure that the process is eliminated and the connections
             # are closed
-            on.exit(private$.blit_kill(), add = TRUE)
+            on.exit(self$.blit_kill(), add = TRUE)
             start_time <- self$get_start_time()
             if (spinner) {
                 spin <- new_spin()
@@ -265,16 +274,6 @@ BlitProcess <- R6Class(
             super$wait()
             if (spinner) cat("\r \r")
             self$get_exit_status()
-        },
-        .blit_kill = function(close_connections = TRUE) {
-            self$kill(close_connections = close_connections)
-            if (private$cleanup_tree) {
-                self$kill_tree(close_connections = close_connections)
-            }
-        },
-        .blit_complete = function() {
-            private$.blit_complete_collect()
-            private$.blit_complete_cleanup()
         },
         .blit_complete_cleanup = function() {
             if (!is.null(private$.blit_cleanup)) {
@@ -447,7 +446,7 @@ BlitProcess <- R6Class(
         .blit_stderr_callback = NULL,
         .blit_cleanup = NULL,
         finalize = function() {
-            private$.blit_complete()
+            self$.blit_complete()
             if (!is.null(super$finalize)) super$finalize()
         }
     )
