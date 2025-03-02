@@ -85,6 +85,30 @@ read_lines <- function(path, n = Inf) {
     )[[1L]]
 }
 
+# To write a file with windows line endings use write_lines(eol = "\r\n")
+write_lines <- function(text, path, append = FALSE,
+                        eol = if (.Platform$OS.type == "windows") {
+                            "\r\n"
+                        } else {
+                            "\n"
+                        },
+                        compress = "auto") {
+    data.table::fwrite(
+        x = list(text),
+        file = path,
+        append = append,
+        quote = FALSE,
+        eol = eol,
+        na = "NA",
+        col.names = FALSE,
+        logical01 = FALSE,
+        showProgress = FALSE,
+        verbose = FALSE,
+        compress = compress
+    )
+    invisible(text)
+}
+
 read_lines2 <- function(path, n = Inf) {
     if (is_gzip_suffix(path) || is_gzip_signature(path)) {
         path <- gzfile(path, open = "r")
@@ -98,29 +122,6 @@ read_lines2 <- function(path, n = Inf) {
     }
     if (is.infinite(n) || n < 0L) n <- -1L
     readLines(path, n = n)
-}
-
-# To write a file with windows line endings use write_lines(eol = "\r\n")
-write_lines <- function(text, path,
-                        eol = if (.Platform$OS.type == "windows") {
-                            "\r\n"
-                        } else {
-                            "\n"
-                        },
-                        compress = "auto") {
-    data.table::fwrite(
-        x = list(text),
-        file = path,
-        quote = FALSE,
-        eol = eol,
-        na = "NA",
-        col.names = FALSE,
-        logical01 = FALSE,
-        showProgress = FALSE,
-        verbose = FALSE,
-        compress = compress
-    )
-    invisible(text)
 }
 
 # https://github.com/Rdatatable/data.table/blob/15c127e99f8d6aab599c590d4aec346a850f1334/R/fread.R#L90

@@ -30,28 +30,6 @@ processx_command <- function(command, help, shell = NULL,
         command_series <- utils::tail(command_series, 1L)
     }
 
-    # prepare the shell -------------------------
-    script <- tempfile(pkg_nm())
-    if (.Platform$OS.type == "windows") {
-        # https://stackoverflow.com/questions/605686/how-to-write-a-multiline-command
-        # for cmd "^"
-        # for powershell "`"
-        cmd <- shell %||% "cmd"
-        # content <- c(switch(cmd,
-        #     cmd = sprintf("del /F %s", shQuote(script, "cmd")),
-        #     powershell = sprintf("Remove-Item -Force -Path '%s'", script)
-        # ), content)
-        arg <- switch(cmd,
-            cmd = "/C",
-            powershell = c("-ExecutionPolicy", "Bypass", "-File")
-        )
-        cmd <- paste(cmd, "exe", sep = ".")
-    } else {
-        # content <- c(sprintf("rm -f '%s'", script), content)
-        cmd <- shell %||% "sh" # or "bash"
-        arg <- NULL
-    }
-
     # setting environment variables -------------
     if (length(envvar <- .subset2(command, "envvar"))) {
         if (verbose) {
@@ -66,26 +44,18 @@ processx_command <- function(command, help, shell = NULL,
         set_envvar(envvar)
     }
 
-    # build the command content script ---------
-    content <- vapply(command_series, function(cmd) {
-        o <- cmd$build_command(help = help, verbose = verbose)
+    # build the command content script ----------
+    content <- vapply(command_series, function(Command) {
+        o <- Command$build_command(help = help, verbose = verbose)
         paste(o, collapse = " ")
     }, character(1L), USE.NAMES = FALSE)
     if (!is.null(stdin)) {
         content[1L] <- paste(content[1L], "<", shQuote(stdin))
     }
     if (length(content) > 1L) {
-        content[-length(content)] <- paste(
-            "   ", content[-length(content)], "|"
+        content[-length(content)] <- sprintf(
+            "    %s |", content[-length(content)]
         )
-    }
-
-    # write the content to the script
-    writeLines(content, script, sep = "\n")
-
-    # ensure the file is executable
-    if (file.access(script, mode = 1L) != 0L) {
-        Sys.chmod(script, "555")
     }
 
     if (verbose) {
@@ -102,10 +72,6 @@ processx_command <- function(command, help, shell = NULL,
     })
     cleaned <- unlist(cleaned, FALSE, FALSE)
     cleanup <- function() {
-        rlang::try_fetch(
-            file.remove(script),
-            error = function(cnd) cli::cli_warn(conditionMessage(cnd))
-        )
         for (quo in cleaned) {
             rlang::try_fetch(
                 rlang::eval_tidy(quo),
@@ -116,13 +82,12 @@ processx_command <- function(command, help, shell = NULL,
 
     # execute the command ----------------------
     BlitProcess$new(
-        cmd, 
-        c(arg, script),
         wd = wd,
         env = NULL,
         stdout = stdout,
         stderr = stderr,
-        stdin = NULL,
+        # try to inherit the terminal
+        stdin = if (processx::is_valid_fd(0L)) "" else NULL,
         .blit_content = content,
         .blit_stdout_callback = stdout_callback,
         .blit_stderr_callback = stderr_callback,
@@ -136,12 +101,43 @@ BlitProcess <- R6Class(
     "BlitProcess",
     inherit = processx::process,
     public = list(
+        .blit_content = NULL,
+        .blit_script = NULL,
         initialize = function(..., stdout, stderr,
                               .blit_stdout_callback,
                               .blit_stderr_callback,
                               .blit_content = NULL,
-                              .blit_cleanup = NULL) {
-            private$.blit_content <- .blit_content
+                              .blit_cleanup = NULL,
+                              .blit_shell = NULL) {
+            # prepare the shell -------------------------
+            script <- tempfile(pkg_nm())
+            if (.Platform$OS.type == "windows") {
+                # https://stackoverflow.com/questions/605686/how-to-write-a-multiline-command
+                # for cmd "^"
+                # for powershell "`"
+                cmd <- .blit_shell %||% "cmd"
+                arg <- switch(cmd,
+                    cmd = "/C",
+                    powershell = c("-ExecutionPolicy", "Bypass", "-File")
+                )
+                cmd <- paste(cmd, "exe", sep = ".")
+            } else {
+                cmd <- .blit_shell %||% "sh" # or "bash"
+                arg <- NULL
+            }
+
+            # write the content to the script
+            write_lines(.blit_content, script)
+
+            # ensure the file is executable
+            if (file.access(script, mode = 1L) != 0L) {
+                Sys.chmod(script, "555")
+            }
+
+            self$.blit_content <- .blit_content
+            self$.blit_script <- script
+
+            # prepare the stdout and stderr ---------------
             private$.blit_stdout <- stdout
             private$.blit_stdout_callback <- .blit_stdout_callback
             private$.blit_stderr <- stderr
@@ -153,7 +149,14 @@ BlitProcess <- R6Class(
 
             } else if (isFALSE(stdout)) {
                 stdout <- NULL
-            } else if (isTRUE(stdout) || inherits(stdout, "connection")) {
+            } else if (isTRUE(stdout)) {
+                if (processx::is_valid_fd(1L) &&
+                    is.null(.blit_stdout_callback)) {
+                    stdout <- ""
+                } else {
+                    stdout <- "|"
+                }
+            } else if (inherits(stdout, "connection")) {
                 # we need echo the stdout
                 stdout <- "|"
             } else if (!is.null(.blit_stdout_callback)) {
@@ -167,19 +170,30 @@ BlitProcess <- R6Class(
                 stderr <- NULL
             } else if (is.null(stderr)) {
                 stderr <- "2>&1"
-            } else if (isTRUE(stderr) || inherits(stderr, "connection")) {
+            } else if (isTRUE(stderr)) {
+                if (processx::is_valid_fd(2L) &&
+                    is.null(.blit_stderr_callback)) {
+                    stderr <- ""
+                } else {
+                    stderr <- "|"
+                }
+            } else if (inherits(stderr, "connection")) {
                 stderr <- "|"
             } else if (!is.null(.blit_stderr_callback)) {
                 stderr <- "|"
             }
             private$.blit_cleanup <- .blit_cleanup
-            super$initialize(..., stdout = stdout, stderr = stderr)
+            super$initialize(
+                command = cmd,
+                args = c(arg, script),
+                ...,
+                stdout = stdout, stderr = stderr
+            )
 
             # always ensure the connection methods get prepared
             if (self$has_output_connection()) private$.blit_stdout_prepare()
             if (self$has_error_connection()) private$.blit_stderr_prepare()
         },
-        .blit_get_content = function() private$.blit_content,
         .blit_run = function(timeout = NULL, spinner = FALSE) {
             out <- rlang::try_fetch(
                 private$.blit_wait(timeout, spinner),
@@ -196,11 +210,11 @@ BlitProcess <- R6Class(
                     invokeRestart("abort")
                 }
             )
-            if (private$.blit_timeout) {
+            if (!is.null(private$.blit_timeout) && private$.blit_timeout) {
                 cli::cli_warn("System command timed out",
                     class = "system_command_timeout"
                 )
-                private$.blit_timeout <- FALSE
+                private$.blit_timeout <- NULL
             }
             out
         },
@@ -244,15 +258,19 @@ BlitProcess <- R6Class(
             if (private$cleanup_tree) {
                 self$kill_tree(close_connections = close_connections)
             }
+            invisible(self)
         },
         .blit_complete = function() {
             private$.blit_complete_collect()
             private$.blit_complete_cleanup()
+            invisible(self)
         }
     ),
     private = list(
-        .blit_content = NULL,
-        .blit_timeout = FALSE,
+        # A single boolean valued indicates whether the process is timedout
+        .blit_timeout = NULL,
+        # A function used to cleanup
+        .blit_cleanup = NULL,
         .blit_wait = function(timeout = NULL, spinner = FALSE) {
             # We make sure that all stdout and stderr have been collected
             on.exit(self$.blit_complete(), add = TRUE)
@@ -276,6 +294,15 @@ BlitProcess <- R6Class(
             self$get_exit_status()
         },
         .blit_complete_cleanup = function() {
+            if (file.exists(self$.blit_script)) {
+                rlang::try_fetch(
+                    file.remove(self$.blit_script),
+                    error = function(cnd) {
+                        cli::cli_warn(conditionMessage(cnd))
+                        FALSE
+                    }
+                )
+            }
             if (!is.null(private$.blit_cleanup)) {
                 private$.blit_cleanup()
                 private$.blit_cleanup <- NULL
@@ -375,7 +402,7 @@ BlitProcess <- R6Class(
                     }
                 }
                 private$.blit_stdout_push <- function(text) {
-                    cat(text, file = private$.blit_stdout_con, sep = "\n")
+                    writeLines(text, con = private$.blit_stdout_con)
                 }
             }
             private$.blit_stdout_remain <- ""
@@ -433,7 +460,7 @@ BlitProcess <- R6Class(
                     }
                 }
                 private$.blit_stderr_push <- function(text) {
-                    cat(text, file = private$.blit_stderr_con, sep = "\n")
+                    writeLines(text, con = private$.blit_stderr_con)
                 }
             }
             private$.blit_stderr_remain <- ""
@@ -444,7 +471,6 @@ BlitProcess <- R6Class(
         .blit_stderr_remain = NULL,
         .blit_stderr = NULL,
         .blit_stderr_callback = NULL,
-        .blit_cleanup = NULL,
         finalize = function() {
             self$.blit_complete()
             if (!is.null(super$finalize)) super$finalize()
