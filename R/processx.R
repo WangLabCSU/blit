@@ -53,9 +53,8 @@ processx_command <- function(command, help, shell = NULL,
         content[1L] <- paste(content[1L], "<", shQuote(stdin))
     }
     if (length(content) > 1L) {
-        content[-length(content)] <- sprintf(
-            "    %s |", content[-length(content)]
-        )
+        content[-length(content)] <- sprintf("%s |", content[-length(content)])
+        content[-1L] <- paste0("    ", content[-1L])
     }
 
     if (verbose) {
