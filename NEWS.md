@@ -2,6 +2,8 @@
 
 ## New features
 
+* new command `samtools`
+
 * new function `cmd_parallel()` to run multiple commands meanwhile
 
 * use `processx` package to execute the command and remove the `sys` and `withr` package from dependencies
