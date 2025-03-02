@@ -72,10 +72,10 @@ Sys.unsetenv("TEST")
     #> Running command: /usr/bin/echo $TEST
     #> blit is awesome
 
-`cmd_background()` is provided for complete. Instead of using this
-function, we suggest to use `cmd_parallel()` instead, which can run
-multiple commands in the background and ensure all process will be
-cleanned when process exit.
+`cmd_background()` is provided for completeness. Instead of using this
+function, we recommend using `cmd_parallel()`, which can run multiple
+commands in the background while ensuring that all processes are
+properly cleaned up when the process exits.
 
 Several functions allow you to control the environment when running the
 command:
@@ -218,8 +218,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command: /usr/bin/gzip -c /tmp/Rtmp97aOkG/file3b672224b6138c |
-#> /usr/bin/gzip -d > /tmp/Rtmp97aOkG/file3b67226996d92b
+#> Running command: /usr/bin/gzip -c /tmp/RtmpkE5pnL/file3b6f3b3e5180c0 |
+#> /usr/bin/gzip -d > /tmp/RtmpkE5pnL/file3b6f3b56e1050
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```
@@ -272,11 +272,11 @@ ping("8.8.8.8") |> cmd_run(timeout = 5) # terminate it after 5s
 #> Running command: /usr/bin/ping 8.8.8.8
 #> 
 #> PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=43.8 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=44.1 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=43.5 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=44.7 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=45.4 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=44.0 ms
 #> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=44.6 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=44.0 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=45.0 ms
 #> Warning: System command timed out
 ```
 
