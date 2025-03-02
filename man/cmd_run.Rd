@@ -96,7 +96,10 @@ execution should be verbose.}
 \itemize{
 \item \code{cmd_run}: Run the command.
 \item \code{cmd_help}: Print the help document for this command.
-\item \code{cmd_background}: Run the command in the background.
+\item \code{cmd_background}: Run the command in the background. This function is
+provided for complete. Instead of using this function, we suggest to use
+\code{\link[=cmd_parallel]{cmd_parallel()}} instead, which can run multiple commands in the
+background and ensure all process will be cleanned when process exit.
 }
 }
 \seealso{

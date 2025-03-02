@@ -2,7 +2,10 @@
 #'
 #' - `cmd_run`: Run the command.
 #' - `cmd_help`: Print the help document for this command.
-#' - `cmd_background`: Run the command in the background.
+#' - `cmd_background`: Run the command in the background. This function is
+#'   provided for complete. Instead of using this function, we suggest to use 
+#'  [`cmd_parallel()`] instead, which can run multiple commands in the
+#'  background and ensure all process will be cleanned when process exit.
 #'
 #' @param command A `command` object.
 #' @param stdout,stderr Specifies how the output streams of the child process
