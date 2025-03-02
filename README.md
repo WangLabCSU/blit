@@ -60,12 +60,14 @@ Alternatively, you can run it in the background. In this case, a
 returned. For more information, refer to the official site:
 
 ``` r
-# We use some tricks to capture the output from the background process.
-# The actual implementation differs, but the output remains the same.
 proc <- exec("echo", "$TEST") |> cmd_background(stdout = "")
 proc$kill()
 Sys.unsetenv("TEST")
 ```
+
+> We use some tricks to capture the output from the background process.
+> The actual implementation in the `README.Rmd` differs, but the output
+> remains the same.
 
     #> Running command: /usr/bin/echo $TEST
     #> blit is awesome
@@ -216,8 +218,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command: /usr/bin/gzip -c /tmp/RtmpwYaXRQ/file3b5bd82898f2f1 |
-#> /usr/bin/gzip -d > /tmp/RtmpwYaXRQ/file3b5bd871ef6257
+#> Running command: /usr/bin/gzip -c /tmp/Rtmp97aOkG/file3b672224b6138c |
+#> /usr/bin/gzip -d > /tmp/Rtmp97aOkG/file3b67226996d92b
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```
@@ -270,9 +272,11 @@ ping("8.8.8.8") |> cmd_run(timeout = 5) # terminate it after 5s
 #> Running command: /usr/bin/ping 8.8.8.8
 #> 
 #> PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=44.1 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=43.8 ms
 #> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=44.1 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=44.5 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=43.5 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=44.6 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=44.0 ms
 #> Warning: System command timed out
 ```
 

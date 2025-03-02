@@ -59,12 +59,14 @@ Alternatively, you can run it in the background. In this case, a
 [`process`](https://processx.r-lib.org/index.html) object will be returned. For
 more information, refer to the official site:
 ```{r eval=FALSE}
-# We use some tricks to capture the output from the background process.
-# The actual implementation differs, but the output remains the same.
 proc <- exec("echo", "$TEST") |> cmd_background(stdout = "")
 proc$kill()
 Sys.unsetenv("TEST")
 ```
+
+> We use some tricks to capture the output from the background process. The
+actual implementation in the `README.Rmd` differs, but the output remains the
+same.
 
 ```{r echo=FALSE}
 file <- tempfile()
