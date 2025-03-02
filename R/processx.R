@@ -386,7 +386,9 @@ BlitProcess <- R6Class(
         .blit_stdout_prepare = function(stdout = private$.blit_stdout) {
             if (isTRUE(stdout)) {
                 private$.blit_stdout_push <- function(text) {
-                    cat(text, sep = "\n")
+                    if (is.character(text)) {
+                        cat(text, sep = "\n")
+                    }
                 }
             } else {
                 if (inherits(stdout, "connection")) {
@@ -402,7 +404,9 @@ BlitProcess <- R6Class(
                     }
                 }
                 private$.blit_stdout_push <- function(text) {
-                    writeLines(text, con = private$.blit_stdout_con)
+                    if (is.character(text)) {
+                        writeLines(text, con = private$.blit_stdout_con)
+                    }
                 }
             }
             private$.blit_stdout_remain <- ""
@@ -444,7 +448,9 @@ BlitProcess <- R6Class(
         .blit_stderr_prepare = function(stderr = private$.blit_stderr) {
             if (isTRUE(stderr)) {
                 private$.blit_stderr_push <- function(text) {
-                    cat(cli::col_red(text), sep = "\n")
+                    if (is.character(text)) {
+                        cat(cli::col_red(text), sep = "\n")
+                    }
                 }
             } else {
                 if (inherits(stderr, "connection")) {
@@ -460,7 +466,9 @@ BlitProcess <- R6Class(
                     }
                 }
                 private$.blit_stderr_push <- function(text) {
-                    writeLines(text, con = private$.blit_stderr_con)
+                    if (is.character(text)) {
+                        writeLines(text, con = private$.blit_stderr_con)
+                    }
                 }
             }
             private$.blit_stderr_remain <- ""

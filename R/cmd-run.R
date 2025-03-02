@@ -27,8 +27,9 @@
 #' The `stderr` parameter also accepts `NULL`, which redirects it to the same
 #' connection (i.e., pipe or file) as `stdout`.
 #' @param stdin should the input be diverted? A character string naming a file.
-#' @param stdout_callback,stderr_callback `NULL`, or a function to call for
-#'   every line of the standard output/error.
+#' @param stdout_callback,stderr_callback NULL, or a function that is invoked
+#' for each line of standard output or error. Non-text (non-character) output
+#' will be directly ignored.
 #' @param timeout Timeout in seconds. This is a limit for the elapsed time
 #' running command in the separate process.
 #' @param spinner Whether to show a reassuring spinner while the process

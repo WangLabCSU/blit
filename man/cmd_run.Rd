@@ -57,8 +57,9 @@ connection (i.e., pipe or file) as \code{stdout}.}
 
 \item{stdin}{should the input be diverted? A character string naming a file.}
 
-\item{stdout_callback, stderr_callback}{\code{NULL}, or a function to call for
-every line of the standard output/error.}
+\item{stdout_callback, stderr_callback}{NULL, or a function that is invoked
+for each line of standard output or error. Non-text (non-character) output
+will be directly ignored.}
 
 \item{timeout}{Timeout in seconds. This is a limit for the elapsed time
 running command in the separate process.}
