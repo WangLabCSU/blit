@@ -80,11 +80,12 @@ we recommend using `cmd_parallel()`, which can run multiple commands in the
 background while ensuring that all processes are properly cleaned up when the
 process exits.
 ```{r}
+# ip address are copied from quora <What are some famous IP addresses?>: https://qr.ae/pYlnbQ
 cmd_parallel(
     exec("ping", "localhost"),
-    exec("ping", "208.67.222.222"),
-    exec("ping", "4.2.2.1"),
-    exec("ping", "8.8.8.8"),
+    exec("ping", "208.67.222.222"), # OpenDNS
+    exec("ping", "8.8.8.8"), # google dns
+    exec("ping", "8.8.4.4"), # google dns
     stdouts = TRUE,
     stdout_callbacks = lapply(
         seq_len(4),
