@@ -65,12 +65,22 @@ cmd_parallel <- function(..., stdouts = FALSE, stderrs = FALSE, stdins = NULL,
     stderr_callbacks <- unwrap(stderr_callbacks)
     timeouts <- unwrap(timeouts)
 
-    stdout_list <- check_stdio_list(stdouts, n, "...")
-    stderr_list <- check_stdio_list(stderrs, n, "...", allow_null = TRUE)
-    stdin_list <- check_stdin_list(stdins, n, "...")
-    stdout_callback_list <- check_callback_list(stdout_callbacks, n, "...")
-    stderr_callback_list <- check_callback_list(stderr_callbacks, n, "...")
-    timeouts <- check_timeout_list(timeouts, n, "...")
+    stdout_list <- check_stdio_list(stdouts, n, "...", arg = "stdouts")
+    stderr_list <- check_stdio_list(stderrs, n, "...",
+        allow_null = TRUE, arg = "stderrs"
+    )
+    stdin_list <- check_stdin_list(stdins, n, "...", arg = "stdins")
+    stdout_callback_list <- check_callback_list(
+        stdout_callbacks, n, "...",
+        arg = "stdout_callbacks"
+    )
+    stderr_callback_list <- check_callback_list(
+        stderr_callbacks, n, "...",
+        arg = "stderr_callbacks"
+    )
+    timeouts <- check_timeout_list(timeouts, n, "...",
+        arg = "timeouts"
+    )
     assert_number_whole(threads,
         min = 1, max = as.double(parallel::detectCores()),
         allow_null = TRUE
@@ -107,6 +117,7 @@ cmd_parallel <- function(..., stdouts = FALSE, stderrs = FALSE, stdins = NULL,
 
                 # We make sure that all stdout and stderr have been collected
                 defer(out_env$process[[!!i]]$.blit_complete())
+
                 # We make sure that the process is eliminated and the
                 # connections are closed
                 defer(out_env$process[[!!i]]$.blit_kill())
@@ -177,12 +188,18 @@ cmd_parallel <- function(..., stdouts = FALSE, stderrs = FALSE, stdins = NULL,
 
     # merging stdout_list
     if (rlang::is_string(stdouts) && nzchar(stdouts) && n > 1L) {
+        if (verbose) {
+            cli::cli_inform("Merging all stdouds into {.path {stdouds}}")
+        }
         stdout_list <- stdout_list[file.exists(stdout_list)]
         concatenate_files(stdout_list, stdouts)
     }
 
     # merging stderr_list
     if (rlang::is_string(stderrs) && nzchar(stderrs) && n > 1L) {
+        if (verbose) {
+            cli::cli_inform("Merging all stderrs into {.path {stderrs}}")
+        }
         stderr_list <- stderr_list[file.exists(stderr_list)]
         concatenate_files(stderr_list, stderrs)
     }
