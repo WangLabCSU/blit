@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/WangLabCSU/blit/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/WangLabCSU/blit/actions/workflows/R-CMD-check.yaml)
 [![CRAN status](https://www.r-pkg.org/badges/version/blit)](https://CRAN.R-project.org/package=blit)
+[![Codecov test coverage](https://codecov.io/gh/WangLabCSU/blit/branch/main/graph/badge.svg)](https://app.codecov.io/gh/WangLabCSU/blit?branch=main)
 [![](https://cranlogs.r-pkg.org/badges/blit)](https://cran.r-project.org/package=blit)
 <!-- badges: end -->
 
