@@ -91,7 +91,15 @@ cmd_parallel <- function(..., stdouts = FALSE, stderrs = FALSE, stdins = NULL,
 
     do_parallel <- function() {
         poos_size <- threads %||% 1L
-        bar <- cli::cli_progress_bar(total = n, clear = FALSE)
+        progress <- cli::cli_progress_bar(
+            total = n, clear = FALSE,
+            format = paste(
+                "{cli::pb_spin} {cli::pb_current}/{cli::pb_total}",
+                "[{cli::pb_rate}] [elapsed in {cli::pb_elapsed}]",
+                "@ {as.character(Sys.time(), digits = 0)}",
+                sep = " "
+            )
+        )
 
         # pools: store the `index` of result
         # NA means this pool can be used
@@ -146,11 +154,13 @@ cmd_parallel <- function(..., stdouts = FALSE, stderrs = FALSE, stdins = NULL,
 
                     # release this pool
                     pools[pool] <- NA_integer_
-                    cli::cli_progress_update(inc = 1L, id = bar)
+                    cli::cli_progress_update(inc = 1L, id = progress)
 
                     # this pool has been released, so we directly
                     # step into next cycle and re-use this pool
                     next
+                } else {
+                    cli::cli_progress_update(inc = 0L, id = progress, force = TRUE)
                 }
             }
 
@@ -161,7 +171,7 @@ cmd_parallel <- function(..., stdouts = FALSE, stderrs = FALSE, stdins = NULL,
                 pool <- pool + 1L
             }
         }
-        cli::cli_progress_done(id = bar)
+        cli::cli_progress_done(id = progress)
     }
 
     rlang::try_fetch(
@@ -278,11 +288,7 @@ check_timeout_list <- function(x, n, n_arg,
                                arg = caller_arg(x), call = caller_call()) {
     if (length(x) == 1L || is.null(x)) {
         x <- check_timeout(x, arg = arg, call = call)
-        if (is.null(x)) {
-            return(rep_len(list(x), n))
-        } else {
-            return(rep_len(x, n))
-        }
+        return(rep_len(list(x), n))
     }
     if (length(x) != n) {
         cli::cli_abort(

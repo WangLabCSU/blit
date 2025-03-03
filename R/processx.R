@@ -61,9 +61,10 @@ processx_command <- function(command, help, shell = NULL,
     }
 
     if (verbose) {
-        cli::cli_text(
-            "Running command: {.field {paste(content, collapse = ' ')}}"
-        )
+        cli::cli_text(paste(
+            "Running command ({as.character(Sys.time(), digits = 0)}):",
+            "{.field {paste(content, collapse = ' ')}}"
+        ))
         cli::cat_line()
     }
 
@@ -226,7 +227,6 @@ BlitProcess <- R6Class(
                     private$.blit_timeout <- TRUE
                     return(FALSE)
                 }
-
                 # Otherwise just poll for 200ms, or less if a timeout is sooner.
                 # We cannot poll until the end, even if there is not spinner,
                 # because RStudio does not send a SIGINT to the R process,
@@ -273,10 +273,19 @@ BlitProcess <- R6Class(
             on.exit(self$.blit_kill(), add = TRUE)
             start_time <- self$get_start_time()
             if (spinner) {
-                spin <- new_spin()
+                progress <- cli::cli_progress_bar(
+                    total = 1L, clear = FALSE,
+                    format = paste(
+                        "{cli::pb_spin} [elapsed in {cli::pb_elapsed}]",
+                        "@ {as.character(Sys.time(), digits = 0)}",
+                        sep = " "
+                    )
+                )
                 # for spinner, always use 200 `poll_timeout`
                 while (self$.blit_active_and_collect(timeout, start_time, 200)) {
-                    spin()
+                    cli::cli_progress_update(
+                        inc = 0L, id = progress, force = TRUE
+                    )
                 }
             } else {
                 while (self$.blit_active_and_collect(timeout, start_time)) {
