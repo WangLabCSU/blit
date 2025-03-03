@@ -10,8 +10,9 @@
 # imports: [utils]
 # ---
 
-# This file contains several helper functions for package checking,
-# installation, and other utilities.
+# This file contains various helper utilities, including common functions
+# used across multiple packages I have developed. Some functions depend on
+# other packages that are not listed in Imports, so use them with caution.
 
 # ## Changelog
 # 2025-03-03:
@@ -58,6 +59,7 @@ pkg_nm <- function() utils::packageName(environment())
 
 pkg_namespace <- function() topenv(environment())
 
+# Need `rlang` package
 set_exit <- function(expr, envir = parent.frame(), after = TRUE, add = TRUE) {
     expr <- getExportedValue("rlang", "enquo")(expr)
     thunk <- as.call(list(
