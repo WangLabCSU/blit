@@ -50,7 +50,7 @@ processx_command <- function(command, help, shell = NULL,
         paste(o, collapse = " ")
     }, character(1L), USE.NAMES = FALSE)
     if (!is.null(stdin)) {
-        if (nzchar(stdin)) {
+        if (!is_processx_inherit(stdin) && !is_processx_pipe(stdin)) {
             content[1L] <- paste(content[1L], "<", shQuote(stdin))
             stdin <- if (processx::is_valid_fd(0L)) "" else NULL
         }
@@ -146,8 +146,9 @@ BlitProcess <- R6Class(
             private$.blit_stderr_callback <- .blit_stderr_callback
 
             # translate the stdout and stderr from `blit` into `processx`
-            if (identical(stdout, "") || is.null(stdout) ||
-                identical(stdout, "|")) {
+            if (is.null(stdout) ||
+                is_processx_inherit(stdout) ||
+                is_processx_pipe(stdout)) {
 
             } else if (isFALSE(stdout)) {
                 stdout <- NULL
@@ -158,8 +159,9 @@ BlitProcess <- R6Class(
                 stdout <- "|"
             }
 
-            if (identical(stderr, "") || is.null(stderr) ||
-                identical(stderr, "|")) {
+            if (is.null(stderr) ||
+                is_processx_inherit(stderr) ||
+                is_processx_pipe(stderr)) {
 
             } else if (isFALSE(stderr)) {
                 stderr <- NULL
@@ -486,3 +488,6 @@ new_spin <- function() {
         utils::flush.console()
     }
 }
+
+is_processx_inherit <- function(x) rlang::is_string(x) && x == ""
+is_processx_pipe <- function(x) rlang::is_string(x) && x == "|"
