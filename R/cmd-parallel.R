@@ -161,6 +161,7 @@ cmd_parallel <- function(..., stdouts = FALSE, stderrs = FALSE, stdins = NULL,
                 pool <- pool + 1L
             }
         }
+        cli::cli_progress_done(id = bar)
     }
 
     rlang::try_fetch(
@@ -189,7 +190,7 @@ cmd_parallel <- function(..., stdouts = FALSE, stderrs = FALSE, stdins = NULL,
     # merging stdout_list
     if (rlang::is_string(stdouts) && nzchar(stdouts) && n > 1L) {
         if (verbose) {
-            cli::cli_inform("Merging all stdouds into {.path {stdouds}}")
+            cli::cli_inform("Merging all stdouts into {.path {stdouts}}")
         }
         stdout_list <- stdout_list[file.exists(stdout_list)]
         concatenate_files(stdout_list, stdouts)
