@@ -16,6 +16,7 @@
 
 # ## Changelog
 # 2025-03-03:
+# - Add `rd_collect_family`
 # - Add `oxford_and`
 # - Add `oxford_or`
 # - Add `code_quote`
@@ -99,6 +100,64 @@ oxford_comma <- function(x, sep = ", ", final = "and") {
     } else {
         paste0(head, " ", final, " ", last)
     }
+}
+
+#' @description add `@eval rd_collect_family("myfamily")` to the functions in
+#' your package. This will automatically generate a section listing all
+#' functions tagged with `@family myfamily`.
+#' @param family A string specifying the family name.
+#' @param section_title A string specifying the section title.
+#' @param code_style A boolean indicating whether to apply code formatting
+#' to function names.
+#' @noRd
+rd_collect_family <- function(family,
+                              section_title = paste(family, "family"),
+                              code_style = TRUE) {
+    # get blocks objects from the roxygenize function
+    blocks <- NULL
+    pos <- sys.nframe()
+    while (pos > 0L) {
+        if (!is.null(call <- sys.call(-pos))) {
+            fn <- eval(.subset2(call, 1L), sys.frame(-(pos + 1L)))
+            env <- sys.frame(-pos)
+            if (identical(fn, getExportedValue("roxygen2", "roxygenize")) &&
+                exists("blocks", envir = env, inherits = FALSE)) {
+                blocks <- get("blocks", envir = env, inherits = FALSE)
+                break
+            }
+        }
+        pos <- pos - 1L
+    }
+
+    # identify the blocks with family of the same tag specified in `family`
+    blocks <- blocks[
+        vapply(blocks, function(block) {
+            getExportedValue("roxygen2", "block_has_tags")(block, "family") &&
+                identical(
+                    getExportedValue("roxygen2", "block_get_tag_value")(
+                        block, "family"
+                    ),
+                    family
+                )
+        }, logical(1L), USE.NAMES = FALSE)
+    ]
+    if (length(blocks) == 0L) return(character()) # styler: off
+
+    # extracted the function name
+    funs <- vapply(blocks, function(block) {
+        as.character(.subset2(block$call, 2L))
+    }, character(1L), USE.NAMES = FALSE)
+    if (code_style) {
+        items <- sprintf("\\code{\\link[=%s]{%s()}}", funs, funs)
+    } else {
+        items <- sprintf("\\link[=%s]{%s()}", funs, funs)
+    }
+    c(
+        sprintf("@section %s:", section_title),
+        "\\itemize{",
+        sprintf("  \\item %s", items),
+        "}"
+    )
 }
 
 # nocov end
