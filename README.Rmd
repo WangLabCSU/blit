@@ -79,6 +79,26 @@ Sys.unsetenv("TEST")
 we recommend using `cmd_parallel()`, which can run multiple commands in the
 background while ensuring that all processes are properly cleaned up when the
 process exits.
+```{r}
+cmd_parallel(
+    exec("ping", "localhost"),
+    exec("ping", "208.67.222.222"),
+    exec("ping", "4.2.2.1"),
+    exec("ping", "8.8.8.8"),
+    stdouts = TRUE,
+    stdout_callbacks = lapply(
+        seq_len(4),
+        function(i) {
+            force(i)
+            function(text, proc) {
+                sprintf("Connection %d: %s", i, text)
+            }
+        }
+    ),
+    timeouts = 4, # terminate after 4s
+    threads = 4
+)
+```
 
 Several functions allow you to control the environment when running the command:
 

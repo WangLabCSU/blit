@@ -77,6 +77,59 @@ function, we recommend using `cmd_parallel()`, which can run multiple
 commands in the background while ensuring that all processes are
 properly cleaned up when the process exits.
 
+``` r
+cmd_parallel(
+    exec("ping", "localhost"),
+    exec("ping", "208.67.222.222"),
+    exec("ping", "4.2.2.1"),
+    exec("ping", "8.8.8.8"),
+    stdouts = TRUE,
+    stdout_callbacks = lapply(
+        seq_len(4),
+        function(i) {
+            force(i)
+            function(text, proc) {
+                sprintf("Connection %d: %s", i, text)
+            }
+        }
+    ),
+    timeouts = 4, # terminate after 4s
+    threads = 4
+)
+#> Running command: /usr/bin/ping localhost
+#> Running command: /usr/bin/ping 208.67.222.222
+#> Running command: /usr/bin/ping 4.2.2.1
+#> Running command: /usr/bin/ping 8.8.8.8
+#> 
+#> Connection 1: PING localhost (127.0.0.1) 56(84) bytes of data.
+#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.014 ms
+#> Connection 2: PING 208.67.222.222 (208.67.222.222) 56(84) bytes of data.
+#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=1 ttl=46 time=70.9 ms
+#> Connection 3: PING 4.2.2.1 (4.2.2.1) 56(84) bytes of data.
+#> Connection 3: 64 bytes from 4.2.2.1: icmp_seq=1 ttl=47 time=149 ms
+#> Connection 4: PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+#> Connection 4: 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=50.0 ms
+#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.034 ms
+#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=2 ttl=46 time=74.2 ms
+#> Connection 3: 64 bytes from 4.2.2.1: icmp_seq=2 ttl=47 time=151 ms
+#> Connection 4: 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=45.3 ms
+#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.031 ms
+#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=3 ttl=46 time=70.5 ms
+#> Connection 3: 64 bytes from 4.2.2.1: icmp_seq=3 ttl=47 time=148 ms
+#> Connection 4: 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=44.8 ms
+#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.030 ms
+#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=4 ttl=46 time=73.3 ms
+#> Connection 3: 64 bytes from 4.2.2.1: icmp_seq=4 ttl=47 time=148 ms
+#> Connection 4: 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=61.6 ms
+#> ■■■■■■■■■                         25% | ETA: 12s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
+#> 
+#> Warning: System command timed out
+#> System command timed out
+#> System command timed out
+#> System command timed out
+```
+
 Several functions allow you to control the environment when running the
 command:
 
@@ -218,8 +271,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run()
-#> Running command: /usr/bin/gzip -c /tmp/RtmpkE5pnL/file3b6f3b3e5180c0 |
-#> /usr/bin/gzip -d > /tmp/RtmpkE5pnL/file3b6f3b56e1050
+#> Running command: /usr/bin/gzip -c /tmp/Rtmp0EJGVU/file3bebd7fdd9c33 |
+#> /usr/bin/gzip -d > /tmp/Rtmp0EJGVU/file3bebd73ba2e418
 identical(readLines(file), readLines(file2))
 #> [1] TRUE
 ```
@@ -272,11 +325,11 @@ ping("8.8.8.8") |> cmd_run(timeout = 5) # terminate it after 5s
 #> Running command: /usr/bin/ping 8.8.8.8
 #> 
 #> PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=44.7 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=45.4 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=44.0 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=44.6 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=45.0 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=50.0 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=79.6 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=50.6 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=48.3 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=44.9 ms
 #> Warning: System command timed out
 ```
 
@@ -317,8 +370,9 @@ sessionInfo()
 #> [1] blit_0.1.0.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] processx_3.8.6     compiler_4.4.2     R6_2.5.1           fastmap_1.2.0     
-#>  [5] cli_3.6.3          tools_4.4.2        htmltools_0.5.8.1  yaml_2.3.10       
-#>  [9] rmarkdown_2.29     data.table_1.16.99 knitr_1.49         xfun_0.49         
-#> [13] digest_0.6.37      ps_1.8.1           rlang_1.1.4        evaluate_1.0.1
+#>  [1] digest_0.6.37      R6_2.5.1           fastmap_1.2.0      xfun_0.49         
+#>  [5] knitr_1.49         parallel_4.4.2     htmltools_0.5.8.1  rmarkdown_2.29    
+#>  [9] ps_1.8.1           cli_3.6.3          processx_3.8.6     data.table_1.16.99
+#> [13] compiler_4.4.2     tools_4.4.2        evaluate_1.0.1     yaml_2.3.10       
+#> [17] rlang_1.1.4
 ```
