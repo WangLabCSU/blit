@@ -48,9 +48,10 @@ terminal, use an empty string \code{""} instead.
 \item \strong{string}: An empty string \code{""} inherits the standard output stream from
 the main R process (Printing in the R console). If the main R process
 lacks a standard output stream, such as in RGui on Windows, an error is
-thrown. Alternative, a file name or path to redirect the output. If a
-relative path is specified, it remains relative to the current working
-directory, even if a different directory is set using \code{\link[=cmd_wd]{cmd_wd()}}.
+thrown. A pipe string \code{"|"} will fallback to \code{TRUE}. Alternative, a file
+name or path to redirect the output. If a relative path is specified, it
+remains relative to the current working directory, even if a different
+directory is set using \code{\link[=cmd_wd]{cmd_wd()}}.
 \item \code{connection}: A writable R \code{\link{connection}} object. If the connection is not
 \code{\link[=open]{open()}}, it will be automatically opened.
 }
@@ -58,8 +59,8 @@ directory, even if a different directory is set using \code{\link[=cmd_wd]{cmd_w
 For \code{cmd_help()}, use \code{FALSE} will do nothing, since it always want to
 display the help document.
 
-For \code{cmd_background()}, \code{connection} cannot be used, and \code{TRUE} will fallback
-to the empty string \code{""}, with a warning message.
+For \code{cmd_background()}, \code{connection} cannot be used, and \code{TRUE} and \code{"|"}
+will fallback to the empty string \code{""}, with a warning message.
 
 When using a \code{connection} (if not already open) or a \code{string}, wrapping it
 with \code{\link[=I]{I()}} prevents overwriting existing content.

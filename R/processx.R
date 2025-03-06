@@ -4,24 +4,31 @@
 #' @importFrom rlang caller_call
 #' @keywords internal
 #' @noRd
-processx_command <- function(command, help, shell = NULL,
-                             stdout = TRUE, stderr = TRUE, stdin = NULL,
-                             stdout_callback = NULL, stderr_callback = NULL,
-                             verbose = TRUE, call = caller_call()) {
+processx_command <- function(
+    command,
+    help,
+    shell = NULL,
+    stdout = TRUE,
+    stderr = TRUE,
+    stdin = NULL,
+    stdout_callback = NULL,
+    stderr_callback = NULL,
+    verbose = TRUE,
+    call = caller_call()
+) {
     assert_bool(verbose, call = call)
 
     # set working directory ---------------------
     if (!is.null(wd <- .subset2(command, "wd"))) {
+        # fmt: skip
         if (!dir.exists(wd) &&
-            !dir.create(wd, showWarnings = FALSE)) {
+                !dir.create(wd, showWarnings = FALSE)) {
             cli::cli_abort(
                 "Cannot create working directory {.path {wd}}",
                 call = call
             )
         }
-        if (verbose) {
-            cli::cli_inform("Working Directory: {.path {wd}")
-        }
+        if (verbose) cli::cli_inform("Working Directory: {.path {wd}")
     }
     command_series <- .subset2(command, "command_series")
 
@@ -37,18 +44,25 @@ processx_command <- function(command, help, shell = NULL,
                 "Setting environment variables: {.field {names(envvar)}}"
             )
         }
-        old <- as.list(Sys.getenv(names(envvar),
-            names = TRUE, unset = NA_character_
+        old <- as.list(Sys.getenv(
+            names(envvar),
+            names = TRUE,
+            unset = NA_character_
         ))
         on.exit(set_envvar(old), add = TRUE)
         set_envvar(envvar)
     }
 
     # build the command content script ----------
-    content <- vapply(command_series, function(Command) {
-        o <- Command$build_command(help = help, verbose = verbose)
-        paste(o, collapse = " ")
-    }, character(1L), USE.NAMES = FALSE)
+    content <- vapply(
+        command_series,
+        function(Command) {
+            o <- Command$build_command(help = help, verbose = verbose)
+            paste(o, collapse = " ")
+        },
+        character(1L),
+        USE.NAMES = FALSE
+    )
     if (!is.null(stdin)) {
         if (!is_processx_inherit(stdin) && !is_processx_pipe(stdin)) {
             content[1L] <- paste(content[1L], "<", shQuote(stdin))
@@ -106,6 +120,7 @@ BlitProcess <- R6Class(
     public = list(
         .blit_content = NULL,
         .blit_script = NULL,
+        # fmt: skip
         initialize = function(..., stdout, stderr,
                               .blit_stdout_callback,
                               .blit_stderr_callback,
@@ -119,7 +134,8 @@ BlitProcess <- R6Class(
                 # for cmd "^"
                 # for powershell "`"
                 cmd <- .blit_shell %||% "cmd"
-                arg <- switch(cmd,
+                arg <- switch(
+                    cmd,
                     cmd = "/C",
                     powershell = c("-ExecutionPolicy", "Bypass", "-File")
                 )
@@ -147,6 +163,7 @@ BlitProcess <- R6Class(
             private$.blit_stderr_callback <- .blit_stderr_callback
 
             # translate the stdout and stderr from `blit` into `processx`
+            # fmt: skip
             if (is.null(stdout) ||
                 is_processx_inherit(stdout) ||
                 is_processx_pipe(stdout)) {
@@ -160,6 +177,7 @@ BlitProcess <- R6Class(
                 stdout <- "|"
             }
 
+            # fmt: skip
             if (is.null(stderr) ||
                 is_processx_inherit(stderr) ||
                 is_processx_pipe(stderr)) {
@@ -178,7 +196,8 @@ BlitProcess <- R6Class(
                 command = cmd,
                 args = c(arg, script),
                 ...,
-                stdout = stdout, stderr = stderr
+                stdout = stdout,
+                stderr = stderr
             )
 
             # always ensure the connection methods get prepared
@@ -195,7 +214,8 @@ BlitProcess <- R6Class(
                     # `$.blit_complete()` method register by `on.exit()` will
                     # collect all the stdout and stderr
                     self$.blit_kill(close_connections = FALSE)
-                    cli::cli_warn("System command interrupted",
+                    cli::cli_warn(
+                        "System command interrupted",
                         class = "system_command_interrupt"
                     )
                     invokeRestart("abort")
@@ -204,22 +224,24 @@ BlitProcess <- R6Class(
             self$.blit_warn_timeout()
             out
         },
-        .blit_warn_timeout = function() {
+        .blit_warn_timeout = function(i = NULL) {
             if (!is.null(private$.blit_timeout) && private$.blit_timeout) {
-                cli::cli_warn("System command timed out",
-                    class = "system_command_timeout"
-                )
+                msg <- "System command timed out"
+                if (!is.null(i)) msg <- sprintf("[%s] %s", i, msg)
+                cli::cli_warn(msg, class = "system_command_timeout")
                 private$.blit_timeout <- NULL
             }
         },
 
         # @param poll_timeout Timeout in milliseconds, for the wait or the I/O
         # polling.
+        # fmt: skip
         .blit_active_and_collect = function(timeout = NULL,
                                             start_time = self$get_start_time(),
                                             poll_timeout = 200) {
             if (out <- self$is_alive()) {
                 # Timeout? Maybe finished by now...
+                # fmt: skip
                 if (!is.null(timeout) &&
                     is.finite(timeout) &&
                     Sys.time() - start_time > timeout) {
@@ -274,7 +296,8 @@ BlitProcess <- R6Class(
             start_time <- self$get_start_time()
             if (spinner) {
                 progress <- cli::cli_progress_bar(
-                    total = 1L, clear = FALSE,
+                    total = 1L,
+                    clear = FALSE,
                     format = paste(
                         "{cli::pb_spin} [elapsed in {cli::pb_elapsed}]",
                         "@ {as.character(Sys.time(), digits = 0)}",
@@ -282,6 +305,7 @@ BlitProcess <- R6Class(
                     )
                 )
                 # for spinner, always use 200 `poll_timeout`
+                # fmt: skip
                 while (self$.blit_active_and_collect(timeout, start_time, 200)) {
                     cli::cli_progress_update(
                         inc = 0L, id = progress, force = TRUE
@@ -318,6 +342,7 @@ BlitProcess <- R6Class(
                     if (!private$.blit_collect_stdout()) break
                 }
                 # ensure the stdout_remain added
+                # fmt: skip
                 if (!is.null(line <- private$.blit_stdout_remain) &&
                     nzchar(line)) {
                     if (!is.null(private$.blit_stdout_callback)) {
@@ -341,6 +366,7 @@ BlitProcess <- R6Class(
                     if (!private$.blit_collect_stderr()) break
                 }
                 # ensure the stderrr_remain added
+                # fmt: skip
                 if (!is.null(line <- private$.blit_stderr_remain) &&
                     nzchar(line)) {
                     if (!is.null(private$.blit_stderr_callback)) {
@@ -380,17 +406,15 @@ BlitProcess <- R6Class(
                     if (!is.null(private$.blit_stdout_callback)) {
                         lines <- private$.blit_stdout_callback(lines, self)
                     }
-                    private$.blit_stdout_push(lines)
+                    if (is.character(lines)) private$.blit_stdout_push(lines)
                 }
             }
             ok
         },
         .blit_stdout_prepare = function(stdout = private$.blit_stdout) {
-            if (isTRUE(stdout)) {
+            if (isTRUE(stdout) || is_processx_pipe(stdout)) {
                 private$.blit_stdout_push <- function(text) {
-                    if (is.character(text)) {
-                        cat(text, sep = "\n")
-                    }
+                    cat(text, sep = "\n")
                 }
             } else {
                 if (inherits(stdout, "connection")) {
@@ -406,9 +430,7 @@ BlitProcess <- R6Class(
                     }
                 }
                 private$.blit_stdout_push <- function(text) {
-                    if (is.character(text)) {
-                        writeLines(text, con = private$.blit_stdout_con)
-                    }
+                    writeLines(text, con = private$.blit_stdout_con)
                 }
             }
             private$.blit_stdout_remain <- ""
@@ -442,17 +464,15 @@ BlitProcess <- R6Class(
                     if (!is.null(private$.blit_stderr_callback)) {
                         lines <- private$.blit_stderr_callback(lines, self)
                     }
-                    private$.blit_stderr_push(lines)
+                    if (is.character(lines)) private$.blit_stderr_push(lines)
                 }
             }
             ok
         },
         .blit_stderr_prepare = function(stderr = private$.blit_stderr) {
-            if (isTRUE(stderr)) {
+            if (isTRUE(stderr) || is_processx_pipe(stderr)) {
                 private$.blit_stderr_push <- function(text) {
-                    if (is.character(text)) {
-                        cat(cli::col_red(text), sep = "\n")
-                    }
+                    cat(cli::col_red(text), sep = "\n")
                 }
             } else {
                 if (inherits(stderr, "connection")) {
@@ -468,9 +488,7 @@ BlitProcess <- R6Class(
                     }
                 }
                 private$.blit_stderr_push <- function(text) {
-                    if (is.character(text)) {
-                        writeLines(text, con = private$.blit_stderr_con)
-                    }
+                    writeLines(text, con = private$.blit_stderr_con)
                 }
             }
             private$.blit_stderr_remain <- ""
