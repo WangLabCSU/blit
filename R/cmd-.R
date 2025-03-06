@@ -407,7 +407,7 @@ remove_opath <- function(opath) {
     # remove trailing backslash or slash
     opath <- path_trim(opath)
     opath <- opath[file.exists(opath)] # can also check directory
-    if (length(opath) == 0L) return(NULL) # styler: off
+    if (length(opath) == 0L) return(NULL) 
     failed <- vapply(opath, unlink, integer(1L),
         recursive = TRUE, USE.NAMES = FALSE
     ) != 0L

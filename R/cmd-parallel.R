@@ -11,9 +11,10 @@
 #'  - **string**: An empty string `""` inherits the standard output stream from
 #'    the main R process (Printing in the R console). If the main R process
 #'    lacks a standard output stream, such as in RGui on Windows, an error is
-#'    thrown. Alternative, a file name or path to redirect the output. If a
-#'    relative path is specified, it remains relative to the current working
-#'    directory, even if a different directory is set using [`cmd_wd()`].
+#'    thrown. A pipe string `"|"` will fallback to `TRUE`. Alternative, a file
+#'    name or path to redirect the output. If a relative path is specified, it
+#'    remains relative to the current working directory, even if a different
+#'    directory is set using [`cmd_wd()`].
 #'  - `connection`: A writable R [`connection`] object. If the connection is not
 #'    [`open()`], it will be automatically opened.
 #'

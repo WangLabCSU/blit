@@ -63,7 +63,7 @@ FastqPair <- R6Class(
                 )
                 hash_table_size <- strsplit(
                     read_lines(nlines_file, n = 1L),
-                " ", fixed = TRUE # styler: off
+                " ", fixed = TRUE 
                 )[[c(1L, 1L)]]
                 hash_table_size <- ceiling(as.integer(hash_table_size) / 4L)
                 if (private$verbose) {
@@ -129,6 +129,6 @@ fastq_read_pair <- function(fastq_files) {
 
     # extract pair_id ----------------------------
     vapply(header_list, function(header) as.integer(header[[8L]]),
-        integer(1L), USE.NAMES = FALSE # styler: off
+        integer(1L), USE.NAMES = FALSE 
     )
 }

@@ -148,7 +148,7 @@ trust4_gene_names <- function(imgt_annot, ofile = "bcr_tcr_gene_name.txt",
     gene_lines <- grep("^>", lines, value = TRUE, perl = TRUE)
     genes <- sub("^>", "", gene_lines, perl = TRUE)
     genes <- vapply(strsplit(genes, "*", fixed = TRUE),
-        `[[`, character(1L), 1L, USE.NAMES = FALSE # styler: off
+        `[[`, character(1L), 1L, USE.NAMES = FALSE 
     )
     write_lines(genes, opath)
 }

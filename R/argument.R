@@ -34,12 +34,12 @@ arg_internal <- function(tag, value,
                          arg = rlang::caller_arg(value),
                          call = rlang::caller_call()) {
     if (is.null(value)) {
-        if (allow_null) return(NULL) # styler: off
+        if (allow_null) return(NULL) 
         cli::cli_abort("{.arg {arg}} cannot be {.code NULL}", call = call)
     }
     if (indicator) {
         assert_bool(value, arg = arg, call = call)
-        if (value) return(tag) else return(NULL) # styler: off
+        if (value) return(tag) else return(NULL) 
     }
     assert_string(sep, call = call)
     if (lgl2int) {
@@ -52,7 +52,7 @@ arg_internal <- function(tag, value,
             assert_(value, is_number, "a number", arg = arg, call = call)
         } else {
             assert_(value, function(x) is_scalar(x) && !is.na(x),
-                "scalar", arg = arg, call = call # styler: off
+                "scalar", arg = arg, call = call 
             )
         }
     }
