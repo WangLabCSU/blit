@@ -359,7 +359,7 @@ Command <- R6Class("Command",
                     ))
                 }
             } else {
-                command <- Sys.which(cmd)
+                command <- cmd
             }
             command
         },

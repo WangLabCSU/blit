@@ -1,17 +1,3 @@
-dir_create <- function(path, ...) {
-    if (!dir.exists(path) &&
-        !dir.create(path = path, showWarnings = FALSE, ...)) {
-        cli::cli_abort("Cannot create directory {.path {path}}")
-    }
-    invisible(path)
-}
-
-file_path <- function(..., ext = NULL) {
-    path <- file.path(..., fsep = "/")
-    if (!is.null(ext)) path <- paste(path, ext, sep = ".")
-    path
-}
-
 path_ext_remove <- function(path) {
     sub("\\.[[:alnum:]]*$", "", path, perl = TRUE)
 }
@@ -35,11 +21,22 @@ path_trim <- function(path) {
     sub("(\\\\+|/+)$", "", path, perl = TRUE)
 }
 
-dir_delete <- function(path) {
-    if (unlink(x = path, recursive = TRUE, force = TRUE)) {
-        cli::cli_abort("Canno remove {.path {path}}")
+path_equal <- function(path1, path2) {
+    normalizePath(path1, "/", FALSE) == normalizePath(path2, "/", FALSE)
+}
+
+file_executable <- function(file) {
+    if (file.access(file, mode = 1L)) {
+        if (!Sys.chmod(file, "555")) {
+            cli::cli_abort("{.path {file}} is not executable")
+        }
     }
-    invisible(path)
+}
+
+file_path <- function(..., ext = NULL) {
+    path <- file.path(..., fsep = "/")
+    if (!is.null(ext)) path <- paste(path, ext, sep = ".")
+    path
 }
 
 file_delete <- function(path) {
@@ -49,13 +46,29 @@ file_delete <- function(path) {
     invisible(path)
 }
 
+dir_create <- function(path, ...) {
+    if (!dir.exists(path) &&
+        !dir.create(path = path, showWarnings = FALSE, ...)) {
+        cli::cli_abort("Cannot create directory {.path {path}}")
+    }
+    invisible(path)
+}
+
+dir_delete <- function(path) {
+    if (dir.exists(path) && unlink(x = path, recursive = TRUE, force = TRUE)) {
+        cli::cli_abort("Canno remove {.path {path}}")
+    }
+    invisible(path)
+}
+
 #' Will always add the basename of file into the exdir
 #' @noRd
-unzip2 <- function(path, exdir, overwrite = TRUE) {
+unzip2 <- function(path, exdir, ..., basename = TRUE, overwrite = TRUE) {
     dir_create(exdir)
-    exdir <- file.path(exdir, path_ext_remove(path))
-    dir_create(exdir)
-    if (is.null(utils::unzip(path, exdir = exdir, overwrite = overwrite))) {
+    if (basename) {
+        exdir <- dir_create(file.path(exdir, base::basename(path)))
+    }
+    if (is.null(utils::unzip(path, exdir = exdir, ..., overwrite = overwrite))) {
         cli::cli_abort("Cannot unzip {.path {path}}")
     }
     exdir
@@ -66,10 +79,6 @@ download_file <- function(url, path, ...) {
     if (utils::download.file(url = url, destfile = path, ...) > 0L) {
         cli::cli_abort("Cannot download {.path {url}}")
     }
-}
-
-path_equal <- function(path1, path2) {
-    normalizePath(path1, "/", FALSE) == normalizePath(path2, "/", FALSE)
 }
 
 read_lines <- function(path, n = Inf) {

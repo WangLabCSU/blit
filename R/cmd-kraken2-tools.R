@@ -29,9 +29,7 @@ KrakenTools <- R6Class(
     private = list(
         combine_params = function(script) {
             script <- pkg_extdata("KrakenTools", paste0(script, ".py"))
-            if (file.access(script, mode = 1L) != 0L) {
-                Sys.chmod(script, "555")
-            }
+            file_executable(script)
             c(script, super$combine_params())
         }
     )

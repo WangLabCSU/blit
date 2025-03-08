@@ -149,9 +149,7 @@ BlitProcess <- R6Class(
             write_lines(.blit_content, script)
 
             # ensure the file is executable
-            if (file.access(script, mode = 1L) != 0L) {
-                Sys.chmod(script, "555")
-            }
+            file_executable(script)
 
             self$.blit_content <- .blit_content
             self$.blit_script <- script

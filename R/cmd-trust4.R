@@ -127,9 +127,7 @@ Trust4ImgtAnnot <- R6Class(
         },
         combine_params = function() {
             script <- pkg_extdata("TRUST4", "BuildImgtAnnot.pl")
-            if (file.access(script, mode = 1L) != 0L) {
-                Sys.chmod(script, "555")
-            }
+            file_executable(script)
             c(script, super$combine_params())
         },
         collect_dots = FALSE
