@@ -8,7 +8,7 @@
 \usage{
 cmd_wd(command, wd = NULL)
 
-cmd_envvar(command, ..., action = "replace", sep = " ")
+cmd_envvar(command, ..., action = "replace", sep = NULL)
 
 cmd_envpath(command, ..., action = "prefix", name = "PATH")
 }
@@ -27,7 +27,7 @@ variables \code{name}.
 existing environment variables?}
 
 \item{sep}{A string to separate new and old value when \code{action} is \code{"prefix"}
-or \code{"suffix"}.}
+or \code{"suffix"}. By default, \code{" "} will be used.}
 
 \item{name}{A string define the PATH environment variable name. You
 can use this to define other \code{PATH}-like environment variable such as

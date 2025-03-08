@@ -50,7 +50,7 @@ processx_command <- function(
             unset = NA_character_
         ))
         on.exit(set_envvar(old), add = TRUE)
-        set_envvar(envvar)
+        set_envvar(envvar_parse(envvar))
     }
 
     # build the command content script ----------

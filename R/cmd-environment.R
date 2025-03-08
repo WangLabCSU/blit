@@ -11,7 +11,7 @@
 #' variable updated.
 #' - `cmd_envpath`: The `command` object self, with running environment variable
 #' `name` updated.
-#' @seealso 
+#' @seealso
 #' - [`cmd_run()`]/[`cmd_help()`]/[`cmd_background()`]
 #' - [`cmd_parallel()`]
 #' @export
@@ -30,29 +30,28 @@ cmd_wd <- function(command, wd = NULL) {
 #' @param action Should the new values `"replace"`, `"prefix"` or `"suffix"`
 #' existing environment variables?
 #' @param sep A string to separate new and old value when `action` is `"prefix"`
-#' or `"suffix"`.
+#' or `"suffix"`. By default, `" "` will be used.
 #' @export
 #' @rdname cmd_wd
-cmd_envvar <- function(command, ..., action = "replace", sep = " ") {
+cmd_envvar <- function(command, ..., action = "replace", sep = NULL) {
     assert_s3_class(command, "command")
     action <- rlang::arg_match0(action, c("replace", "prefix", "suffix"))
     assert_string(sep)
     dots <- rlang::dots_list(..., .ignore_empty = "all")
     if (!rlang::is_named2(dots)) {
-        cli::cli_abort("All elements in {.arg ...} must be named")
+        cli::cli_abort("All input in {.arg ...} must be named")
     }
-    dots[vapply(dots, is.null, logical(1L))] <- NA_character_
+    dots[vapply(dots, is.null, logical(1L), USE.NAMES = FALSE)] <- NA_character_
     if (any(lengths(dots) != 1L)) {
         cli::cli_abort(paste(
-            "all value in {.arg ...} must be of length 1",
+            "All input in {.arg ...} must be of length 1",
             "or {.val NULL}"
         ))
     }
     for (nm in names(dots)) {
-        command$envvar[[nm]] <- parse_envvar(
-            name = nm,
-            old = command$envvar[[nm]],
-            new = dots[[nm]],
+        command$envvar[[nm]] <- envvar_add(
+            new = .subset2(dots, nm),
+            old = .subset2(.subset2(command, "envvar"), nm),
             action = action,
             sep = sep
         )
@@ -71,11 +70,13 @@ cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
     rlang::check_dots_unnamed()
     assert_string(name, allow_empty = FALSE)
     envpath <- rlang::dots_list(..., .ignore_empty = "all")
-    envpath <- unlist(envpath, use.names = FALSE)
-    envpath <- as.character(envpath)
+    envpath <- as.character(unlist(envpath, use.names = FALSE))
     if (anyNA(envpath)) {
         cli::cli_warn("Missing value will be ignored")
         envpath <- envpath[!is.na(envpath)]
+    }
+    if (length(envpath) == 0L) {
+        cli::cli_abort("No valid path is provided in {.arg ...}")
     }
     envpath <- normalizePath(envpath, "/", mustWork = FALSE)
     envpath <- rev(envpath)
@@ -88,28 +89,53 @@ cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
     )
 }
 
+envvar_add <- function(new, old, action, sep) {
+    sep <- sep %||% attr(old, "sep", exact = FALSE)
+    if (!is.na(new) && !identical(action, "replace")) {
+        # `NA_character_` as a holder for the environment variable
+        # and will be replaced with `Sys.getenv()` when executing the command
+        # See `envvar_parse()`
+        old <- old %||% NA_character_
+        new <- switch(action,
+            prefix = c(new, old),
+            suffix = c(old, new)
+        )
+    }
+    # if we should update the `sep` string?
+    if (!is.null(sep)) attr(new, "sep") <- sep
+    new
+}
+
+envvar_parse <- function(envvar) {
+    envs <- names(envvar)
+    names(envs) <- envs
+    lapply(envs, function(nm) {
+        value <- .subset2(envvar, nm)
+        # for single NA value, we unset this environment variable
+        if (is.null(value) || (length(value) == 1L && is.na(value))) {
+            value <- NA_character_
+        } else {
+            na <- Sys.getenv(nm, unset = NA_character_, names = FALSE)
+            # By default, we use `sep = " "`
+            sep <- attr(value, "sep", exact = TRUE) %||% " "
+            # if the environment variable is not set
+            if (is.na(na)) {
+                value <- value[!is.na(value)]
+            } else {
+                value[is.na(value)] <- na
+            }
+            value <- paste(value, collapse = sep)
+        }
+        value
+    })
+}
+
 set_envvar <- function(envs) {
-    unset <- vapply(envs, is.na, logical(1L))
+    unset <- vapply(envs, is.na, logical(1L), USE.NAMES = FALSE)
     if (any(!unset)) {
         do.call("Sys.setenv", envs[!unset])
     }
     if (any(unset)) {
         Sys.unsetenv(names(envs)[unset])
     }
-}
-
-parse_envvar <- function(name, new, old, action, sep) {
-    if (!is.na(new)) {
-        if (is.null(old)) {
-            old <- Sys.getenv(name, unset = NA_character_, names = FALSE)
-        }
-        if (!is.na(old)) {
-            if (action == "prefix") {
-                new <- paste(new, old, sep = sep)
-            } else if (action == "suffix") {
-                new <- paste(old, new, sep = sep)
-            }
-        }
-    }
-    new
 }
