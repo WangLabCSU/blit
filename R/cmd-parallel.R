@@ -57,13 +57,14 @@ cmd_parallel <- function(
     stderr_callbacks = NULL,
     timeouts = NULL,
     threads = NULL,
-    verbose = TRUE
-) {
+    verbose = TRUE) {
     commands <- rlang::dots_list(..., .ignore_empty = "all", .named = NULL)
 
     # fmt: skip
     if (!all(vapply(commands, inherits, logical(1L),
-                   "command", USE.NAMES = FALSE))) {
+        "command",
+        USE.NAMES = FALSE
+    ))) {
         cli::cli_abort("{.arg ...} must be a list of {.cls command} object")
     }
     n <- length(commands)
@@ -74,14 +75,10 @@ cmd_parallel <- function(
     stderr_callbacks <- unwrap(stderr_callbacks)
     timeouts <- unwrap(timeouts)
 
-    stdout_list <- check_stdio_list(stdouts, n, "...", arg = "stdouts")
-    stderr_list <- check_stdio_list(
-        stderrs,
-        n,
-        "...",
-        allow_null = TRUE,
-        arg = "stderrs"
+    stdout_list <- check_stdio_list(stdouts, n, "...",
+        allow_null = FALSE, arg = "stdouts"
     )
+    stderr_list <- check_stdio_list(stderrs, n, "...", arg = "stderrs")
     stdin_list <- check_stdin_list(stdins, n, "...", arg = "stdins")
     stdout_callback_list <- check_callback_list(
         stdout_callbacks,
@@ -224,9 +221,9 @@ cmd_parallel <- function(
 
     # merging stdout_list
     # fmt: skip
-    if (rlang::is_string(stdouts) && 
-        !is_processx_inherit(stdouts) && 
-        !is_processx_pipe(stdouts) && 
+    if (rlang::is_string(stdouts) &&
+        !is_processx_inherit(stdouts) &&
+        !is_processx_pipe(stdouts) &&
         n > 1L) {
         if (verbose) {
             cli::cli_inform("Merging all stdouts into {.path {stdouts}}")
@@ -237,9 +234,9 @@ cmd_parallel <- function(
 
     # merging stderr_list
     # fmt: skip
-    if (rlang::is_string(stderrs) && 
-        !is_processx_inherit(stdouts) && 
-        !is_processx_pipe(stdouts) && 
+    if (rlang::is_string(stderrs) &&
+        !is_processx_inherit(stdouts) &&
+        !is_processx_pipe(stdouts) &&
         n > 1L) {
         if (verbose) {
             cli::cli_inform("Merging all stderrs into {.path {stderrs}}")
@@ -251,17 +248,14 @@ cmd_parallel <- function(
 }
 
 # For `stdout` and `stderr`
-check_stdio_list <- function(
-    x,
-    n,
-    n_arg,
-    allow_null = FALSE,
-    arg = caller_arg(x),
-    call = caller_call()
-) {
+check_stdio_list <- function(x, n, n_arg, allow_null = TRUE,
+                             arg = caller_arg(x), call = caller_call()) {
     if (length(x) == 1L || is.null(x)) {
         x <- check_stdio(x, allow_null = allow_null, arg = arg, call = call)
-        if (rlang::is_string(x) && nzchar(x) && n > 1L) {
+        if (rlang::is_string(x) &&
+            !is_processx_inherit(x) &&
+            !is_processx_pipe(x) &&
+            n > 1L) {
             return(vapply(
                 seq_len(n),
                 function(i) {
@@ -286,13 +280,8 @@ check_stdio_list <- function(
     lapply(x, check_stdio, allow_null = allow_null, arg = arg, call = call)
 }
 
-check_stdin_list <- function(
-    x,
-    n,
-    n_arg,
-    arg = caller_arg(x),
-    call = caller_call()
-) {
+check_stdin_list <- function(x, n, n_arg, arg = caller_arg(x),
+                             call = caller_call()) {
     if (length(x) == 1L || is.null(x)) {
         x <- check_stdio(
             x,
@@ -322,13 +311,8 @@ check_stdin_list <- function(
     )
 }
 
-check_callback_list <- function(
-    x,
-    n,
-    n_arg,
-    arg = caller_arg(x),
-    call = caller_call()
-) {
+check_callback_list <- function(x, n, n_arg, arg = caller_arg(x),
+                                call = caller_call()) {
     if (length(x) == 1L || is.null(x)) {
         x <- check_callback(x, arg = arg, call = call)
         return(rep_len(list(x), n))
@@ -345,13 +329,8 @@ check_callback_list <- function(
     lapply(x, check_callback, arg = arg, call = call)
 }
 
-check_timeout_list <- function(
-    x,
-    n,
-    n_arg,
-    arg = caller_arg(x),
-    call = caller_call()
-) {
+check_timeout_list <- function(x, n, n_arg, arg = caller_arg(x),
+                               call = caller_call()) {
     if (length(x) == 1L || is.null(x)) {
         x <- check_timeout(x, arg = arg, call = call)
         return(rep_len(list(x), n))
