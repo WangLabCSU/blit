@@ -11,10 +11,9 @@
 #'  - **string**: An empty string `""` inherits the standard output stream from
 #'    the main R process (Printing in the R console). If the main R process
 #'    lacks a standard output stream, such as in RGui on Windows, an error is
-#'    thrown. A pipe string `"|"` will fallback to `TRUE`. Alternative, a file
-#'    name or path to redirect the output. If a relative path is specified, it
-#'    remains relative to the current working directory, even if a different
-#'    directory is set using [`cmd_wd()`].
+#'    thrown. Alternative, a file name or path to redirect the output. If a
+#'    relative path is specified, it remains relative to the current working
+#'    directory, even if a different directory is set using [`cmd_wd()`].
 #'  - `connection`: A writable R [`connection`] object. If the connection is not
 #'    [`open()`], it will be automatically opened.
 #'
@@ -27,8 +26,8 @@
 #' @param stdins should the input be diverted? One of or a list of following
 #' values:
 #'  - `NULL`: No standard input.
-#'  - **string**: An empty string `""` inherits the standard output stream from
-#'    the main R process. If the main R process lacks a standard output stream,
+#'  - **string**: An empty string `""` inherits the standard input stream from
+#'    the main R process. If the main R process lacks a standard input stream,
 #'    such as in RGui on Windows, an error is thrown. Alternative, a file name
 #'    or path to be used as standard input.
 #' @param stdout_callbacks,stderr_callbacks One of or a list of following
@@ -75,10 +74,17 @@ cmd_parallel <- function(
     stderr_callbacks <- unwrap(stderr_callbacks)
     timeouts <- unwrap(timeouts)
 
-    stdout_list <- check_stdio_list(stdouts, n, "...",
-        allow_null = FALSE, arg = "stdouts"
+    stdout_list <- check_stdio_list(
+        stdouts, n, "...",
+        allow_null = FALSE,
+        pipe_note = "Do you mean {.code TRUE}?",
+        arg = "stdouts"
     )
-    stderr_list <- check_stdio_list(stderrs, n, "...", arg = "stderrs")
+    stderr_list <- check_stdio_list(stderrs, n, "...",
+        pipe_note = "Do you mean {.code TRUE}?",
+        redirect_note = "Do you mean {.code NULL}?",
+        arg = "stderrs"
+    )
     stdin_list <- check_stdin_list(stdins, n, "...", arg = "stdins")
     stdout_callback_list <- check_callback_list(
         stdout_callbacks,
@@ -223,7 +229,6 @@ cmd_parallel <- function(
     # fmt: skip
     if (rlang::is_string(stdouts) &&
         !is_processx_inherit(stdouts) &&
-        !is_processx_pipe(stdouts) &&
         n > 1L) {
         if (verbose) {
             cli::cli_inform("Merging all stdouts into {.path {stdouts}}")
@@ -236,7 +241,6 @@ cmd_parallel <- function(
     # fmt: skip
     if (rlang::is_string(stderrs) &&
         !is_processx_inherit(stdouts) &&
-        !is_processx_pipe(stdouts) &&
         n > 1L) {
         if (verbose) {
             cli::cli_inform("Merging all stderrs into {.path {stderrs}}")
@@ -249,12 +253,17 @@ cmd_parallel <- function(
 
 # For `stdout` and `stderr`
 check_stdio_list <- function(x, n, n_arg, allow_null = TRUE,
+                             pipe_note = NULL, redirect_note = NULL,
                              arg = caller_arg(x), call = caller_call()) {
     if (length(x) == 1L || is.null(x)) {
-        x <- check_stdio(x, allow_null = allow_null, arg = arg, call = call)
+        x <- check_stdio(x,
+            allow_null = allow_null,
+            pipe_note = pipe_note,
+            redirect_note = redirect_note,
+            arg = arg, call = call
+        )
         if (rlang::is_string(x) &&
             !is_processx_inherit(x) &&
-            !is_processx_pipe(x) &&
             n > 1L) {
             return(vapply(
                 seq_len(n),
@@ -277,7 +286,12 @@ check_stdio_list <- function(x, n, n_arg, allow_null = TRUE,
             call = call
         )
     }
-    lapply(x, check_stdio, allow_null = allow_null, arg = arg, call = call)
+    lapply(x, check_stdio,
+        allow_null = allow_null,
+        pipe_note = pipe_note,
+        redirect_note = redirect_note,
+        arg = arg, call = call
+    )
 }
 
 check_stdin_list <- function(x, n, n_arg, arg = caller_arg(x),

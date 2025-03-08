@@ -19,10 +19,9 @@
 #'  - **string**: An empty string `""` inherits the standard output stream from
 #'    the main R process (Printing in the R console). If the main R process
 #'    lacks a standard output stream, such as in RGui on Windows, an error is
-#'    thrown. A pipe string `"|"` will fallback to `TRUE`. Alternative, a file
-#'    name or path to redirect the output. If a relative path is specified, it
-#'    remains relative to the current working directory, even if a different
-#'    directory is set using [`cmd_wd()`].
+#'    thrown. Alternative, a file name or path to redirect the output. If a
+#'    relative path is specified, it remains relative to the current working
+#'    directory, even if a different directory is set using [`cmd_wd()`].
 #'  - `connection`: A writable R [`connection`] object. If the connection is not
 #'    [`open()`], it will be automatically opened.
 #'
@@ -40,8 +39,8 @@
 #'
 #' @param stdin should the input be diverted? Possible values include:
 #'  - `NULL`: No standard input.
-#'  - **string**: An empty string `""` inherits the standard output stream from
-#'    the main R process. If the main R process lacks a standard output stream,
+#'  - **string**: An empty string `""` inherits the standard input stream from
+#'    the main R process. If the main R process lacks a standard input stream,
 #'    such as in RGui on Windows, an error is thrown. Alternative, a file name
 #'    or path to be used as standard input.
 #' @param stdout_callback,stderr_callback Possible values include:
@@ -72,11 +71,18 @@ cmd_run <- function(
     stderr_callback = NULL,
     timeout = NULL,
     spinner = FALSE,
-    verbose = TRUE
-) {
+    verbose = TRUE) {
     assert_s3_class(command, "command")
-    stdout <- check_stdio(stdout, allow_null = FALSE)
-    stderr <- check_stdio(stderr)
+    stdout <- check_stdio(
+        stdout,
+        allow_null = FALSE,
+        pipe_note = "Do you mean {.code TRUE}?"
+    )
+    stderr <- check_stdio(
+        stderr,
+        pipe_note = "Do you mean {.code TRUE}?",
+        redirect_note = "Do you mean {.code NULL}?"
+    )
     stdin <- check_stdio(stdin, allow_bool = FALSE, allow_connection = FALSE)
     stdout_callback <- check_callback(stdout_callback)
     stderr_callback <- check_callback(stderr_callback)
@@ -105,11 +111,18 @@ cmd_help <- function(
     stderr = TRUE,
     stdout_callback = NULL,
     stderr_callback = NULL,
-    verbose = TRUE
-) {
+    verbose = TRUE) {
     assert_s3_class(command, "command")
-    stdout <- check_stdio(stdout, allow_null = FALSE)
-    stderr <- check_stdio(stderr)
+    stdout <- check_stdio(
+        stdout,
+        allow_null = FALSE,
+        pipe_note = "Do you mean {.code TRUE}?"
+    )
+    stderr <- check_stdio(
+        stderr,
+        pipe_note = "Do you mean {.code TRUE}?",
+        redirect_note = "Do you mean {.code NULL}?"
+    )
     stdout_callback <- check_callback(stdout_callback)
     stderr_callback <- check_callback(stderr_callback)
     proc <- processx_command(
@@ -135,14 +148,16 @@ cmd_background <- function(
     stdout = FALSE,
     stderr = FALSE,
     stdin = NULL,
-    verbose = TRUE
-) {
+    verbose = TRUE) {
     assert_s3_class(command, "command")
     # for background process, we cannot use pipe, since if the user don't
     # read out the standard output and/or error of the pipes, the background
     # process will stop running! So we always use `stdout = ""`/`stderr = ""`
-    stdout <- check_stdio(stdout, allow_null = FALSE, allow_connection = FALSE)
-    if (isTRUE(stdout) || is_processx_pipe(stdout)) {
+    stdout <- check_stdio(stdout,
+        allow_null = FALSE, allow_connection = FALSE,
+        pipe_note = "Do you mean {.code TRUE}?"
+    )
+    if (isTRUE(stdout)) {
         if (processx::is_valid_fd(1L)) {
             cli::cli_warn(
                 paste(
@@ -160,8 +175,12 @@ cmd_background <- function(
             ))
         }
     }
-    stderr <- check_stdio(stderr, allow_connection = FALSE)
-    if (isTRUE(stderr) || is_processx_pipe(stderr)) {
+    stderr <- check_stdio(stderr,
+        allow_connection = FALSE,
+        pipe_note = "Do you mean {.code TRUE}?",
+        redirect_note = "Do you mean {.code NULL}?"
+    )
+    if (isTRUE(stderr)) {
         if (processx::is_valid_fd(2L)) {
             cli::cli_warn(
                 paste(
@@ -198,10 +217,22 @@ check_stdio <- function(
     allow_null = TRUE,
     allow_bool = TRUE,
     allow_connection = TRUE,
+    pipe_note = NULL,
+    redirect_note = NULL,
     arg = caller_arg(x),
-    call = caller_call()
-) {
-    if (rlang::is_string(x)) return(x)
+    call = caller_call()) {
+    if (rlang::is_string(x)) {
+        if (x == "|") {
+            msg <- "The string {.val |} is not allowed in {.arg {arg}}"
+            cli::cli_abort(c(msg, i = pipe_note), call = call)
+        }
+        if (x == "2>&1") {
+            msg <- "The string {.val 2>&1} is not allowed in {.arg {arg}}"
+            cli::cli_abort(c(msg, i = redirect_note), call = call)
+        }
+        return(x)
+    }
+
     if (rlang::is_bool(x)) {
         if (!allow_bool) {
             cli::cli_abort(

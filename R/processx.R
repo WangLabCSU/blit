@@ -64,7 +64,7 @@ processx_command <- function(
         USE.NAMES = FALSE
     )
     if (!is.null(stdin)) {
-        if (!is_processx_inherit(stdin) && !is_processx_pipe(stdin)) {
+        if (!is_processx_inherit(stdin)) {
             content[1L] <- paste(content[1L], "<", shQuote(stdin))
             stdin <- if (processx::is_valid_fd(0L)) "" else NULL
         }
@@ -165,8 +165,7 @@ BlitProcess <- R6Class(
             # translate the stdout and stderr from `blit` into `processx`
             # fmt: skip
             if (is.null(stdout) ||
-                is_processx_inherit(stdout) ||
-                is_processx_pipe(stdout)) {
+                is_processx_inherit(stdout)) {
 
             } else if (isFALSE(stdout)) {
                 stdout <- NULL
@@ -179,8 +178,7 @@ BlitProcess <- R6Class(
 
             # fmt: skip
             if (is.null(stderr) ||
-                is_processx_inherit(stderr) ||
-                is_processx_pipe(stderr)) {
+                is_processx_inherit(stderr)) {
 
             } else if (isFALSE(stderr)) {
                 stderr <- NULL
@@ -412,7 +410,7 @@ BlitProcess <- R6Class(
             ok
         },
         .blit_stdout_prepare = function(stdout = private$.blit_stdout) {
-            if (isTRUE(stdout) || is_processx_pipe(stdout)) {
+            if (isTRUE(stdout)) {
                 private$.blit_stdout_push <- function(text) {
                     cat(text, sep = "\n")
                 }
@@ -470,7 +468,7 @@ BlitProcess <- R6Class(
             ok
         },
         .blit_stderr_prepare = function(stderr = private$.blit_stderr) {
-            if (isTRUE(stderr) || is_processx_pipe(stderr)) {
+            if (isTRUE(stderr)) {
                 private$.blit_stderr_push <- function(text) {
                     cat(cli::col_red(text), sep = "\n")
                 }
@@ -505,16 +503,6 @@ BlitProcess <- R6Class(
         }
     )
 )
-
-new_spin <- function() {
-    state <- 1L
-    spin <- c("-", "\\", "|", "/")
-    function() {
-        cat("\r", spin[state], "\r", sep = "")
-        state <<- state %% length(spin) + 1L
-        utils::flush.console()
-    }
-}
 
 is_processx_inherit <- function(x) rlang::is_string(x) && x == ""
 is_processx_pipe <- function(x) rlang::is_string(x) && x == "|"
