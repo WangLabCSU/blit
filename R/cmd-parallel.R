@@ -234,7 +234,7 @@ cmd_parallel <- function(
             cli::cli_inform("Merging all stdouts into {.path {stdouts}}")
         }
         stdout_list <- stdout_list[file.exists(stdout_list)]
-        concatenate_files(stdout_list, stdouts)
+        concatenate_files(stdouts, stdout_list)
     }
 
     # merging stderr_list
@@ -246,7 +246,7 @@ cmd_parallel <- function(
             cli::cli_inform("Merging all stderrs into {.path {stderrs}}")
         }
         stderr_list <- stderr_list[file.exists(stderr_list)]
-        concatenate_files(stderr_list, stderrs)
+        concatenate_files(stderrs, stderr_list)
     }
     invisible(out_env$status)
 }
@@ -373,23 +373,42 @@ unwrap <- function(x) {
     out
 }
 
-concatenate_files <- function(files, path) {
-    if (length(files) == 1L && !identical(files, path)) {
-        if (inherits(path, "AsIs")) {
-            write_lines(read_lines(files), path = path, append = TRUE)
-        } else {
-            write_lines(read_lines(files), path = path)
-        }
-    } else {
-        if (inherits(path, "AsIs")) {
-            for (file in files) {
-                write_lines(read_lines(file), path = path, append = TRUE)
-            }
-        } else {
-            write_lines(read_lines(files[1L]), path = path)
-            for (file in files[-1L]) {
-                write_lines(read_lines(file), path = path, append = TRUE)
-            }
-        }
+# gen_random <- function(characters, num_lines, min, max) {
+#     line_lengths <- sample.int(max - min, num_lines, replace = TRUE) + min
+#     vapply(line_lengths, function(len) paste(sample(characters, len, replace = TRUE), collapse = ""), character(1))
+# }
+# set.seed(42)
+# # generate 1000 random lines between 100-1000 characters long
+# data <- gen_random(letters, 1000, min = 100, max = 1000)
+# file1 <- tempfile()
+# file2 <- tempfile()
+# write_lines(data, file1)
+# write_lines(data, file2)
+# path1 <- tempfile()
+# path2 <- tempfile()
+# bench::mark(
+#     {
+#         file.append(path1, file1)
+#         file.append(path1, file2)
+#     },
+#     {
+#         write_lines(read_lines(file1), path2, append = TRUE)
+#         write_lines(read_lines(file2), path2, append = TRUE)
+#     },
+#     check = FALSE,
+#     max_iterations = 1
+# )
+# file.remove(c(file1, file2, path1, path2))
+# A tibble: 2 × 13
+#   expression         min   median `itr/sec` mem_alloc `gc/sec` n_itr  n_gc
+#   <bch:expr>    <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl> <int> <dbl>
+# 1 { file.appen… 698.97µs 698.97µs     1431.    2.27KB        0     1     0
+# 2 { write_line…   2.97ms   2.97ms      337.  502.06KB        0     1     0
+# # ℹ 5 more variables: total_time <bch:tm>, result <list>, memory <list>,
+# #   time <list>, gc <list>
+concatenate_files <- function(path, files) {
+    if (!inherits(path, "AsIs") && file.exists(path)) {
+        file.remove(path)
     }
+    for (file in files) file.append(path, files)
 }
