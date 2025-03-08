@@ -337,8 +337,14 @@ Command <- R6Class("Command",
         #
         # @return An string of command path
         command_locate = function(cmd) {
-            if (is.null(cmd <- cmd)) {
+            if (is.null(cmd)) {
                 commands <- c(private$name, private$alias)
+                if (length(commands) == 0L) {
+                    cli::cli_abort(c(
+                        "Cannot resolve the command name",
+                        i = "Please provide the command path directly"
+                    ))
+                }
                 for (cmd in commands) {
                     if (nzchar(command <- Sys.which(cmd))) {
                         break
@@ -407,7 +413,9 @@ remove_opath <- function(opath) {
     # remove trailing backslash or slash
     opath <- path_trim(opath)
     opath <- opath[file.exists(opath)] # can also check directory
-    if (length(opath) == 0L) return(NULL) 
+    if (length(opath) == 0L) {
+        return(NULL)
+    }
     failed <- vapply(opath, unlink, integer(1L),
         recursive = TRUE, USE.NAMES = FALSE
     ) != 0L

@@ -3,6 +3,7 @@ dir_create <- function(path, ...) {
         !dir.create(path = path, showWarnings = FALSE, ...)) {
         cli::cli_abort("Cannot create directory {.path {path}}")
     }
+    invisible(path)
 }
 
 file_path <- function(..., ext = NULL) {
