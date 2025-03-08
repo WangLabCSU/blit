@@ -36,7 +36,7 @@ cmd_wd <- function(command, wd = NULL) {
 cmd_envvar <- function(command, ..., action = "replace", sep = NULL) {
     assert_s3_class(command, "command")
     action <- rlang::arg_match0(action, c("replace", "prefix", "suffix"))
-    assert_string(sep)
+    assert_string(sep, allow_null = TRUE)
     dots <- rlang::dots_list(..., .ignore_empty = "all")
     if (!rlang::is_named2(dots)) {
         cli::cli_abort("All input in {.arg ...} must be named")
