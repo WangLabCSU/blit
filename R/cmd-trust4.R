@@ -126,7 +126,7 @@ Trust4ImgtAnnot <- R6Class(
             c(shQuote(species), ">", opath)
         },
         combine_params = function() {
-            script <- internal_file("TRUST4", "BuildImgtAnnot.pl")
+            script <- pkg_extdata("TRUST4", "BuildImgtAnnot.pl")
             if (file.access(script, mode = 1L) != 0L) {
                 Sys.chmod(script, "555")
             }

@@ -28,7 +28,7 @@ KrakenTools <- R6Class(
     inherit = Python,
     private = list(
         combine_params = function(script) {
-            script <- internal_file("KrakenTools", paste0(script, ".py"))
+            script <- pkg_extdata("KrakenTools", paste0(script, ".py"))
             if (file.access(script, mode = 1L) != 0L) {
                 Sys.chmod(script, "555")
             }

@@ -67,10 +67,6 @@ download_file <- function(url, path, ...) {
     }
 }
 
-internal_file <- function(..., dir = "extdata") {
-    system.file(dir, ..., package = pkg_nm(), mustWork = TRUE)
-}
-
 path_equal <- function(path1, path2) {
     normalizePath(path1, "/", FALSE) == normalizePath(path2, "/", FALSE)
 }
