@@ -19,6 +19,21 @@ conda <- make_command(
 Conda <- R6Class(
     "Conda",
     inherit = Command,
+    public = list(
+        print = function(indent = NULL) {
+            if (!is.numeric(indent) || indent < 1L) {
+                msg <- sprintf("<Command: %s>", "conda")
+            } else {
+                msg <- sprintf(
+                    "%s<Command: %s>",
+                    strrep(" ", as.integer(indent)),
+                    "conda"
+                )
+            }
+            cat(msg, sep = "\n")
+            invisible(self)
+        }
+    ),
     private = list(
         name = "micromamba",
         alias = c("mamba", "conda"),
@@ -26,4 +41,3 @@ Conda <- R6Class(
         combine_params = function(subcmd) c(subcmd, super$combine_params())
     )
 )
-
