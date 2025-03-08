@@ -1,6 +1,6 @@
 #' Run cellranger
 #' @param subcmd Sub-Command of cellranger.
-#' @param ... `r rd_dots("cellranger subcmd")`.
+#' @param ... `r rd_dots("cellranger")`.
 #' @param cellranger `r rd_cmd("cellranger")`.
 #' @inherit exec return
 #' @seealso

@@ -22,6 +22,7 @@ Invoke a System Command
 \itemize{
 \item \code{\link[=allele_counter]{allele_counter()}}
 \item \code{\link[=cellranger]{cellranger()}}
+\item \code{\link[=conda]{conda()}}
 \item \code{\link[=fastq_pair]{fastq_pair()}}
 \item \code{\link[=gistic2]{gistic2()}}
 \item \code{\link[=kraken_tools]{kraken_tools()}}

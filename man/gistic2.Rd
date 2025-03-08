@@ -50,6 +50,7 @@ deletion, and it lists genes found in each "wide peak" region.
 Other \code{commands}:
 \code{\link{allele_counter}()},
 \code{\link{cellranger}()},
+\code{\link{conda}()},
 \code{\link{fastq_pair}()},
 \code{\link{kraken2}()},
 \code{\link{kraken_tools}()},

@@ -56,6 +56,7 @@ given k-mer.
 Other \code{commands}:
 \code{\link{allele_counter}()},
 \code{\link{cellranger}()},
+\code{\link{conda}()},
 \code{\link{fastq_pair}()},
 \code{\link{gistic2}()},
 \code{\link{kraken_tools}()},

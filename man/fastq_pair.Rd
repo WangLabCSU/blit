@@ -53,6 +53,7 @@ they demand paired end files have the same number of reads.
 Other \code{commands}:
 \code{\link{allele_counter}()},
 \code{\link{cellranger}()},
+\code{\link{conda}()},
 \code{\link{gistic2}()},
 \code{\link{kraken2}()},
 \code{\link{kraken_tools}()},

@@ -9,7 +9,7 @@ cellranger(subcmd = NULL, ..., cellranger = NULL)
 \arguments{
 \item{subcmd}{Sub-Command of cellranger.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \verb{cellranger subcmd} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \verb{cmd_help(cellranger subcmd())}.}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{cellranger} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(cellranger())}.}
 
 \item{cellranger}{A string of path to \code{cellranger} command.}
 }
@@ -27,6 +27,7 @@ Run cellranger
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
+\code{\link{conda}()},
 \code{\link{fastq_pair}()},
 \code{\link{gistic2}()},
 \code{\link{kraken2}()},
