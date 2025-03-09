@@ -1,0 +1,79 @@
+name: GISTIC2
+url: ftp://ftp.broadinstitute.org/pub/GISTIC2.0/GISTIC_2_0_23.tar.gz
+version: 2.0.23
+pre_install: |
+    if (utils::untar(appfile, exdir = appdir)) {
+        cli::cli_abort("Cannot untar {.path {path}}")
+    }
+installer: |
+    cli::cli_inform("Installing {.field MCR}")
+    mcr_file <- file.path(appdir, "MCR_Installer", "MCRInstaller.zip")
+    mcr_dir <- file.path(appdir, "MATLAB_Compiler_Runtime")
+    # mcr_tmp_dir <- file.path(appdir, "MCR_Installer")
+    mcr_tmp_dir <- tempfile("MCR")
+    # on.exit(dir_delete(mcr_tmp_dir), add = TRUE)
+    unzip2(mcr_file, exdir = mcr_tmp_dir, basename = FALSE)
+    mcr_install <- file.path(mcr_tmp_dir, "install")
+    file_executable(mcr_install)
+    java_bin <- file.path(mcr_tmp_dir, "sys/java/jre/glnxa64/jre/bin/java")
+    file_executable(java_bin)
+    cmd_run(exec(
+        mcr_install,
+        "-mode", "silent", "-agreeToLicense", "yes", 
+        "-destinationFolder", mcr_dir
+    ))
+    script <- file.path(appdir, "gistic2")
+    content <- c(
+        "#!/bin/bash",
+        "#",
+        "# GISTIC2 script",
+        "#",
+        "## set MCR environment and launch GISTIC executable",
+        sprintf("MCR_ROOT=%s/MATLAB_Compiler_Runtime", appdir),
+        "MCR_VER=v83",
+        "echo Setting Matlab MCR root to $MCR_ROOT",
+        "LD_LIBRARY_PATH=$MCR_ROOT/$MCR_VER/runtime/glnxa64:$LD_LIBRARY_PATH",
+        "LD_LIBRARY_PATH=$MCR_ROOT/$MCR_VER/bin/glnxa64:$LD_LIBRARY_PATH",
+        "LD_LIBRARY_PATH=$MCR_ROOT/$MCR_VER/sys/os/glnxa64:$LD_LIBRARY_PATH",
+        "export LD_LIBRARY_PATH",
+        "XAPPLRESDIR=$MCR_ROOT/$MCR_VER/MATLAB_Component_Runtime/v83/X11/app-defaults",
+        "export XAPPLRESDIR",
+        "",
+        "## launch GISTIC executable",
+        sprintf("%s/gp_gistic2_from_seg $@", appdir)
+    )
+    write_lines(content, script)
+    file_executable(script)
+    content <- c(
+        "#!/bin/sh",
+        "## run example GISTIC analysis",
+        "",
+        "## output directory",
+        "echo --- creating output directory ---",
+        sprintf("basedir=%s/example_results", appdir),
+        "mkdir -p $basedir",
+        "",
+        "echo --- running GISTIC ---",
+        "## input file definitions",
+        sprintf("segfile=%s/examplefiles/segmentationfile.txt", appdir),
+        sprintf("markersfile=%s/examplefiles/markersfile.txt", appdir),
+        sprintf("refgenefile=%s/refgenefiles/hg16.mat", appdir),
+        sprintf("alf=%s/examplefiles/arraylistfile.txt", appdir),
+        sprintf("cnvfile=%s/examplefiles/cnvfile.txt", appdir),
+        "## call script that sets MCR environment and calls GISTIC executable",
+        paste(
+            sprintf("%s/gistic2", appdir),
+            "-b $basedir -seg $segfile -mk $markersfile",
+            "-refgene $refgenefile -alf $alf -cnv $cnvfile -genegistic 1",
+            "-smallmem 1 -broad 1 -brlen 0.5 -conf 0.90",
+            "-armpeel 1 -savegene 1 -gcm extreme"
+        ),
+        ""
+    )
+    write_lines(content, file.path(appdir, "run_gistic_example"))
+    file_executable(script)
+    # find /usr/lib/ -name *ncurses*
+    # sudo ln -s /usr/lib/x86_64-linux-gnu/libncursesw.so.6.4 /usr/lib/x86_64-linux-gnu/libncurses.so.5
+    # sudo ln -s /usr/lib/x86_64-linux-gnu/libtinfo.so.6.4 /usr/lib/x86_64-linux-gnu/libtinfo.so.5
+bin:
+    - gistic2
