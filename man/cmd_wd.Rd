@@ -20,8 +20,13 @@ cmd_on_exit(command, ...)
 
 \item{wd}{A string or \code{NULL} define the working directory of the command.}
 
-\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Expression to be evaluated when
-the command finished.}
+\item{...}{\itemize{
+\item \code{cmd_envvar}: Named character define the environment variables.
+\item \code{cmd_envpath}: Unnamed character to define the \code{PATH}-like environment
+variables \code{name}.
+\item \code{cmd_on_exit}: <\link[rlang:dyn-dots]{dynamic dots}> Expression to be
+evaluated when the command finished.
+}}
 
 \item{action}{Should the new values \code{"replace"}, \code{"prefix"} or \code{"suffix"}
 existing environment variables?}

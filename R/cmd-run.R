@@ -59,7 +59,7 @@
 #' @return
 #' - `cmd_run`: Exit status invisiblely.
 #' @seealso
-#'  - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
+#'  - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]/[`cmd_on_exit()`]
 #'  - [`cmd_parallel()`]
 #' @export
 cmd_run <- function(

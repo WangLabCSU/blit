@@ -21,7 +21,7 @@ Run cellranger
 }
 \seealso{
 \itemize{
-\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}/\code{\link[=cmd_on_exit]{cmd_on_exit()}}
 \item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}/\code{\link[=cmd_background]{cmd_background()}}
 }
 

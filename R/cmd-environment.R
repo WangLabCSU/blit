@@ -22,6 +22,8 @@ cmd_wd <- function(command, wd = NULL) {
 #'  - `cmd_envvar`: Named character define the environment variables.
 #'  - `cmd_envpath`: Unnamed character to define the `PATH`-like environment
 #' variables `name`.
+#'  - `cmd_on_exit`: <[dynamic dots][rlang::dyn-dots]> Expression to be
+#' evaluated when the command finished.
 #' @param action Should the new values `"replace"`, `"prefix"` or `"suffix"`
 #' existing environment variables?
 #' @param sep A string to separate new and old value when `action` is `"prefix"`
@@ -90,8 +92,6 @@ cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
 }
 
 #' @describeIn cmd_wd define the exit code of the command
-#' @param ... <[dynamic dots][rlang::dyn-dots]> Expression to be evaluated when
-#' the command finished.
 #' @return
 #' - `cmd_on_exit`: The `command` object itself, with the `on_exit` field
 #'   updated.
