@@ -220,8 +220,11 @@ BlitProcess <- R6Class(
             out
         },
         .blit_warn_timeout = function(i = NULL) {
-            if (!is.null(private$.blit_timeout) && private$.blit_timeout) {
-                msg <- "System command timed out"
+            if (!is.null(private$.blit_timeout)) {
+                msg <- sprintf(
+                    "System command timed out in %s",
+                    format(private$.blit_timeout, digits = 2)
+                )
                 if (!is.null(i)) msg <- sprintf("[%s] %s", i, msg)
                 cli::cli_warn(msg, class = "system_command_timeout")
                 private$.blit_timeout <- NULL
@@ -239,9 +242,9 @@ BlitProcess <- R6Class(
                 # fmt: skip
                 if (!is.null(timeout) &&
                     is.finite(timeout) &&
-                    Sys.time() - start_time > timeout) {
+                    (diff <- Sys.time() - start_time) > timeout) {
                     self$.blit_kill(close_connections = FALSE)
-                    private$.blit_timeout <- TRUE
+                    private$.blit_timeout <- diff
                     return(FALSE)
                 }
                 # Otherwise just poll for 200ms, or less if a timeout is sooner.

@@ -114,6 +114,16 @@ exec("echo", "$TEST") |>
     cmd_run()
 ```
 
+```{r}
+file <- tempfile()
+file.create(file)
+file.exists(file)
+exec("ping", "localhost") |>
+     cmd_on_exit(file.remove(file)) |> 
+     cmd_run(timeout = 5) # terminate it after 5s
+file.exists(file)
+```
+
 `blit` provides several built-in functions for directly executing specific
 commands., these include:
 [samtools](https://www.htslib.org/),

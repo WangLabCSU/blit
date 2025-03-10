@@ -306,6 +306,7 @@ check_timeout <- function(x, arg = caller_arg(x), call = caller_call()) {
                 )
             }
         )
+        if (x <= 0L) cli::cli_abort("{.arg {arg}} must be a positive value")
     }
     x
 }
