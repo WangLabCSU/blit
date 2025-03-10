@@ -27,7 +27,7 @@ processx_command <- function(
                 call = call
             )
         }
-        if (verbose) cli::cli_inform("Working Directory: {.path {wd}")
+        if (verbose) cli::cli_inform("Working Directory: {.path {wd}}")
     }
     command_series <- .subset2(command, "command_series")
 

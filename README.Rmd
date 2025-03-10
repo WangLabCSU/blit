@@ -109,6 +109,12 @@ Several functions allow you to control the environment when running the command:
   - `cmd_on_exit`: define the exit code of the command.
 
 ```{r}
+exec("echo", "$(pwd)") |>
+    cmd_wd(tempdir()) |>
+    cmd_run()
+```
+
+```{r}
 exec("echo", "$TEST") |>
     cmd_envvar(TEST = "blit is very awesome") |>
     cmd_run()
