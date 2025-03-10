@@ -106,6 +106,7 @@ Several functions allow you to control the environment when running the command:
   - `cmd_wd`: define the working directory.
   - `cmd_envvar`: define the environment variables.
   - `cmd_envpath`: define the `PATH`-like environment variables.
+  - `cmd_on_exit`: define the exit code of the command.
 
 ```{r}
 exec("echo", "$TEST") |>

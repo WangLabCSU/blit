@@ -4,24 +4,24 @@
 \alias{cmd_wd}
 \alias{cmd_envvar}
 \alias{cmd_envpath}
-\title{Define the environment when running the command}
+\alias{cmd_on_exit}
+\title{Setup the context when running the command}
 \usage{
 cmd_wd(command, wd = NULL)
 
 cmd_envvar(command, ..., action = "replace", sep = NULL)
 
 cmd_envpath(command, ..., action = "prefix", name = "PATH")
+
+cmd_on_exit(command, ...)
 }
 \arguments{
 \item{command}{A \code{command} object.}
 
 \item{wd}{A string or \code{NULL} define the working directory of the command.}
 
-\item{...}{\itemize{
-\item \code{cmd_envvar}: Named character define the environment variables.
-\item \code{cmd_envpath}: Unnamed character to define the \code{PATH}-like environment
-variables \code{name}.
-}}
+\item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Expression to be evaluated when
+the command finished.}
 
 \item{action}{Should the new values \code{"replace"}, \code{"prefix"} or \code{"suffix"}
 existing environment variables?}
@@ -36,19 +36,37 @@ can use this to define other \code{PATH}-like environment variable such as
 \value{
 \itemize{
 \item \code{cmd_wd}: The \code{command} object itself, with working directory updated.
+}
+
+\itemize{
 \item \code{cmd_envvar}: The \code{command} object itself, with running environment
 variable updated.
-\item \code{cmd_envpath}: The \code{command} object self, with running environment variable
-\code{name} updated.
+}
+
+\itemize{
+\item \code{cmd_envpath}: The \code{command} object itself, with running environment
+variable \code{name} updated.
+}
+
+\itemize{
+\item \code{cmd_on_exit}: The \code{command} object itself, with the \code{on_exit} field
+updated.
 }
 }
 \description{
+Setup the context when running the command
+}
+\section{Functions}{
 \itemize{
-\item \code{cmd_wd}: define the working directory.
-\item \code{cmd_envvar}: define the environment variables.
-\item \code{cmd_envpath}: define the \code{PATH}-like environment variables.
-}
-}
+\item \code{cmd_wd()}: define the working directory.
+
+\item \code{cmd_envvar()}: define the environment variables.
+
+\item \code{cmd_envpath()}: define the \code{PATH}-like environment variables.
+
+\item \code{cmd_on_exit()}: define the exit code of the command
+
+}}
 \seealso{
 \itemize{
 \item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}/\code{\link[=cmd_background]{cmd_background()}}

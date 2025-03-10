@@ -145,11 +145,11 @@ cmd_parallel <- function(
                 )
 
                 # We make sure that all stdout and stderr have been collected
-                set_exit(out_env$process[[!!i]]$.blit_complete())
+                on_exit(out_env$process[[!!i]]$.blit_complete())
 
                 # We make sure that the process is eliminated and the
                 # connections are closed
-                set_exit(out_env$process[[!!i]]$.blit_kill())
+                on_exit(out_env$process[[!!i]]$.blit_kill())
 
                 # indicate we have occupy this pool
                 pools[pool] <- i

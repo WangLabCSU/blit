@@ -1,16 +1,10 @@
-#' Define the environment when running the command
+#' Setup the context when running the command
 #'
-#' - `cmd_wd`: define the working directory.
-#' - `cmd_envvar`: define the environment variables.
-#' - `cmd_envpath`: define the `PATH`-like environment variables.
+#' @describeIn cmd_wd define the working directory.
 #' @inheritParams cmd_help
 #' @param wd A string or `NULL` define the working directory of the command.
 #' @return
 #' - `cmd_wd`: The `command` object itself, with working directory updated.
-#' - `cmd_envvar`: The `command` object itself, with running environment
-#' variable updated.
-#' - `cmd_envpath`: The `command` object self, with running environment variable
-#' `name` updated.
 #' @seealso
 #' - [`cmd_run()`]/[`cmd_help()`]/[`cmd_background()`]
 #' - [`cmd_parallel()`]
@@ -22,6 +16,7 @@ cmd_wd <- function(command, wd = NULL) {
     command
 }
 
+#' @describeIn cmd_wd define the environment variables.
 #' @inheritParams cmd_wd
 #' @param ...
 #'  - `cmd_envvar`: Named character define the environment variables.
@@ -31,8 +26,10 @@ cmd_wd <- function(command, wd = NULL) {
 #' existing environment variables?
 #' @param sep A string to separate new and old value when `action` is `"prefix"`
 #' or `"suffix"`. By default, `" "` will be used.
+#' @return
+#' - `cmd_envvar`: The `command` object itself, with running environment
+#' variable updated.
 #' @export
-#' @rdname cmd_wd
 cmd_envvar <- function(command, ..., action = "replace", sep = NULL) {
     assert_s3_class(command, "command")
     action <- rlang::arg_match0(action, c("replace", "prefix", "suffix"))
@@ -59,12 +56,15 @@ cmd_envvar <- function(command, ..., action = "replace", sep = NULL) {
     command
 }
 
+#' @describeIn cmd_wd define the `PATH`-like environment variables.
 #' @param name A string define the PATH environment variable name. You
 #' can use this to define other `PATH`-like environment variable such as
 #' `PYTHONPATH`.
+#' @return
+#' - `cmd_envpath`: The `command` object itself, with running environment
+#' variable `name` updated.
 #' @importFrom rlang :=
 #' @export
-#' @rdname cmd_wd
 cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
     assert_s3_class(command, "command")
     rlang::check_dots_unnamed()
@@ -87,6 +87,19 @@ cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
         action = action,
         sep = .Platform$path.sep
     )
+}
+
+#' @describeIn cmd_wd define the exit code of the command
+#' @param ... <[dynamic dots][rlang::dyn-dots]> Expression to be evaluated when
+#' the command finished.
+#' @return
+#' - `cmd_on_exit`: The `command` object itself, with the `on_exit` field
+#'   updated.
+#' @export
+cmd_on_exit <- function(command, ...) {
+    assert_s3_class(command, "command")
+    command$on_exit <- c(.subset2(command, "on_exit"), rlang::enquos(...))
+    command
 }
 
 envvar_add <- function(new, old, action, sep) {

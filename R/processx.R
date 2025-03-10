@@ -14,15 +14,14 @@ processx_command <- function(
     stdout_callback = NULL,
     stderr_callback = NULL,
     verbose = TRUE,
-    call = caller_call()
-) {
+    call = caller_call()) {
     assert_bool(verbose, call = call)
 
     # set working directory ---------------------
     if (!is.null(wd <- .subset2(command, "wd"))) {
         # fmt: skip
         if (!dir.exists(wd) &&
-                !dir.create(wd, showWarnings = FALSE)) {
+            !dir.create(wd, showWarnings = FALSE)) {
             cli::cli_abort(
                 "Cannot create working directory {.path {wd}}",
                 call = call
@@ -82,16 +81,17 @@ processx_command <- function(
         cli::cat_line()
     }
 
-    cleaning_list <- lapply(command_series, function(cmd) {
-        out <- cmd$get_cleaning()
-        cmd$reset_cleaning()
+    on_exit_list <- lapply(command_series, function(cmd) {
+        out <- cmd$get_on_exit()
+        cmd$reset_on_exit()
         out
     })
-    cleaning_list <- unlist(cleaning_list, FALSE, FALSE)
-    cleanup <- function() {
-        for (cleaning in cleaning_list) {
+    on_exit_list <- unlist(on_exit_list, FALSE, FALSE)
+    on_exit_list <- c(on_exit_list, .subset2(command, "on_exit"))
+    finalizer <- function() {
+        for (on_exit in on_exit_list) {
             rlang::try_fetch(
-                rlang::eval_tidy(cleaning),
+                rlang::eval_tidy(on_exit),
                 error = function(cnd) cli::cli_warn(conditionMessage(cnd))
             )
         }
@@ -108,7 +108,7 @@ processx_command <- function(
         .blit_content = content,
         .blit_stdout_callback = stdout_callback,
         .blit_stderr_callback = stderr_callback,
-        .blit_cleanup = cleanup,
+        .blit_finalizer = finalizer,
         cleanup_tree = TRUE
     )
 }
@@ -125,7 +125,7 @@ BlitProcess <- R6Class(
                               .blit_stdout_callback,
                               .blit_stderr_callback,
                               .blit_content = NULL,
-                              .blit_cleanup = NULL,
+                              .blit_finalizer = NULL,
                               .blit_shell = NULL) {
             # prepare the shell -------------------------
             script <- tempfile(pkg_nm())
@@ -134,8 +134,7 @@ BlitProcess <- R6Class(
                 # for cmd "^"
                 # for powershell "`"
                 cmd <- .blit_shell %||% "cmd"
-                arg <- switch(
-                    cmd,
+                arg <- switch(cmd,
                     cmd = "/C",
                     powershell = c("-ExecutionPolicy", "Bypass", "-File")
                 )
@@ -187,7 +186,7 @@ BlitProcess <- R6Class(
             } else if (!is.null(.blit_stderr_callback)) {
                 stderr <- "|"
             }
-            private$.blit_cleanup <- .blit_cleanup
+            private$.blit_finalizer <- .blit_finalizer
             super$initialize(
                 command = cmd,
                 args = c(arg, script),
@@ -281,7 +280,7 @@ BlitProcess <- R6Class(
         # A single boolean valued indicates whether the process is timedout
         .blit_timeout = NULL,
         # A function used to cleanup
-        .blit_cleanup = NULL,
+        .blit_finalizer = NULL,
         .blit_wait = function(timeout = NULL, spinner = FALSE) {
             # We make sure that all stdout and stderr have been collected
             on.exit(self$.blit_complete(), add = TRUE)
@@ -325,9 +324,9 @@ BlitProcess <- R6Class(
                     }
                 )
             }
-            if (!is.null(private$.blit_cleanup)) {
-                private$.blit_cleanup()
-                private$.blit_cleanup <- NULL
+            if (!is.null(private$.blit_finalizer)) {
+                private$.blit_finalizer()
+                private$.blit_finalizer <- NULL
             }
         },
         .blit_complete_collect = function() {

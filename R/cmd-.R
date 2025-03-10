@@ -49,8 +49,7 @@ make_command <- function(name, fun, envir = caller_env()) {
                 out <- new_command(new)
             } else {
                 out$command_series <- c(
-                    .subset2(out, "command_series"),
-                    list(new)
+                    .subset2(out, "command_series"), list(new)
                 )
             }
             out
@@ -60,9 +59,12 @@ make_command <- function(name, fun, envir = caller_env()) {
     out
 }
 
-new_command <- function(Command, envvar = NULL, wd = NULL) {
+new_command <- function(Command) {
     structure(
-        list(command_series = list(Command), envvar = NULL, wd = NULL),
+        list(
+            command_series = list(Command),
+            envvar = NULL, wd = NULL, on_exit = NULL
+        ),
         class = "command"
     )
 }
@@ -258,14 +260,14 @@ Command <- R6Class("Command",
             c(command, combined)
         },
 
-        #' @description Get the cleaning expression
+        #' @description Get the command exit code
         #' @return A list of [`quosures`][rlang::quo()].
-        get_cleaning = function() private$cleaning,
+        get_on_exit = function() private$on_exit,
 
-        #' @description Reset the cleaning expression
+        #' @description Reset the command exit code
         #' @return The object itself.
-        reset_cleaning = function() {
-            private$cleaning <- NULL
+        reset_on_exit = function() {
+            private$on_exit <- NULL
             invisible(self)
         },
 
@@ -305,15 +307,15 @@ Command <- R6Class("Command",
         # these fields carry the state when executating the command, and
         # will always be re-calculated before using
         help = NULL, verbose = NULL,
-        params = NULL, dots = NULL, cleaning = NULL,
+        params = NULL, dots = NULL, on_exit = NULL,
 
         # remove extra parameters used by internal
         trim_params = function(argv) setdiff(argv, private$extra_params),
 
         # @description Used to attach an expression to be evaluated when
         # exiting command finished.
-        setup_clean = function(...) {
-            private$cleaning <- c(private$cleaning, rlang::enquos(...))
+        setup_on_exit = function(...) {
+            private$on_exit <- c(private$on_exit, rlang::enquos(...))
             invisible(self)
         },
 

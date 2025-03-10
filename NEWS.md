@@ -2,6 +2,8 @@
 
 ## New features
 
+* new function `cmd_on_exit()` to define the expressions which will be run when command finished
+
 * new command `samtools`
 
 * new function `cmd_parallel()` to run multiple commands meanwhile
