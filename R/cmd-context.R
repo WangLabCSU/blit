@@ -1,4 +1,4 @@
-#' Setup the context when running the command
+#' Setup the context for the command
 #'
 #' @describeIn cmd_wd define the working directory.
 #' @inheritParams cmd_help
@@ -18,12 +18,11 @@ cmd_wd <- function(command, wd = NULL) {
 
 #' @describeIn cmd_wd define the environment variables.
 #' @inheritParams cmd_wd
-#' @param ...
+#' @param ... <[dynamic dots][rlang::dyn-dots]>:
 #'  - `cmd_envvar`: Named character define the environment variables.
 #'  - `cmd_envpath`: Unnamed character to define the `PATH`-like environment
 #' variables `name`.
-#'  - `cmd_on_exit`: <[dynamic dots][rlang::dyn-dots]> Expression to be
-#' evaluated when the command finished.
+#'  - `cmd_on_exit`: Expression to be evaluated when the command finished.
 #' @param action Should the new values `"replace"`, `"prefix"` or `"suffix"`
 #' existing environment variables?
 #' @param sep A string to separate new and old value when `action` is `"prefix"`
@@ -93,8 +92,7 @@ cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
 
 #' @describeIn cmd_wd define the exit code of the command
 #' @return
-#' - `cmd_on_exit`: The `command` object itself, with the `on_exit` field
-#'   updated.
+#' - `cmd_on_exit`: The `command` object itself, with the exit code updated.
 #' @export
 cmd_on_exit <- function(command, ...) {
     assert_s3_class(command, "command")
