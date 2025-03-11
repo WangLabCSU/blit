@@ -22,7 +22,7 @@ SeqKit <- R6Class(
     "SeqKit",
     inherit = Command,
     private = list(
-        name = "seqkit",
+        alias = function() "seqkit",
         setup_help_params = function() "--help"
     )
 )

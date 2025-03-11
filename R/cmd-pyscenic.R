@@ -23,7 +23,7 @@ Pyscenic <- R6Class(
     "Pyscenic",
     inherit = Command,
     private = list(
-        name = "pyscenic",
+        alias = function() "pyscenic",
         setup_help_params = function() "--help",
         combine_params = function(subcmd) {
             c(subcmd, super$combine_params())

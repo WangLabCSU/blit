@@ -3,7 +3,7 @@
 #'
 #' @param ... `r rd_dots("perl")`.
 #' @param perl `r rd_cmd("perl")`.
-#' @seealso 
+#' @seealso
 #' - <https://www.perl.org/>
 #'
 #' `r rd_seealso()`
@@ -22,7 +22,7 @@ Perl <- R6Class(
     "Perl",
     inherit = Command,
     private = list(
-        name = "perl",
+        alias = function() "perl",
         setup_help_params = function() "--help"
     )
 )

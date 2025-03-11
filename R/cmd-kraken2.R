@@ -26,16 +26,25 @@
 #' @export
 kraken2 <- make_command(
     "kraken2",
-    function(fq1, ..., fq2 = NULL,
-             ofile = "kraken_output.txt",
-             report = "kraken_report.txt",
-             classified_out = NULL, unclassified_out = NULL,
-             odir = getwd(), kraken2 = NULL) {
+    function(
+        fq1,
+        ...,
+        fq2 = NULL,
+        ofile = "kraken_output.txt",
+        report = "kraken_report.txt",
+        classified_out = NULL,
+        unclassified_out = NULL,
+        odir = getwd(),
+        kraken2 = NULL
+    ) {
         assert_string(kraken2, allow_empty = FALSE, allow_null = TRUE)
         Kraken2$new(
             cmd = kraken2,
             ...,
-            fq1 = fq1, fq2 = fq2, ofile = ofile, report = report,
+            fq1 = fq1,
+            fq2 = fq2,
+            ofile = ofile,
+            report = report,
             classified_out = classified_out,
             unclassified_out = unclassified_out,
             odir = odir,
@@ -47,11 +56,17 @@ Kraken2 <- R6Class(
     "Kraken2",
     inherit = Command,
     private = list(
-        name = "kraken2",
+        alias = function() "kraken2",
         setup_help_params = function() "--help",
-        setup_command_params = function(fq1, fq2, ofile, report,
-                                        classified_out, unclassified_out,
-                                        odir) {
+        setup_command_params = function(
+            fq1,
+            fq2,
+            ofile,
+            report,
+            classified_out,
+            unclassified_out,
+            odir
+        ) {
             assert_string(ofile, allow_null = TRUE)
             assert_string(report, allow_null = TRUE)
             assert_string(classified_out, allow_null = TRUE)
@@ -78,17 +93,21 @@ Kraken2 <- R6Class(
             if (!is.null(report)) report <- file_path(odir, report)
             opath <- c(ofile, report)
             c(
-                arg_internal("--classified-out",
+                arg_internal(
+                    "--classified-out",
                     classified_out,
                     allow_null = TRUE
                 ),
-                arg_internal("--unclassified-out",
+                arg_internal(
+                    "--unclassified-out",
                     classified_out,
                     allow_null = TRUE
                 ),
                 arg_internal("--output", ofile, allow_null = TRUE),
                 arg_internal("--report", report, allow_null = TRUE),
-                if (!is.null(fq2)) "--paired", fq1, fq2
+                if (!is.null(fq2)) "--paired",
+                fq1,
+                fq2
             )
         }
     )

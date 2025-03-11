@@ -82,11 +82,7 @@ processx_command <- function(
         cli::cat_line()
     }
 
-    on_exit_list <- lapply(command_series, function(cmd) {
-        out <- cmd$get_on_exit()
-        cmd$reset_on_exit()
-        out
-    })
+    on_exit_list <- lapply(command_series, function(cmd) cmd$get_on_exit())
     on_exit_list <- unlist(on_exit_list, FALSE, FALSE)
     on_exit_list <- c(on_exit_list, .subset2(command, "on_exit"))
 

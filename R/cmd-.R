@@ -49,7 +49,8 @@ make_command <- function(name, fun, envir = caller_env()) {
                 out <- new_command(new)
             } else {
                 out$command_series <- c(
-                    .subset2(out, "command_series"), list(new)
+                    .subset2(out, "command_series"),
+                    list(new)
                 )
             }
             out
@@ -63,7 +64,9 @@ new_command <- function(Command) {
     structure(
         list(
             command_series = list(Command),
-            envvar = NULL, wd = NULL, on_exit = NULL
+            envvar = NULL,
+            wd = NULL,
+            on_exit = NULL
         ),
         class = "command"
     )
@@ -106,9 +109,9 @@ print.command <- function(x, ...) {
 #'
 #' @seealso make_command
 #' @export
-Command <- R6Class("Command",
+Command <- R6Class(
+    "Command",
     public = list(
-
         #' @description Create a new `Command` object.
         #' @param ... Additional argument passed into command.
         initialize = function(...) {
@@ -201,7 +204,9 @@ Command <- R6Class("Command",
                 )]
             ))
             if (is.null(command) || !nzchar(command)) {
-                cli::cli_abort("Cannot locate command {.field {private$name}}")
+                cli::cli_abort(
+                    "Cannot locate command {.field {private$command_name()}}"
+                )
             }
 
             # prepare command parameters -----------------------
@@ -221,12 +226,14 @@ Command <- R6Class("Command",
                 # only evaluate the parameters once
                 if (is.null(private$.evaluated_params)) {
                     private$.evaluated_params <- lapply(
-                        private$.params, rlang::eval_tidy
+                        private$.params,
+                        rlang::eval_tidy
                     )
                 }
                 if (is.null(private$.evaluated_dots)) {
                     private$.evaluated_dots <- lapply(
-                        private$.dots, rlang::eval_tidy
+                        private$.dots,
+                        rlang::eval_tidy
                     )
                 }
                 private$params <- build_command_params(
@@ -245,7 +252,7 @@ Command <- R6Class("Command",
                     private$.evaluated_dots,
                     paste(
                         "Only objects that can be coerced into",
-                        "a character vector can be input in {.code ...}"
+                        "a character vector can be input in {.arg ...}"
                     )
                 )
             }
@@ -264,25 +271,13 @@ Command <- R6Class("Command",
         #' @return A list of [`quosures`][rlang::quo()].
         get_on_exit = function() private$on_exit,
 
-        #' @description Reset the command exit code
-        #' @return The object itself.
-        reset_on_exit = function() {
-            private$on_exit <- NULL
-            invisible(self)
-        },
-
         #' @description Build parameters to run command.
         #' @param indent A single integer number giving the space of indent.
         #' @return The object itself.
         print = function(indent = NULL) {
-            if (!is.numeric(indent) || indent < 1L) {
-                msg <- sprintf("<Command: %s>", private$name)
-            } else {
-                msg <- sprintf(
-                    "%s<Command: %s>",
-                    strrep(" ", as.integer(indent)),
-                    private$name
-                )
+            msg <- private$object_name()
+            if (is.numeric(indent) && indent >= 1L) {
+                msg <- paste0(strrep(" ", as.integer(indent)), msg)
             }
             cat(msg, sep = "\n")
             invisible(self)
@@ -306,8 +301,11 @@ Command <- R6Class("Command",
 
         # these fields carry the state when executating the command, and
         # will always be re-calculated before using
-        help = NULL, verbose = NULL,
-        params = NULL, dots = NULL, on_exit = NULL,
+        help = NULL,
+        verbose = NULL,
+        params = NULL,
+        dots = NULL,
+        on_exit = NULL,
 
         # remove extra parameters used by internal
         trim_params = function(argv) setdiff(argv, private$extra_params),
@@ -321,12 +319,6 @@ Command <- R6Class("Command",
 
         ##############################################################
         # Following fields or methods should be overrided by sub-class.
-        # @field name A string of the command name.
-        name = NULL,
-
-        # @field alias A character giving the command alias.
-        alias = NULL,
-
         # @field collect_dots A boolean value indicating whether `...` should be
         # collected and passed into command
         collect_dots = TRUE,
@@ -335,19 +327,39 @@ Command <- R6Class("Command",
         # but shouldn't collected from user input.
         extra_params = NULL,
 
+        # @description Method used to define the command name
+        #
+        # @return A string of the command name.
+        command_name = function() .subset(private$alias(), 1L),
+
+        # @description Method used to define the command name for message
+        #
+        # @return A string of the command name.
+        object_name = function() {
+            sprintf("<Command: %s>", private$command_name())
+        },
+
+        # @description Method used to define all command alias
+        #
+        # @return A character giving the command alias.
+        alias = function() {
+            cli::cli_abort(
+                "No {.fn alias} method provided for {.cls {fclass(self)}}"
+            )
+        },
+
         # @description Method used to locate command
         #
         # @return An string of command path
         command_locate = function(cmd) {
             if (is.null(cmd)) {
-                commands <- c(private$name, private$alias)
-                if (length(commands) == 0L) {
+                if (length(private$alias()) == 0L) {
                     cli::cli_abort(c(
-                        "Cannot resolve the command name",
+                        "Cannot resolve the command alias",
                         i = "Please provide the command path directly"
                     ))
                 }
-                for (cmd in commands) {
+                for (cmd in private$alias()) {
                     if (nzchar(command <- Sys.which(cmd))) {
                         break
                     }
@@ -355,7 +367,8 @@ Command <- R6Class("Command",
                 if (!nzchar(command)) {
                     cli::cli_abort(sprintf(
                         "Cannot locate %s command",
-                        oxford_comma(sprintf("{.field %s}", commands),
+                        oxford_comma(
+                            sprintf("{.field %s}", private$alias()),
                             final = "or"
                         )
                     ))
@@ -376,12 +389,7 @@ Command <- R6Class("Command",
         #
         # @return An atomic character, or `NULL`.
         setup_help_params = function() {
-            if (is.null(private$name)) {
-                nm <- "<Command>"
-            } else {
-                nm <- sprintf("<Command: %s>", private$name)
-            }
-            cli::cli_abort("No help document for {nm}")
+            cli::cli_abort("No help document for {private$object_name()}")
         },
 
         # @description Method used to combine `private$dots` and
@@ -418,21 +426,35 @@ remove_opath <- function(opath) {
     if (length(opath) == 0L) {
         return(NULL)
     }
-    failed <- vapply(opath, unlink, integer(1L),
-        recursive = TRUE, USE.NAMES = FALSE
-    ) != 0L
+    failed <- vapply(
+        opath,
+        unlink,
+        integer(1L),
+        recursive = TRUE,
+        USE.NAMES = FALSE
+    ) !=
+        0L
     if (any(failed)) cli::cli_warn("Cannot remove {.path {opath[failed]}}")
 }
 
-build_opath <- function(odir, ofile = NULL, abs = FALSE,
-                        call = rlang::caller_call()) {
-    assert_string(odir,
+build_opath <- function(
+    odir,
+    ofile = NULL,
+    abs = FALSE,
+    call = rlang::caller_call()
+) {
+    assert_string(
+        odir,
         allow_empty = FALSE,
-        arg = rlang::caller_arg(odir), call = call
+        arg = rlang::caller_arg(odir),
+        call = call
     )
-    assert_string(ofile,
-        allow_empty = FALSE, allow_null = TRUE,
-        arg = rlang::caller_arg(ofile), call = call
+    assert_string(
+        ofile,
+        allow_empty = FALSE,
+        allow_null = TRUE,
+        arg = rlang::caller_arg(ofile),
+        call = call
     )
     odir <- path_trim(odir)
     dir_create(odir)

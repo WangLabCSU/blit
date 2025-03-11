@@ -20,7 +20,7 @@ CellRanger <- R6Class(
     "CellRanger",
     inherit = Command,
     private = list(
-        name = "cellranger",
+        alias = function() "cellranger",
         setup_help_params = function() "--help",
         combine_params = function(subcmd) {
             c(subcmd, super$combine_params())

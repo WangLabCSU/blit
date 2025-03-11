@@ -17,30 +17,21 @@ exec <- make_command("exec", function(cmd, ...) {
 Execute <- R6Class(
     "Execute",
     inherit = Command,
-    public = list(
-        print = function(indent = NULL) {
-            name <- .subset2(private$.core_params, "cmd")
-            if (!is.numeric(indent) || indent < 1L) {
-                msg <- sprintf("<Command: %s>", name)
-            } else {
-                msg <- sprintf(
-                    "%s<Command: %s>",
-                    strrep(" ", as.integer(indent)),
-                    name
-                )
-            }
-            cat(msg, sep = "\n")
-            invisible(self)
-        }
-    ),
     private = list(
+        command_name = function() .subset2(private$.core_params, "cmd"),
+        object_name = function() {
+            sprintf("<Execute: %s>", private$command_name())
+        },
         setup_help_params = function() {
-            name <- .subset2(private$.core_params, "cmd")
             cli::cli_abort(c(
-                "Don't know how to show the help document for {name}",
+                paste(
+                    "Don't know how to show the help document for",
+                    private$object_name()
+                ),
                 i = paste(
                     "Please manually set the help document argument with",
-                    "{.code cmd_run(exec('{name}'))} instead."
+                    "{.code cmd_run(exec(\"{private$command_name()}\", ...))}",
+                    "instead."
                 )
             ))
         }

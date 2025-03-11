@@ -24,21 +24,23 @@
 #' @param ... `r rd_dots("gistic2")`.
 #' @inheritParams allele_counter
 #' @param gistic2 `r rd_cmd("gistic2")`.
-#' @seealso 
+#' @seealso
 #' - <https://broadinstitute.github.io/gistic2/>
-#' 
+#'
 #' `r rd_seealso()`
 #' @inherit exec return
 #' @family command
 #' @export
 gistic2 <- make_command(
     "gistic2",
-    function(seg, refgene, ...,
-             odir = getwd(), gistic2 = NULL) {
+    function(seg, refgene, ..., odir = getwd(), gistic2 = NULL) {
         assert_string(gistic2, allow_empty = FALSE, allow_null = TRUE)
         Gistic2$new(
-            cmd = gistic2, ..., odir = odir,
-            seg = seg, refgene = refgene
+            cmd = gistic2,
+            ...,
+            odir = odir,
+            seg = seg,
+            refgene = refgene
         )
     }
 )
@@ -47,7 +49,7 @@ Gistic2 <- R6Class(
     "Gistic2",
     inherit = Command,
     private = list(
-        name = "gistic2",
+        alias = function() "gistic2",
         setup_command_params = function(seg, refgene, odir) {
             assert_s3_class(seg, "data.frame", "a data frame")
             odir <- build_opath(odir)

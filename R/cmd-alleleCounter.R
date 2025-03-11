@@ -18,14 +18,22 @@
 #' @export
 allele_counter <- make_command(
     "allele_counter",
-    function(hts_file, loci_file,
-             ofile, ..., odir = getwd(),
-             alleleCounter = NULL) {
+    function(
+        hts_file,
+        loci_file,
+        ofile,
+        ...,
+        odir = getwd(),
+        alleleCounter = NULL
+    ) {
         assert_string(alleleCounter, allow_empty = FALSE, allow_null = TRUE)
         AlleleCounter$new(,
-            cmd = alleleCounter, ...,
-            hts_file = hts_file, loci_file = loci_file,
-            ofile = ofile, odir = odir
+            cmd = alleleCounter,
+            ...,
+            hts_file = hts_file,
+            loci_file = loci_file,
+            ofile = ofile,
+            odir = odir
         )
     }
 )
@@ -34,7 +42,7 @@ AlleleCounter <- R6Class(
     "AlleleCounter",
     inherit = Command,
     private = list(
-        name = "alleleCounter",
+        alias = function() "alleleCounter",
         setup_help_params = function() "--help",
         setup_command_params = function(hts_file, loci_file, ofile, odir) {
             opath <- build_opath(odir, ofile)

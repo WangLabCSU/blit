@@ -16,7 +16,6 @@ make_command
 \item \href{#method-Command-new}{\code{Command$new()}}
 \item \href{#method-Command-build_command}{\code{Command$build_command()}}
 \item \href{#method-Command-get_on_exit}{\code{Command$get_on_exit()}}
-\item \href{#method-Command-reset_on_exit}{\code{Command$reset_on_exit()}}
 \item \href{#method-Command-print}{\code{Command$print()}}
 \item \href{#method-Command-clone}{\code{Command$clone()}}
 }
@@ -75,19 +74,6 @@ Get the command exit code
 
 \subsection{Returns}{
 A list of \code{\link[rlang:defusing-advanced]{quosures}}.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Command-reset_on_exit"></a>}}
-\if{latex}{\out{\hypertarget{method-Command-reset_on_exit}{}}}
-\subsection{Method \code{reset_on_exit()}}{
-Reset the command exit code
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Command$reset_on_exit()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The object itself.
 }
 }
 \if{html}{\out{<hr>}}

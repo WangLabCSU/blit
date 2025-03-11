@@ -196,27 +196,22 @@ There are several private methods or fields you may want to override when
 creating a new `Command` R6 object. The first method is `command_locate`, which
 determines how to locate the command path. By default, it will attempt to use
 the `cmd` argument provided by the user. If no `cmd` argument is supplied, it
-will try to locate the command using the `name` and `alias` fields.  In most
-cases, you will only need to provide values for the `name` and `alias` fields,
-rather than overriding the `command_locate` method.
+will try to locate the command using the `alias` method. In most cases, you will
+only need to provide values for the `alias` method, rather than overriding the
+`command_locate` method.
 
 For example, consider the `ping` command. Here is how you can define it:
 ```{r, error = TRUE}
 Ping <- R6::R6Class(
     "Ping",
     inherit = Command,
-    private = list(name = "ping")
+    private = list(alias = function() "ping")
 )
 ping <- make_command("ping", function(..., ping = NULL) {
     Ping$new(cmd = ping, ...)
 })
 ping("8.8.8.8") |> cmd_run(timeout = 5) # terminate it after 5s
 ```
-
-For the `ping` command, the `name` field is sufficient. However, for programs
-that have multiple names (like `python`), you can also provide the `alias`
-(`c("python2", "python3")`) field. Refer to the `cmd-python.R` script for more
-details.
 
 For command-line tools, the input parameters should always be characters. The
 core principle of the `Command` object is to convert all R objects (such as data

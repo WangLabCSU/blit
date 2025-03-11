@@ -24,7 +24,7 @@ Samtools <- R6Class(
     "Samtools",
     inherit = Command,
     private = list(
-        name = "samtools",
+        alias = function() "samtools",
         setup_help_params = function() "help",
         combine_params = function(subcmd) {
             if (private$help) {

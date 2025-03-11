@@ -46,7 +46,7 @@ Trust4 <- R6Class(
     "Trust4",
     inherit = Command,
     private = list(
-        name = "run-trust4",
+        alias = function() "run-trust4",
         setup_command_params = function(file1, file2, mode, ref_annot,
                                         ref_coordinate, ofile, odir) {
             assert_string(file1, allow_empty = FALSE)
