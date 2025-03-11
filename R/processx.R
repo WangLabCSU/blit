@@ -14,7 +14,8 @@ processx_command <- function(
     stdout_callback = NULL,
     stderr_callback = NULL,
     verbose = TRUE,
-    call = caller_call()) {
+    call = caller_call()
+) {
     assert_bool(verbose, call = call)
 
     # set working directory ---------------------
@@ -88,14 +89,6 @@ processx_command <- function(
     })
     on_exit_list <- unlist(on_exit_list, FALSE, FALSE)
     on_exit_list <- c(on_exit_list, .subset2(command, "on_exit"))
-    finalizer <- function() {
-        for (on_exit in on_exit_list) {
-            rlang::try_fetch(
-                rlang::eval_tidy(on_exit),
-                error = function(cnd) cli::cli_warn(conditionMessage(cnd))
-            )
-        }
-    }
 
     # execute the command ----------------------
     BlitProcess$new(
@@ -108,7 +101,14 @@ processx_command <- function(
         .blit_content = content,
         .blit_stdout_callback = stdout_callback,
         .blit_stderr_callback = stderr_callback,
-        .blit_finalizer = finalizer,
+        .blit_finalizer = function() {
+            for (on_exit in on_exit_list) {
+                rlang::try_fetch(
+                    rlang::eval_tidy(on_exit),
+                    error = function(cnd) cli::cli_warn(conditionMessage(cnd))
+                )
+            }
+        },
         cleanup_tree = TRUE
     )
 }
@@ -321,10 +321,7 @@ BlitProcess <- R6Class(
             if (file.exists(self$.blit_script)) {
                 rlang::try_fetch(
                     file.remove(self$.blit_script),
-                    error = function(cnd) {
-                        cli::cli_warn(conditionMessage(cnd))
-                        FALSE
-                    }
+                    error = function(cnd) cli::cli_warn(conditionMessage(cnd))
                 )
             }
             if (!is.null(private$.blit_finalizer)) {
