@@ -71,7 +71,8 @@ cmd_run <- function(
     stderr_callback = NULL,
     timeout = NULL,
     spinner = FALSE,
-    verbose = TRUE) {
+    verbose = TRUE
+) {
     assert_s3_class(command, "command")
     stdout <- check_stdio(
         stdout,
@@ -111,7 +112,8 @@ cmd_help <- function(
     stderr = TRUE,
     stdout_callback = NULL,
     stderr_callback = NULL,
-    verbose = TRUE) {
+    verbose = TRUE
+) {
     assert_s3_class(command, "command")
     stdout <- check_stdio(
         stdout,
@@ -148,16 +150,20 @@ cmd_background <- function(
     stdout = FALSE,
     stderr = FALSE,
     stdin = NULL,
-    verbose = TRUE) {
+    verbose = TRUE
+) {
     assert_s3_class(command, "command")
     # for background process, we cannot use pipe, since if the user don't
     # read out the standard output and/or error of the pipes, the background
     # process will stop running! So we always use `stdout = ""`/`stderr = ""`
-    stdout <- check_stdio(stdout,
-        allow_null = FALSE, allow_connection = FALSE,
+    stdout <- check_stdio(
+        stdout,
+        allow_null = FALSE,
+        allow_connection = FALSE,
         pipe_note = "Do you mean {.code TRUE}?"
     )
-    if (isTRUE(stdout)) {
+    if (isTRUE(stdout)) stdout <- ""
+    if (is_processx_inherit(stdout)) {
         if (processx::is_valid_fd(1L)) {
             cli::cli_warn(
                 paste(
@@ -167,7 +173,6 @@ cmd_background <- function(
                 .frequency = "regularly",
                 .frequency_id = "cmd_background_stdout"
             )
-            stdout <- ""
         } else {
             cli::cli_abort(c(
                 "No standard output stream found",
@@ -175,12 +180,14 @@ cmd_background <- function(
             ))
         }
     }
-    stderr <- check_stdio(stderr,
+    stderr <- check_stdio(
+        stderr,
         allow_connection = FALSE,
         pipe_note = "Do you mean {.code TRUE}?",
         redirect_note = "Do you mean {.code NULL}?"
     )
-    if (isTRUE(stderr)) {
+    if (isTRUE(stderr)) stderr <- ""
+    if (is_processx_inherit(stderr)) {
         if (processx::is_valid_fd(2L)) {
             cli::cli_warn(
                 paste(
@@ -190,7 +197,6 @@ cmd_background <- function(
                 .frequency = "regularly",
                 .frequency_id = "cmd_background_stderr"
             )
-            stderr <- ""
         } else {
             cli::cli_abort(c(
                 "No standard error stream found",
@@ -220,7 +226,8 @@ check_stdio <- function(
     pipe_note = NULL,
     redirect_note = NULL,
     arg = caller_arg(x),
-    call = caller_call()) {
+    call = caller_call()
+) {
     if (rlang::is_string(x)) {
         if (x == "|") {
             msg <- "The string {.val |} is not allowed in {.arg {arg}}"
