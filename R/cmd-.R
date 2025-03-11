@@ -13,7 +13,7 @@
 #' @export
 make_command <- function(name, fun, envir = caller_env()) {
     force(name)
-    out <- rlang::new_function(
+    wrapper <- rlang::new_function(
         rlang::fn_fmls(fun),
         quote({
             # capture the call, and modify it if the first unnamed value is
@@ -24,18 +24,18 @@ make_command <- function(name, fun, envir = caller_env()) {
             # unnamed values
             unnamed <- which(!rlang::have_name(call[-1L])) + 1L
 
-            # prepare the ouput
-            out <- NULL # should be the input `command`
+            # if we have accept another command object?
+            input_command <- NULL
             if (length(unnamed)) {
                 # if the first unnamed value is a `command` object
-                out <- rlang::try_fetch(
+                # we'll remove this value from the call
+                first_unnamed_value <- rlang::try_fetch(
                     eval(.subset2(call, unnamed[1L]), envir = envir),
                     error = function(cnd) NULL
                 )
-                if (inherits(out, "command")) {
+                if (inherits(first_unnamed_value, "command")) {
                     call <- call[-unnamed[1L]]
-                } else {
-                    out <- NULL
+                    input_command <- first_unnamed_value
                 }
             }
 
@@ -45,9 +45,12 @@ make_command <- function(name, fun, envir = caller_env()) {
             new_stack[[name]] <- fun
             call[[1L]] <- rlang::sym(name)
             new <- eval(as.call(call), envir = new_stack)
-            if (is.null(out)) {
+            # Don't accept another command object
+            if (is.null(input_command)) {
                 out <- new_command(new)
             } else {
+                # combine the input command with the current command
+                out <- input_command
                 out$command_series <- c(
                     .subset2(out, "command_series"),
                     list(new)
@@ -56,8 +59,8 @@ make_command <- function(name, fun, envir = caller_env()) {
             out
         })
     )
-    assign(name, value = out, envir = envir, inherits = FALSE)
-    out
+    assign(name, value = wrapper, envir = envir, inherits = FALSE)
+    wrapper
 }
 
 new_command <- function(Command) {
