@@ -14,8 +14,7 @@ processx_command <- function(
     stdout_callback = NULL,
     stderr_callback = NULL,
     verbose = TRUE,
-    call = caller_call()
-) {
+    call = caller_call()) {
     assert_bool(verbose, call = call)
 
     # set working directory ---------------------
@@ -81,7 +80,9 @@ processx_command <- function(
         ))
         cli::cat_line()
     }
-
+    on_start_list <- lapply(command_series, function(cmd) cmd$get_on_start())
+    on_start_list <- unlist(on_start_list, FALSE, FALSE)
+    on_start_list <-  c(on_start_list, .subset2(command, "on_start"))
     on_exit_list <- lapply(command_series, function(cmd) cmd$get_on_exit())
     on_exit_list <- unlist(on_exit_list, FALSE, FALSE)
     on_exit_list <- c(on_exit_list, .subset2(command, "on_exit"))
@@ -97,6 +98,14 @@ processx_command <- function(
         .blit_content = content,
         .blit_stdout_callback = stdout_callback,
         .blit_stderr_callback = stderr_callback,
+        .blit_startup = function() {
+            for (on_start in on_start_list) {
+                rlang::try_fetch(
+                    rlang::eval_tidy(on_start),
+                    error = function(cnd) cli::cli_warn(conditionMessage(cnd))
+                )
+            }
+        },
         .blit_finalizer = function() {
             for (on_exit in on_exit_list) {
                 rlang::try_fetch(
@@ -121,6 +130,7 @@ BlitProcess <- R6Class(
                               .blit_stdout_callback,
                               .blit_stderr_callback,
                               .blit_content = NULL,
+                              .blit_startup = NULL,
                               .blit_finalizer = NULL,
                               .blit_shell = NULL) {
             # prepare the shell -------------------------
@@ -190,7 +200,7 @@ BlitProcess <- R6Class(
                 stdout = stdout,
                 stderr = stderr
             )
-
+            if (!is.null(.blit_startup)) .blit_startup()
             # always ensure the connection methods get prepared
             if (self$has_output_connection()) private$.blit_stdout_prepare()
             if (self$has_error_connection()) private$.blit_stderr_prepare()

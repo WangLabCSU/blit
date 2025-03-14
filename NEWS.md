@@ -2,6 +2,8 @@
 
 ## New features
 
+* new function `cmd_on_start()` to define the expressions which will be run when command started
+
 * new function `cmd_on_exit()` to define the expressions which will be run when command finished
 
 * new command `samtools`

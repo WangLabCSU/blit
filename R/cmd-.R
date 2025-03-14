@@ -69,6 +69,7 @@ new_command <- function(Command) {
             command_series = list(Command),
             envvar = NULL,
             wd = NULL,
+            on_start = NULL,
             on_exit = NULL
         ),
         class = "command"
@@ -270,6 +271,10 @@ Command <- R6Class(
             c(command, combined)
         },
 
+        #' @description Get the command start code
+        #' @return A list of [`quosures`][rlang::quo()].
+        get_on_start = function() private$on_start,
+
         #' @description Get the command exit code
         #' @return A list of [`quosures`][rlang::quo()].
         get_on_exit = function() private$on_exit,
@@ -308,10 +313,18 @@ Command <- R6Class(
         verbose = NULL,
         params = NULL,
         dots = NULL,
+        on_start = NULL,
         on_exit = NULL,
 
         # remove extra parameters used by internal
         trim_params = function(argv) setdiff(argv, private$extra_params),
+
+        # @description Used to attach an expression to be evaluated when
+        # the command startup.
+        setup_on_start = function(...) {
+            private$on_start <- c(private$on_start, rlang::enquos(...))
+            invisible(self)
+        },
 
         # @description Used to attach an expression to be evaluated when
         # exiting command finished.

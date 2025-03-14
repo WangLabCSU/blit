@@ -4,6 +4,7 @@
 \alias{cmd_wd}
 \alias{cmd_envvar}
 \alias{cmd_envpath}
+\alias{cmd_on_start}
 \alias{cmd_on_exit}
 \title{Setup the context for the command}
 \usage{
@@ -12,6 +13,8 @@ cmd_wd(command, wd = NULL)
 cmd_envvar(command, ..., action = "replace", sep = NULL)
 
 cmd_envpath(command, ..., action = "prefix", name = "PATH")
+
+cmd_on_start(command, ...)
 
 cmd_on_exit(command, ...)
 }
@@ -25,6 +28,7 @@ cmd_on_exit(command, ...)
 \item \code{cmd_envvar}: Named character define the environment variables.
 \item \code{cmd_envpath}: Unnamed character to define the \code{PATH}-like environment
 variables \code{name}.
+\item \code{cmd_on_start}: Expression to be evaluated when the command started.
 \item \code{cmd_on_exit}: Expression to be evaluated when the command finished.
 }}
 
@@ -54,6 +58,10 @@ variable \code{name} updated.
 }
 
 \itemize{
+\item \code{cmd_on_start}: The \code{command} object itself, with the start code updated.
+}
+
+\itemize{
 \item \code{cmd_on_exit}: The \code{command} object itself, with the exit code updated.
 }
 }
@@ -67,6 +75,8 @@ Setup the context for the command
 \item \code{cmd_envvar()}: define the environment variables.
 
 \item \code{cmd_envpath()}: define the \code{PATH}-like environment variables.
+
+\item \code{cmd_on_start()}: define the start code of the command
 
 \item \code{cmd_on_exit()}: define the exit code of the command
 
