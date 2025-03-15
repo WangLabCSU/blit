@@ -40,7 +40,7 @@ file_path <- function(..., ext = NULL) {
 }
 
 file_delete <- function(path) {
-    if (unlink(x = path, force = TRUE)) {
+    if (file.exists(path) && unlink(x = path, force = TRUE)) {
         cli::cli_abort("Canno remove {.path {path}}")
     }
     invisible(path)
