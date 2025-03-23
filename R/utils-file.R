@@ -130,9 +130,7 @@ write_lines <- function(text, path, eol = if (.Platform$OS.type == "windows") {
     } else if (is_installed("brio")) {
         getExportedValue("brio", "write_lines")(text, path, eol = eol)
     } else if (is_installed("vroom")) {
-        getExportedValue("vroom", "vroom_write_lines")(
-            as.character(text), path, eol = eol
-        )
+        getExportedValue("vroom", "vroom_write_lines")(text, path, sep = eol)
     } else if (is_installed("readr")) {
         getExportedValue("readr", "write_lines")(text, path, sep = eol)
     } else {
