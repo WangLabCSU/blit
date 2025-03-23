@@ -117,7 +117,7 @@ write_lines <- function(text, path, eol = if (.Platform$OS.type == "windows") {
         getExportedValue("data.table", "fwrite")(
             x = list(text),
             file = path,
-            append = append,
+            append = FALSE,
             quote = FALSE,
             eol = eol,
             na = "NA",
