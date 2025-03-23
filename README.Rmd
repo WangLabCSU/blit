@@ -81,11 +81,9 @@ background while ensuring that all processes are properly cleaned up when the
 process exits.
 ```{r}
 # ip address are copied from quora <What are some famous IP addresses?>: https://qr.ae/pYlnbQ
+address <- c("localhost", "208.67.222.222", "8.8.8.8", "8.8.4.4")
 cmd_parallel(
-    exec("ping", "localhost"),
-    exec("ping", "208.67.222.222"), # OpenDNS
-    exec("ping", "8.8.8.8"), # google dns
-    exec("ping", "8.8.4.4"), # google dns
+    !!!lapply(address, function(ip) exec("ping", ip)),
     stdouts = TRUE,
     stdout_callbacks = lapply(
         seq_len(4),
@@ -106,7 +104,7 @@ Several functions allow you to control the environment when running the command:
   - `cmd_wd`: define the working directory.
   - `cmd_envvar`: define the environment variables.
   - `cmd_envpath`: define the `PATH`-like environment variables.
-  - `cmd_on_exit`: define the exit code of the command.
+  - `cmd_on_start`/`cmd_on_exit`: define the startup or exit code of the command.
 
 ```{r}
 exec("echo", "$(pwd)") |>
