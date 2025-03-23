@@ -151,6 +151,7 @@ write_table <- function(data, path, sep = "\t") {
     }
 }
 
+# Can handle compressed files
 read_lines2 <- function(path, n = Inf) {
     if (is_gzip_suffix(path) || is_gzip_signature(path)) {
         path <- gzfile(path, open = "r")
