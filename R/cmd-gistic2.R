@@ -54,7 +54,7 @@ Gistic2 <- R6Class(
             assert_s3_class(seg, "data.frame", "a data frame")
             odir <- build_opath(odir)
             seg_file <- tempfile("gistic2")
-            data.table::fwrite(seg, file = seg_file, sep = "\t")
+            write_table(seg, seg_file)
             private$setup_on_exit(file.remove(seg_file))
             c(
                 arg_internal("-seg", seg_file),

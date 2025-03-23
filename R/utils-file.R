@@ -82,37 +82,75 @@ download_file <- function(url, path, ...) {
 }
 
 read_lines <- function(path, n = Inf) {
-    # data.table don't support xz compression
-    data.table::fread(
-        file = path, sep = "", header = FALSE,
-        colClasses = "character",
-        showProgress = FALSE,
-        nrows = n
-    )[[1L]]
+    if (is_installed("data.table")) {
+        if (n < 0L) n <- Inf
+        getExportedValue("data.table", "fread")(
+            file = path, sep = "", header = FALSE,
+            colClasses = "character",
+            showProgress = FALSE,
+            nrows = n
+        )[[1L]]
+    } else if (is_installed("brio")) {
+        if (is.infinite(n) || n < 0L) n <- -1L
+        out <- getExportedValue("brio", "read_lines")(path, n = n)
+        out[out == "NA"] <- NA_character_
+        out
+    } else if (is_installed("vroom")) {
+        if (n < 0L) n <- Inf
+        getExportedValue("vroom", "vroom_lines")(path, n_max = n, na = "NA")
+    } else if (is_installed("readr")) {
+        if (n < 0L) n <- Inf
+        getExportedValue("readr", "read_lines")(path, n_max = n, na = "NA")
+    } else {
+        if (is.infinite(n) || n < 0L) n <- -1L
+        readLines(path, n = n, warn = FALSE)
+    }
 }
 
 # To write a file with windows line endings use write_lines(eol = "\r\n")
-write_lines <- function(text, path, append = FALSE,
-                        eol = if (.Platform$OS.type == "windows") {
+write_lines <- function(text, path, eol = if (.Platform$OS.type == "windows") {
                             "\r\n"
                         } else {
                             "\n"
-                        },
-                        compress = "auto") {
-    data.table::fwrite(
-        x = list(text),
-        file = path,
-        append = append,
-        quote = FALSE,
-        eol = eol,
-        na = "NA",
-        col.names = FALSE,
-        logical01 = FALSE,
-        showProgress = FALSE,
-        verbose = FALSE,
-        compress = compress
-    )
+                        }) {
+    if (is_installed("data.table")) {
+        getExportedValue("data.table", "fwrite")(
+            x = list(text),
+            file = path,
+            append = append,
+            quote = FALSE,
+            eol = eol,
+            na = "NA",
+            col.names = FALSE,
+            logical01 = FALSE,
+            showProgress = FALSE,
+            verbose = FALSE,
+            compress = "auto"
+        )
+    } else if (is_installed("brio")) {
+        getExportedValue("brio", "write_lines")(text, path, eol = eol)
+    } else if (is_installed("vroom")) {
+        getExportedValue("vroom", "vroom_write_lines")(
+            as.character(text), path, eol = eol
+        )
+    } else if (is_installed("readr")) {
+        getExportedValue("readr", "write_lines")(text, path, sep = eol)
+    } else {
+        writeLines(text, path, sep = eol)
+    }
     invisible(text)
+}
+
+write_table <- function(data, path, sep = "\t") {
+    if (is_installed("data.table")) {
+        getExportedValue("data.table", "fwrite")(data, file = path, sep = sep)
+    } else if (is_installed("vroom")) {
+        getExportedValue("vroom", "vroom_write")(data, file = path, delim = sep)
+    } else if (is_installed("readr")) {
+        getExportedValue("readr", "write_delim")(data, file = path, delim = sep)
+    } else {
+        utils::write.table(data, file = path, sep = sep, row.names = FALSE)
+    }
 }
 
 read_lines2 <- function(path, n = Inf) {
