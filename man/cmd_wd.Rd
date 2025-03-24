@@ -6,6 +6,7 @@
 \alias{cmd_envpath}
 \alias{cmd_on_start}
 \alias{cmd_on_exit}
+\alias{cmd_on_fail}
 \title{Setup the context for the command}
 \usage{
 cmd_wd(command, wd = NULL)
@@ -17,6 +18,8 @@ cmd_envpath(command, ..., action = "prefix", name = "PATH")
 cmd_on_start(command, ...)
 
 cmd_on_exit(command, ...)
+
+cmd_on_fail(command, ...)
 }
 \arguments{
 \item{command}{A \code{command} object.}
@@ -30,6 +33,7 @@ cmd_on_exit(command, ...)
 variables \code{name}.
 \item \code{cmd_on_start}: Expression to be evaluated when the command started.
 \item \code{cmd_on_exit}: Expression to be evaluated when the command finished.
+\item \code{cmd_on_fail}: Expression to be evaluated when the command failed.
 }}
 
 \item{action}{Should the new values \code{"replace"}, \code{"prefix"} or \code{"suffix"}
@@ -64,6 +68,10 @@ variable \code{name} updated.
 \itemize{
 \item \code{cmd_on_exit}: The \code{command} object itself, with the exit code updated.
 }
+
+\itemize{
+\item \code{cmd_on_fail}: The \code{command} object itself, with the failure code updated.
+}
 }
 \description{
 Setup the context for the command
@@ -79,6 +87,8 @@ Setup the context for the command
 \item \code{cmd_on_start()}: define the start code of the command
 
 \item \code{cmd_on_exit()}: define the exit code of the command
+
+\item \code{cmd_on_fail()}: define the failure code of the command
 
 }}
 \seealso{

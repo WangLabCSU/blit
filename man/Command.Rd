@@ -17,6 +17,7 @@ make_command
 \item \href{#method-Command-build_command}{\code{Command$build_command()}}
 \item \href{#method-Command-get_on_start}{\code{Command$get_on_start()}}
 \item \href{#method-Command-get_on_exit}{\code{Command$get_on_exit()}}
+\item \href{#method-Command-get_on_fail}{\code{Command$get_on_fail()}}
 \item \href{#method-Command-print}{\code{Command$print()}}
 \item \href{#method-Command-clone}{\code{Command$clone()}}
 }
@@ -84,6 +85,19 @@ A list of \code{\link[rlang:defusing-advanced]{quosures}}.
 Get the command exit code
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Command$get_on_exit()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of \code{\link[rlang:defusing-advanced]{quosures}}.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Command-get_on_fail"></a>}}
+\if{latex}{\out{\hypertarget{method-Command-get_on_fail}{}}}
+\subsection{Method \code{get_on_fail()}}{
+Get the command fail code
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Command$get_on_fail()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{

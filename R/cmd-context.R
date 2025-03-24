@@ -24,6 +24,7 @@ cmd_wd <- function(command, wd = NULL) {
 #' variables `name`.
 #'  - `cmd_on_start`: Expression to be evaluated when the command started.
 #'  - `cmd_on_exit`: Expression to be evaluated when the command finished.
+#'  - `cmd_on_fail`: Expression to be evaluated when the command failed.
 #' @param action Should the new values `"replace"`, `"prefix"` or `"suffix"`
 #' existing environment variables?
 #' @param sep A string to separate new and old value when `action` is `"prefix"`
@@ -108,6 +109,16 @@ cmd_on_start <- function(command, ...) {
 cmd_on_exit <- function(command, ...) {
     assert_s3_class(command, "command")
     command$on_exit <- c(.subset2(command, "on_exit"), rlang::enquos(...))
+    command
+}
+
+#' @describeIn cmd_wd define the failure code of the command
+#' @return
+#' - `cmd_on_fail`: The `command` object itself, with the failure code updated.
+#' @export
+cmd_on_fail <- function(command, ...) {
+    assert_s3_class(command, "command")
+    command$on_fail <- c(.subset2(command, "on_fail"), rlang::enquos(...))
     command
 }
 

@@ -70,7 +70,8 @@ new_command <- function(Command) {
             envvar = NULL,
             wd = NULL,
             on_start = NULL,
-            on_exit = NULL
+            on_exit = NULL,
+            on_fail = NULL
         ),
         class = "command"
     )
@@ -279,6 +280,10 @@ Command <- R6Class(
         #' @return A list of [`quosures`][rlang::quo()].
         get_on_exit = function() private$on_exit,
 
+        #' @description Get the command fail code
+        #' @return A list of [`quosures`][rlang::quo()].
+        get_on_fail = function() private$on_fail,
+
         #' @description Build parameters to run command.
         #' @param indent A single integer number giving the space of indent.
         #' @return The object itself.
@@ -315,6 +320,7 @@ Command <- R6Class(
         dots = NULL,
         on_start = NULL,
         on_exit = NULL,
+        on_fail = NULL,
 
         # remove extra parameters used by internal
         trim_params = function(argv) setdiff(argv, private$extra_params),
@@ -330,6 +336,13 @@ Command <- R6Class(
         # exiting command finished.
         setup_on_exit = function(...) {
             private$on_exit <- c(private$on_exit, rlang::enquos(...))
+            invisible(self)
+        },
+
+        # @description Used to attach an expression to be evaluated when
+        # command failed.
+        setup_on_fail = function(...) {
+            private$on_fail <- c(private$on_fail, rlang::enquos(...))
             invisible(self)
         },
 
@@ -457,8 +470,7 @@ build_opath <- function(
     odir,
     ofile = NULL,
     abs = FALSE,
-    call = rlang::caller_call()
-) {
+    call = rlang::caller_call()) {
     assert_string(
         odir,
         allow_empty = FALSE,

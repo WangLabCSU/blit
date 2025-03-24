@@ -82,10 +82,13 @@ processx_command <- function(
     }
     on_start_list <- lapply(command_series, function(cmd) cmd$get_on_start())
     on_start_list <- unlist(on_start_list, FALSE, FALSE)
-    on_start_list <-  c(on_start_list, .subset2(command, "on_start"))
+    on_start_list <- c(on_start_list, .subset2(command, "on_start"))
     on_exit_list <- lapply(command_series, function(cmd) cmd$get_on_exit())
     on_exit_list <- unlist(on_exit_list, FALSE, FALSE)
     on_exit_list <- c(on_exit_list, .subset2(command, "on_exit"))
+    on_fail_list <- lapply(command_series, function(cmd) cmd$get_on_fail())
+    on_fail_list <- unlist(on_fail_list, FALSE, FALSE)
+    on_fail_list <- c(on_fail_list, .subset2(command, "on_fail"))
 
     # execute the command ----------------------
     BlitProcess$new(
@@ -114,6 +117,14 @@ processx_command <- function(
                 )
             }
         },
+        .blit_failure = function() {
+            for (on_fail in on_fail_list) {
+                rlang::try_fetch(
+                    rlang::eval_tidy(on_fail),
+                    error = function(cnd) cli::cli_warn(conditionMessage(cnd))
+                )
+            }
+        },
         cleanup_tree = TRUE
     )
 }
@@ -132,6 +143,7 @@ BlitProcess <- R6Class(
                               .blit_content = NULL,
                               .blit_startup = NULL,
                               .blit_finalizer = NULL,
+                              .blit_failure = NULL,
                               .blit_shell = NULL) {
             # prepare the shell -------------------------
             script <- tempfile(pkg_nm())
@@ -193,6 +205,7 @@ BlitProcess <- R6Class(
                 stderr <- "|"
             }
             private$.blit_finalizer <- .blit_finalizer
+            private$.blit_failure <- .blit_failure
             super$initialize(
                 command = cmd,
                 args = c(arg, script),
@@ -290,6 +303,7 @@ BlitProcess <- R6Class(
         .blit_timeout = NULL,
         # A function used to cleanup
         .blit_finalizer = NULL,
+        .blit_failure = NULL,
         .blit_wait = function(timeout = NULL, spinner = FALSE) {
             # We make sure that all stdout and stderr have been collected
             on.exit(self$.blit_complete(), add = TRUE)
@@ -333,6 +347,27 @@ BlitProcess <- R6Class(
             if (!is.null(private$.blit_finalizer)) {
                 private$.blit_finalizer()
                 private$.blit_finalizer <- NULL
+            }
+            if (!is.null(private$.blit_failure)) {
+                status <- self$get_exit_status()
+                #' `$get_exit_status` returns the exit code of the process if it
+                #' has finished and `NULL` otherwise. On Unix, in some rare
+                #' cases, the exit status might be `NA`. This happens if another
+                #' package (or R itself) overwrites the processx `SIGCHLD`
+                #' handler, after the processx process has started. In these
+                #' cases processx cannot determine the real exit status of the
+                #' process. One such package is parallel, if used with fork
+                #' clusters, e.g. through the `parallel::mcparallel()` function.
+                if (!is.null(status)) {
+                    if (is.na(status)) {
+                        cli::cli_warn(
+                            "Cannot determine the process exit status"
+                        )
+                    } else if (status != 0L) {
+                        private$.blit_failure()
+                        private$.blit_failure <- NULL
+                    }
+                }
             }
         },
         .blit_complete_collect = function() {
