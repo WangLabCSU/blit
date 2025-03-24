@@ -22,10 +22,6 @@ cmd_wd <- function(command, wd = NULL) {
 #'  - `cmd_envvar`: Named character define the environment variables.
 #'  - `cmd_envpath`: Unnamed character to define the `PATH`-like environment
 #' variables `name`.
-#'  - `cmd_on_start`: Expression to be evaluated when the command started.
-#'  - `cmd_on_exit`: Expression to be evaluated when the command finished.
-#'  - `cmd_on_fail`: Expression to be evaluated when the command failed.
-#'  - `cmd_on_succeed`: Expression to be evaluated when the command succeeded.
 #' @param action Should the new values `"replace"`, `"prefix"` or `"suffix"`
 #' existing environment variables?
 #' @param sep A string to separate new and old value when `action` is `"prefix"`
@@ -91,47 +87,6 @@ cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
         action = action,
         sep = .Platform$path.sep
     )
-}
-
-#' @describeIn cmd_wd define the start code of the command
-#' @return
-#' - `cmd_on_start`: The `command` object itself, with the start code updated.
-#' @export
-cmd_on_start <- function(command, ...) {
-    assert_s3_class(command, "command")
-    command$on_start <- c(.subset2(command, "on_start"), rlang::enquos(...))
-    command
-}
-
-#' @describeIn cmd_wd define the exit code of the command
-#' @return
-#' - `cmd_on_exit`: The `command` object itself, with the exit code updated.
-#' @export
-cmd_on_exit <- function(command, ...) {
-    assert_s3_class(command, "command")
-    command$on_exit <- c(.subset2(command, "on_exit"), rlang::enquos(...))
-    command
-}
-
-#' @describeIn cmd_wd define the failure code of the command
-#' @return
-#' - `cmd_on_fail`: The `command` object itself, with the failure code updated.
-#' @export
-cmd_on_fail <- function(command, ...) {
-    assert_s3_class(command, "command")
-    command$on_fail <- c(.subset2(command, "on_fail"), rlang::enquos(...))
-    command
-}
-
-#' @describeIn cmd_wd define the successful code of the command
-#' @return
-#' - `cmd_on_succeed`: The `command` object itself, with the successful code
-#'   updated.
-#' @export
-cmd_on_succeed <- function(command, ...) {
-    assert_s3_class(command, "command")
-    command$on_succeed <- c(.subset2(command, "on_succeed"), rlang::enquos(...))
-    command
 }
 
 envvar_add <- function(new, old, action, sep) {
