@@ -105,7 +105,7 @@ Several functions allow you to control the environment when running the command:
   - `cmd_envvar`: define the environment variables.
   - `cmd_envpath`: define the `PATH`-like environment variables.
   - `cmd_on_start`/`cmd_on_exit`: define the startup, or exit code of the command.
-  - `cmd_on_fail`/`cmd_on_succeed`: define the code to be run when command fail or succeed.
+  - `cmd_on_succeed`/`cmd_on_fail`: define the code to be run when command fail or succeed.
 
 ```{r}
 exec("echo", "$(pwd)") |>
@@ -127,6 +127,29 @@ exec("ping", "localhost") |>
     cmd_on_exit(file.remove(file)) |>
     cmd_run(timeout = 5) # terminate it after 5s
 file.exists(file)
+```
+
+We can also register code for succeessful or failure command respectively
+(Timeout means command fail):
+```{r}
+file <- tempfile()
+file.create(file)
+file.exists(file)
+exec("ping", "localhost") |>
+    cmd_on_fail(file.remove(file)) |>
+    cmd_run(timeout = 5) # terminate it after 5s
+file.exists(file)
+```
+
+```{r}
+file <- tempfile()
+file.create(file)
+file.exists(file)
+exec("ping", "localhost") |>
+    cmd_on_succeed(file.remove(file)) |>
+    cmd_run(timeout = 5) # terminate it after 5s
+file.exists(file) # file remain exist since timeout means command failed
+file.remove(file)
 ```
 
 `blit` provides several built-in functions for directly executing specific

@@ -145,11 +145,8 @@ cmd_parallel <- function(
                 )
 
                 # We make sure that all stdout and stderr have been collected
-                on_exit(out_env$process[[!!i]]$.blit_complete())
-
-                # We make sure that the process is eliminated and the
-                # connections are closed
-                on_exit(out_env$process[[!!i]]$.blit_kill())
+                # and the process is eliminated and the connections are closed
+                on_exit(out_env$process[[!!i]]$.blit_finish())
 
                 # indicate we have occupy this pool
                 pools[pool] <- i
@@ -160,7 +157,7 @@ cmd_parallel <- function(
             # we check if we can release this pool
             if (!is.na(pool_value)) {
                 proc <- .subset2(out_env$process, pool_value)
-                active <- proc$.blit_active_and_collect(
+                active <- proc$.blit_collect_active(
                     timeout = .subset2(timeouts, pool_value),
                     poll_timeout = 200
                 )
@@ -168,24 +165,18 @@ cmd_parallel <- function(
                     # collect result from this pool
                     proc$wait()
 
-                    # it's not hurt to run followign command twice
-                    proc$.blit_complete()
-                    proc$.blit_kill()
-                    out_env$status[[pool_value]] <- proc$get_exit_status()
+                    # it's not hurt to run following command twice
+                    proc$.blit_finish()
 
                     # release this pool
                     pools[pool] <- NA_integer_
-                    cli::cli_progress_update(inc = 1L, id = progress)
+                    cli::cli_progress_update(1L, id = progress)
 
                     # this pool has been released, so we directly
                     # step into next cycle and re-use this pool
                     next
                 } else {
-                    cli::cli_progress_update(
-                        inc = 0L,
-                        id = progress,
-                        force = TRUE
-                    )
+                    cli::cli_progress_update(0L, id = progress, force = TRUE)
                 }
             }
 
@@ -221,7 +212,9 @@ cmd_parallel <- function(
 
     for (i in seq_along(out_env$process)) {
         if (!is.null(proc <- .subset2(out_env$process, i))) {
-            proc$.blit_warn_timeout(i)
+            out_env$status[[i]] <- proc$.blit_signal(
+                sprintf("[Command: %d] ", i)
+            )
         }
     }
 

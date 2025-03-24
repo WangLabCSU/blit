@@ -59,7 +59,9 @@
 #' @return
 #' - `cmd_run`: Exit status invisiblely.
 #' @seealso
-#'  - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]/[`cmd_on_exit()`]
+#'  - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
+#'  - [`cmd_on_start()`]/[`cmd_on_exit()`]
+#'  - [`cmd_on_succeed()`]/[`cmd_on_fail()`]
 #'  - [`cmd_parallel()`]
 #' @export
 cmd_run <- function(
@@ -71,8 +73,7 @@ cmd_run <- function(
     stderr_callback = NULL,
     timeout = NULL,
     spinner = FALSE,
-    verbose = TRUE
-) {
+    verbose = TRUE) {
     assert_s3_class(command, "command")
     stdout <- check_stdio(
         stdout,
@@ -98,8 +99,8 @@ cmd_run <- function(
         stderr_callback = stderr_callback,
         verbose = verbose
     )
-    out <- proc$.blit_run(timeout, isTRUE(spinner))
-    invisible(out)
+    proc$.blit_run(timeout, isTRUE(spinner))
+    invisible(proc$.blit_signal())
 }
 
 #' @return
@@ -112,8 +113,7 @@ cmd_help <- function(
     stderr = TRUE,
     stdout_callback = NULL,
     stderr_callback = NULL,
-    verbose = TRUE
-) {
+    verbose = TRUE) {
     assert_s3_class(command, "command")
     stdout <- check_stdio(
         stdout,
@@ -150,8 +150,7 @@ cmd_background <- function(
     stdout = FALSE,
     stderr = FALSE,
     stdin = NULL,
-    verbose = TRUE
-) {
+    verbose = TRUE) {
     assert_s3_class(command, "command")
     # for background process, we cannot use pipe, since if the user don't
     # read out the standard output and/or error of the pipes, the background
@@ -226,8 +225,7 @@ check_stdio <- function(
     pipe_note = NULL,
     redirect_note = NULL,
     arg = caller_arg(x),
-    call = caller_call()
-) {
+    call = caller_call()) {
     if (rlang::is_string(x)) {
         if (x == "|") {
             msg <- "The string {.val |} is not allowed in {.arg {arg}}"

@@ -22,8 +22,10 @@ Run seqkit
 \seealso{
 \itemize{
 \item \url{https://bioinf.shenwei.me/seqkit/}
-\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}/\code{\link[=cmd_on_exit]{cmd_on_exit()}}
-\item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}/\code{\link[=cmd_background]{cmd_background()}}
+\item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}
+\item \code{\link[=cmd_on_start]{cmd_on_start()}}/\code{\link[=cmd_on_exit]{cmd_on_exit()}}
+\item \code{\link[=cmd_on_succeed]{cmd_on_succeed()}}/\code{\link[=cmd_on_fail]{cmd_on_fail()}}
+\item \code{\link[=cmd_parallel]{cmd_parallel()}}
 }
 
 Other \code{commands}:
