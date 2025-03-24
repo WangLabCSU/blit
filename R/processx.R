@@ -313,7 +313,7 @@ BlitProcess <- R6Class(
                 )
                 if (!is.null(prefix)) msg <- paste0(prefix, msg)
                 cli::cli_warn(msg, class = "system_command_timeout")
-            } else if (is.null(status)) { 
+            } else if (is.null(status)) {
                 # Only occur when user manually call this method
                 msg <- "System command is running"
                 if (!is.null(prefix)) msg <- paste0(prefix, msg)
