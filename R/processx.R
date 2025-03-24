@@ -329,7 +329,10 @@ BlitProcess <- R6Class(
         # Must run `$wait()` method to get the exit status before using
         .blit_finish = function() {
             if (!is.null(status <- self$get_exit_status())) {
-                if (private$.blit_finished) return(invisible(self))
+                if (private$.blit_finished) {
+                    return(invisible(self))
+                }
+
                 # `$get_exit_status` returns the exit code of the process if it
                 # has finished and `NULL` otherwise. On Unix, in some rare
                 # cases, the exit status might be `NA`. This happens if another
@@ -397,6 +400,9 @@ BlitProcess <- R6Class(
                 }
                 if (!is.null(private$.blit_exit)) private$.blit_exit()
                 self$.blit_kill(close_connections = TRUE)
+                if (private$.blit_verbose) {
+                    cli::cli_inform("Command process finished")
+                }
                 private$.blit_finished <- TRUE
             } else {
                 cli::cli_abort("Please using `$wait()` method before cleanning")
