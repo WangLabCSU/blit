@@ -89,6 +89,11 @@ processx_command <- function(
     on_fail_list <- lapply(command_series, function(cmd) cmd$get_on_fail())
     on_fail_list <- unlist(on_fail_list, FALSE, FALSE)
     on_fail_list <- c(on_fail_list, .subset2(command, "on_fail"))
+    on_succeed_list <- lapply(command_series, function(cmd) {
+        cmd$get_on_succeed()
+    })
+    on_succeed_list <- unlist(on_succeed_list, FALSE, FALSE)
+    on_succeed_list <- c(on_succeed_list, .subset2(command, "on_succeed"))
 
     # execute the command ----------------------
     BlitProcess$new(
@@ -101,7 +106,7 @@ processx_command <- function(
         .blit_content = content,
         .blit_stdout_callback = stdout_callback,
         .blit_stderr_callback = stderr_callback,
-        .blit_startup = function() {
+        .blit_start = function() {
             for (on_start in on_start_list) {
                 rlang::try_fetch(
                     rlang::eval_tidy(on_start),
@@ -109,7 +114,7 @@ processx_command <- function(
                 )
             }
         },
-        .blit_finalizer = function() {
+        .blit_exit = function() {
             for (on_exit in on_exit_list) {
                 rlang::try_fetch(
                     rlang::eval_tidy(on_exit),
@@ -117,10 +122,18 @@ processx_command <- function(
                 )
             }
         },
-        .blit_failure = function() {
+        .blit_fail = function() {
             for (on_fail in on_fail_list) {
                 rlang::try_fetch(
                     rlang::eval_tidy(on_fail),
+                    error = function(cnd) cli::cli_warn(conditionMessage(cnd))
+                )
+            }
+        },
+        .blit_succeed = function() {
+            for (on_succeed in on_succeed_list) {
+                rlang::try_fetch(
+                    rlang::eval_tidy(on_succeed),
                     error = function(cnd) cli::cli_warn(conditionMessage(cnd))
                 )
             }
@@ -141,9 +154,10 @@ BlitProcess <- R6Class(
                               .blit_stdout_callback,
                               .blit_stderr_callback,
                               .blit_content = NULL,
-                              .blit_startup = NULL,
-                              .blit_finalizer = NULL,
-                              .blit_failure = NULL,
+                              .blit_start = NULL,
+                              .blit_exit = NULL,
+                              .blit_fail = NULL,
+                              .blit_succeed = NULL,
                               .blit_shell = NULL) {
             # prepare the shell -------------------------
             script <- tempfile(pkg_nm())
@@ -204,8 +218,6 @@ BlitProcess <- R6Class(
             } else if (!is.null(.blit_stderr_callback)) {
                 stderr <- "|"
             }
-            private$.blit_finalizer <- .blit_finalizer
-            private$.blit_failure <- .blit_failure
             super$initialize(
                 command = cmd,
                 args = c(arg, script),
@@ -213,7 +225,10 @@ BlitProcess <- R6Class(
                 stdout = stdout,
                 stderr = stderr
             )
-            if (!is.null(.blit_startup)) .blit_startup()
+            private$.blit_exit <- .blit_exit
+            private$.blit_fail <- .blit_fail
+            private$.blit_succeed <- .blit_succeed
+            if (!is.null(.blit_start)) .blit_start()
             # always ensure the connection methods get prepared
             if (self$has_output_connection()) private$.blit_stdout_prepare()
             if (self$has_error_connection()) private$.blit_stderr_prepare()
@@ -302,8 +317,9 @@ BlitProcess <- R6Class(
         # A single boolean valued indicates whether the process is timedout
         .blit_timeout = NULL,
         # A function used to cleanup
-        .blit_finalizer = NULL,
-        .blit_failure = NULL,
+        .blit_exit = NULL,
+        .blit_fail = NULL,
+        .blit_succeed = NULL,
         .blit_wait = function(timeout = NULL, spinner = FALSE) {
             # We make sure that all stdout and stderr have been collected
             on.exit(self$.blit_complete(), add = TRUE)
@@ -344,11 +360,8 @@ BlitProcess <- R6Class(
                     error = function(cnd) cli::cli_warn(conditionMessage(cnd))
                 )
             }
-            if (!is.null(private$.blit_finalizer)) {
-                private$.blit_finalizer()
-                private$.blit_finalizer <- NULL
-            }
-            if (!is.null(private$.blit_failure)) {
+            if (!is.null(private$.blit_succeed) ||
+                !is.null(private$.blit_fail)) {
                 status <- self$get_exit_status()
                 #' `$get_exit_status` returns the exit code of the process if it
                 #' has finished and `NULL` otherwise. On Unix, in some rare
@@ -363,11 +376,20 @@ BlitProcess <- R6Class(
                         cli::cli_warn(
                             "Cannot determine the process exit status"
                         )
-                    } else if (status != 0L) {
-                        private$.blit_failure()
-                        private$.blit_failure <- NULL
+                    } else if (status == 0L) {
+                        private$.blit_succeed()
+                        private$.blit_succeed <- NULL
+                        private$.blit_fail <- NULL
+                    } else {
+                        private$.blit_fail()
+                        private$.blit_succeed <- NULL
+                        private$.blit_fail <- NULL
                     }
                 }
+            }
+            if (!is.null(private$.blit_exit)) {
+                private$.blit_exit()
+                private$.blit_exit <- NULL
             }
         },
         .blit_complete_collect = function() {

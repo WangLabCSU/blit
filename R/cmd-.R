@@ -272,7 +272,7 @@ Command <- R6Class(
             c(command, combined)
         },
 
-        #' @description Get the command start code
+        #' @description Get the command startup code
         #' @return A list of [`quosures`][rlang::quo()].
         get_on_start = function() private$on_start,
 
@@ -280,9 +280,13 @@ Command <- R6Class(
         #' @return A list of [`quosures`][rlang::quo()].
         get_on_exit = function() private$on_exit,
 
-        #' @description Get the command fail code
+        #' @description Get the command failure code
         #' @return A list of [`quosures`][rlang::quo()].
         get_on_fail = function() private$on_fail,
+
+        #' @description Get the command succeessful code
+        #' @return A list of [`quosures`][rlang::quo()].
+        get_on_succeed = function() private$on_succeed,
 
         #' @description Build parameters to run command.
         #' @param indent A single integer number giving the space of indent.
@@ -321,6 +325,7 @@ Command <- R6Class(
         on_start = NULL,
         on_exit = NULL,
         on_fail = NULL,
+        on_succeed = NULL,
 
         # remove extra parameters used by internal
         trim_params = function(argv) setdiff(argv, private$extra_params),
@@ -340,9 +345,16 @@ Command <- R6Class(
         },
 
         # @description Used to attach an expression to be evaluated when
-        # command failed.
+        # command fail.
         setup_on_fail = function(...) {
             private$on_fail <- c(private$on_fail, rlang::enquos(...))
+            invisible(self)
+        },
+
+        # @description Used to attach an expression to be evaluated when
+        # command succeed.
+        setup_on_succeed = function(...) {
+            private$on_succeed <- c(private$on_succeed, rlang::enquos(...))
             invisible(self)
         },
 

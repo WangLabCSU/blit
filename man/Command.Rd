@@ -18,6 +18,7 @@ make_command
 \item \href{#method-Command-get_on_start}{\code{Command$get_on_start()}}
 \item \href{#method-Command-get_on_exit}{\code{Command$get_on_exit()}}
 \item \href{#method-Command-get_on_fail}{\code{Command$get_on_fail()}}
+\item \href{#method-Command-get_on_succeed}{\code{Command$get_on_succeed()}}
 \item \href{#method-Command-print}{\code{Command$print()}}
 \item \href{#method-Command-clone}{\code{Command$clone()}}
 }
@@ -69,7 +70,7 @@ An atomic character combine the command and parameters.
 \if{html}{\out{<a id="method-Command-get_on_start"></a>}}
 \if{latex}{\out{\hypertarget{method-Command-get_on_start}{}}}
 \subsection{Method \code{get_on_start()}}{
-Get the command start code
+Get the command startup code
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Command$get_on_start()}\if{html}{\out{</div>}}
 }
@@ -95,9 +96,22 @@ A list of \code{\link[rlang:defusing-advanced]{quosures}}.
 \if{html}{\out{<a id="method-Command-get_on_fail"></a>}}
 \if{latex}{\out{\hypertarget{method-Command-get_on_fail}{}}}
 \subsection{Method \code{get_on_fail()}}{
-Get the command fail code
+Get the command failure code
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Command$get_on_fail()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A list of \code{\link[rlang:defusing-advanced]{quosures}}.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Command-get_on_succeed"></a>}}
+\if{latex}{\out{\hypertarget{method-Command-get_on_succeed}{}}}
+\subsection{Method \code{get_on_succeed()}}{
+Get the command succeessful code
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Command$get_on_succeed()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{

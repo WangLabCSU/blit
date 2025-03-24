@@ -7,6 +7,7 @@
 \alias{cmd_on_start}
 \alias{cmd_on_exit}
 \alias{cmd_on_fail}
+\alias{cmd_on_succeed}
 \title{Setup the context for the command}
 \usage{
 cmd_wd(command, wd = NULL)
@@ -20,6 +21,8 @@ cmd_on_start(command, ...)
 cmd_on_exit(command, ...)
 
 cmd_on_fail(command, ...)
+
+cmd_on_succeed(command, ...)
 }
 \arguments{
 \item{command}{A \code{command} object.}
@@ -34,6 +37,7 @@ variables \code{name}.
 \item \code{cmd_on_start}: Expression to be evaluated when the command started.
 \item \code{cmd_on_exit}: Expression to be evaluated when the command finished.
 \item \code{cmd_on_fail}: Expression to be evaluated when the command failed.
+\item \code{cmd_on_succeed}: Expression to be evaluated when the command succeeded.
 }}
 
 \item{action}{Should the new values \code{"replace"}, \code{"prefix"} or \code{"suffix"}
@@ -72,6 +76,11 @@ variable \code{name} updated.
 \itemize{
 \item \code{cmd_on_fail}: The \code{command} object itself, with the failure code updated.
 }
+
+\itemize{
+\item \code{cmd_on_succeed}: The \code{command} object itself, with the successful code
+updated.
+}
 }
 \description{
 Setup the context for the command
@@ -89,6 +98,8 @@ Setup the context for the command
 \item \code{cmd_on_exit()}: define the exit code of the command
 
 \item \code{cmd_on_fail()}: define the failure code of the command
+
+\item \code{cmd_on_succeed()}: define the successful code of the command
 
 }}
 \seealso{
