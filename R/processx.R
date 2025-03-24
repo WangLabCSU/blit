@@ -227,45 +227,27 @@ BlitProcess <- R6Class(
                 stdout = stdout,
                 stderr = stderr
             )
-            if (!is.null(.blit_start)) .blit_start()
-            private$.blit_exit <- .blit_exit
-            private$.blit_succeed <- .blit_succeed
-            private$.blit_fail <- .blit_fail
+            if (is.function(.blit_start)) .blit_start()
+            if (is.function(.blit_exit)) private$.blit_exit <- .blit_exit
+            if (is.function(.blit_succeed)) {
+                private$.blit_succeed <- .blit_succeed
+            }
+            if (is.function(.blit_fail)) {
+                private$.blit_fail <- .blit_fail
+            }
             private$.blit_verbose <- .blit_verbose
             # always ensure the connection methods get prepared
-            if (self$has_output_connection()) private$.blit_stdout_prepare()
-            if (self$has_error_connection()) private$.blit_stderr_prepare()
+            private$.blit_stdout_prepare()
+            private$.blit_stderr_prepare()
         },
-        .blit_run = function(timeout = NULL, spinner = FALSE) {
-            # We make sure that all stdout and stderr have been collected and
-            # the process is eliminated and the connections are closed
-            on.exit(self$.blit_finish(), add = TRUE)
-            rlang::try_fetch(
-                private$.blit_wait(timeout, spinner),
-                interrupt = function(cnd) {
-                    # always ensure we only kill the process, but don't close
-                    # the connections, so that `$.blit_finish()` method
-                    # will collect all the stdout and stderr
-                    self$.blit_kill()
-                    cli::cli_warn(
-                        "System command interrupted",
-                        class = "system_command_interrupt"
-                    )
-                    invokeRestart("abort")
-                }
-            )
-        },
-
         # @param poll_timeout Timeout in milliseconds, for the wait or the I/O
         # polling.
         # @return A boolean value indicates whether the process is active
-        # fmt: skip
-        .blit_collect_active = function(timeout = NULL,
-                                        start_time = self$get_start_time(),
-                                        poll_timeout = 200) {
+        .blit_collect_active = function(timeout = NULL, poll_timeout = 200) {
             if (out <- self$is_alive()) {
                 # Timeout? Maybe finished by now...
                 # fmt: skip
+                start_time <- self$get_start_time()
                 if (!is.null(timeout) &&
                     is.finite(timeout) &&
                     (diff <- Sys.time() - start_time) > timeout) {
@@ -292,6 +274,51 @@ BlitProcess <- R6Class(
             }
             out
         },
+        .blit_run = function(timeout = NULL, spinner = TRUE) {
+            # We make sure that all stdout and stderr have been collected,
+            # the process is eliminated and the connections are closed
+            on.exit(self$.blit_finish(), add = TRUE)
+            do_run <- function() {
+                if (spinner) {
+                    progress <- cli::cli_progress_bar(
+                        total = 1L,
+                        clear = FALSE,
+                        format = paste(
+                            "{cli::pb_spin} [elapsed in {cli::pb_elapsed}]",
+                            "@ {as.character(Sys.time(), digits = 0)}",
+                            sep = " "
+                        )
+                    )
+                    # for spinner, always use 200 `poll_timeout`
+                    # fmt: skip
+                    while (self$.blit_collect_active(timeout, 200)) {
+                        cli::cli_progress_update(
+                            0L,
+                            id = progress, force = TRUE
+                        )
+                    }
+                } else {
+                    while (self$.blit_collect_active(timeout)) {
+                    }
+                }
+                # Needed to get the exit status
+                self$wait()
+            }
+            rlang::try_fetch(
+                do_run(),
+                interrupt = function(cnd) {
+                    # always ensure we only kill the process, but don't close
+                    # the connections, so that `$.blit_finish()` method
+                    # will collect all the stdout and stderr
+                    self$.blit_kill(close_connections = FALSE)
+                    cli::cli_warn(
+                        "System command interrupted",
+                        class = "system_command_interrupt"
+                    )
+                    invokeRestart("abort")
+                }
+            )
+        },
         .blit_kill = function(close_connections = TRUE) {
             self$kill(close_connections = close_connections)
             if (private$cleanup_tree) {
@@ -299,9 +326,81 @@ BlitProcess <- R6Class(
             }
             invisible(self)
         },
+        # Must run `$wait()` method to get the exit status before using
         .blit_finish = function() {
-            private$.blit_complete()
-            self$.blit_kill(close_connections = TRUE)
+            if (!is.null(status <- self$get_exit_status())) {
+                if (private$.blit_finished) return(invisible(self))
+                # `$get_exit_status` returns the exit code of the process if it
+                # has finished and `NULL` otherwise. On Unix, in some rare
+                # cases, the exit status might be `NA`. This happens if another
+                # package (or R itself) overwrites the processx `SIGCHLD`
+                # handler, after the processx process has started. In these
+                # cases processx cannot determine the real exit status of the
+                # process. One such package is parallel, if used with fork
+                # clusters, e.g. through the `parallel::mcparallel()` function.
+                # # complete the collection of stdout
+
+                # complete the collection of stdout -----------------
+                if (self$has_output_connection()) {
+                    while (self$is_incomplete_output()) {
+                        self$poll_io(-1)
+                        if (!private$.blit_collect_stdout()) break
+                    }
+                    # ensure the stdout_remain added
+                    # fmt: skip
+                    if (!is.null(line <- private$.blit_stdout_remain) &&
+                        nzchar(line)) {
+                        if (!is.null(private$.blit_stdout_callback)) {
+                            line <- private$.blit_stdout_callback(line, self)
+                        }
+                        private$.blit_stdout_push(line)
+                    }
+                    if (!is.null(private$.blit_stdout_done)) {
+                        private$.blit_stdout_done()
+                    }
+                }
+
+                # complete the collection of stderr -----------------
+                if (self$has_error_connection()) {
+                    while (self$is_incomplete_error()) {
+                        self$poll_io(-1)
+                        if (!private$.blit_collect_stderr()) break
+                    }
+                    # ensure the `stderrr_remain` added
+                    if (!is.null(line <- private$.blit_stderr_remain) &&
+                        nzchar(line)) {
+                        if (!is.null(private$.blit_stderr_callback)) {
+                            line <- private$.blit_stderr_callback(line, self)
+                        }
+                        private$.blit_stderr_push(line)
+                    }
+                    if (!is.null(private$.blit_stderr_done)) {
+                        private$.blit_stderr_done()
+                    }
+                }
+
+                # remove the script created -------------------------
+                if (file.exists(self$.blit_script)) {
+                    rlang::try_fetch(
+                        file.remove(self$.blit_script),
+                        error = function(cnd) {
+                            cli::cli_warn(conditionMessage(cnd))
+                        }
+                    )
+                }
+
+                # run the cleanup function --------------------------
+                if (is.na(status) || status != 0L) {
+                    if (!is.null(private$.blit_fail)) private$.blit_fail()
+                } else {
+                    if (!is.null(private$.blit_succeed)) private$.blit_succeed()
+                }
+                if (!is.null(private$.blit_exit)) private$.blit_exit()
+                self$.blit_kill(close_connections = TRUE)
+                private$.blit_finished <- TRUE
+            } else {
+                cli::cli_abort("Please using `$wait()` method before cleanning")
+            }
             invisible(self)
         },
         .blit_signal = function(prefix = NULL) {
@@ -331,124 +430,16 @@ BlitProcess <- R6Class(
         }
     ),
     private = list(
-        .blit_complete = function() {
-            private$.blit_complete_collect()
-            private$.blit_complete_cleanup()
-        },
+        # A single boolean value indicates whether the process has been finished
+        .blit_finished = FALSE,
         # A single time difference value
         .blit_timeout = NULL,
-        # A single boolean valued indicates whether the process should be
-        # verbose
+        # A single boolean value indicates whether the process should be verbose
         .blit_verbose = NULL,
         # A function used to cleanup
         .blit_exit = NULL,
         .blit_fail = NULL,
         .blit_succeed = NULL,
-        .blit_wait = function(timeout = NULL, spinner = FALSE) {
-            start_time <- self$get_start_time()
-            if (spinner) {
-                progress <- cli::cli_progress_bar(
-                    total = 1L,
-                    clear = FALSE,
-                    format = paste(
-                        "{cli::pb_spin} [elapsed in {cli::pb_elapsed}]",
-                        "@ {as.character(Sys.time(), digits = 0)}",
-                        sep = " "
-                    )
-                )
-                # for spinner, always use 200 `poll_timeout`
-                # fmt: skip
-                while (self$.blit_collect_active(timeout, start_time, 200)) {
-                    cli::cli_progress_update(0L, id = progress, force = TRUE)
-                }
-            } else {
-                while (self$.blit_collect_active(timeout, start_time)) {
-                }
-            }
-            super$wait()
-        },
-        .blit_complete_cleanup = function() {
-            if (file.exists(self$.blit_script)) {
-                rlang::try_fetch(
-                    file.remove(self$.blit_script),
-                    error = function(cnd) cli::cli_warn(conditionMessage(cnd))
-                )
-            }
-            if (!is.null(private$.blit_succeed) ||
-                !is.null(private$.blit_fail)) {
-                status <- self$get_exit_status()
-                #' `$get_exit_status` returns the exit code of the process if it
-                #' has finished and `NULL` otherwise. On Unix, in some rare
-                #' cases, the exit status might be `NA`. This happens if another
-                #' package (or R itself) overwrites the processx `SIGCHLD`
-                #' handler, after the processx process has started. In these
-                #' cases processx cannot determine the real exit status of the
-                #' process. One such package is parallel, if used with fork
-                #' clusters, e.g. through the `parallel::mcparallel()` function.
-                if (!is.null(status)) {
-                    if (is.na(status) || status != 0L) {
-                        private$.blit_fail()
-                    } else {
-                        private$.blit_succeed()
-                    }
-                    private$.blit_succeed <- NULL
-                    private$.blit_fail <- NULL
-                }
-            }
-            if (!is.null(private$.blit_exit)) {
-                private$.blit_exit()
-                private$.blit_exit <- NULL
-            }
-        },
-        .blit_complete_collect = function() {
-            # complete the collection of stdout
-            if (self$has_output_connection()) {
-                while (self$is_incomplete_output()) {
-                    self$poll_io(-1)
-                    if (!private$.blit_collect_stdout()) break
-                }
-                # ensure the stdout_remain added
-                # fmt: skip
-                if (!is.null(line <- private$.blit_stdout_remain) &&
-                    nzchar(line)) {
-                    if (!is.null(private$.blit_stdout_callback)) {
-                        line <- private$.blit_stdout_callback(line, self)
-                    }
-                    private$.blit_stdout_push(line)
-                }
-                if (!is.null(private$.blit_stdout_done)) {
-                    private$.blit_stdout_done()
-                    private$.blit_stdout_done <- NULL
-                }
-            }
-            private$.blit_stdout_con <- NULL
-            private$.blit_stdout_push <- NULL
-            private$.blit_stdout_remain <- NULL
-
-            # complete the collection of stderr
-            if (self$has_error_connection()) {
-                while (self$is_incomplete_error()) {
-                    self$poll_io(-1)
-                    if (!private$.blit_collect_stderr()) break
-                }
-                # ensure the stderrr_remain added
-                # fmt: skip
-                if (!is.null(line <- private$.blit_stderr_remain) &&
-                    nzchar(line)) {
-                    if (!is.null(private$.blit_stderr_callback)) {
-                        line <- private$.blit_stderr_callback(line, self)
-                    }
-                    private$.blit_stderr_push(line)
-                }
-                if (!is.null(private$.blit_stderr_done)) {
-                    private$.blit_stderr_done()
-                    private$.blit_stderr_done <- NULL
-                }
-            }
-            private$.blit_stderr_con <- NULL
-            private$.blit_stderr_push <- NULL
-            private$.blit_stderr_remain <- NULL
-        },
         .blit_collect_stdout = function(n_stdout = 2000) {
             ok <- FALSE
             if (self$has_output_connection()) {
@@ -478,6 +469,9 @@ BlitProcess <- R6Class(
             ok
         },
         .blit_stdout_prepare = function(stdout = private$.blit_stdout) {
+            if (!self$has_output_connection()) {
+                return(NULL)
+            }
             if (isTRUE(stdout)) {
                 private$.blit_stdout_push <- function(text) {
                     cat(text, sep = "\n")
@@ -536,6 +530,9 @@ BlitProcess <- R6Class(
             ok
         },
         .blit_stderr_prepare = function(stderr = private$.blit_stderr) {
+            if (!self$has_error_connection()) {
+                return(NULL)
+            }
             if (isTRUE(stderr)) {
                 private$.blit_stderr_push <- function(text) {
                     cat(cli::col_red(text), sep = "\n")

@@ -99,7 +99,7 @@ cmd_run <- function(
         stderr_callback = stderr_callback,
         verbose = verbose
     )
-    proc$.blit_run(timeout, isTRUE(spinner))
+    proc$.blit_run(timeout = timeout, spinner = isTRUE(spinner))
     invisible(proc$.blit_signal())
 }
 
@@ -137,7 +137,7 @@ cmd_help <- function(
         stderr_callback = stderr_callback,
         verbose = verbose
     )
-    proc$.blit_run()
+    proc$.blit_run(spinner = FALSE)
     invisible(command)
 }
 

@@ -193,10 +193,11 @@ cmd_parallel <- function(
     rlang::try_fetch(
         do_parallel(),
         interrupt = function(cnd) {
-            # in try_fetch, contition function are run before `on.exit()` in the
-            # `expr`, so we always ensure we only kill the process, but don't
-            # close the connections, so that `$.blit_complete()` method register
-            # by `on.exit()` will collect all the stdout and stderr
+            # in `try_fetch()`, this function are run before `on.exit()`
+            # register in the expression (`do_parallel()`), so we always ensure
+            # we only kill the process, but don't close the connections, so that
+            # `$.blit_finish()` method register by `on.exit()` will collect all
+            # the `stdout` and `stderr`
             for (proc in out_env$process) {
                 if (!is.null(proc)) {
                     proc$.blit_kill(close_connections = FALSE)
