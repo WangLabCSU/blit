@@ -410,5 +410,5 @@ concatenate_files <- function(path, files) {
     if (!inherits(path, "AsIs") && file.exists(path)) {
         file.remove(path)
     }
-    for (file in files) file.append(path, files)
+    file.append(path, files)
 }
