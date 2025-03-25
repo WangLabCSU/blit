@@ -43,11 +43,11 @@ processx_command <- function(
                 "Setting environment variables: {.field {names(envvar)}}"
             )
         }
-        old <- as.list(Sys.getenv(
+        old <- Sys.getenv(
             names(envvar),
             names = TRUE,
             unset = NA_character_
-        ))
+        )
         on.exit(set_envvar(old), add = TRUE)
         set_envvar(envvar_parse(envvar))
     }

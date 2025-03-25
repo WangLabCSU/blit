@@ -109,31 +109,31 @@ envvar_add <- function(new, old, action, sep) {
 envvar_parse <- function(envvar) {
     envs <- names(envvar)
     names(envs) <- envs
-    lapply(envs, function(nm) {
+    vapply(envs, function(nm) {
         value <- .subset2(envvar, nm)
         # for single NA value, we unset this environment variable
         if (is.null(value) || (length(value) == 1L && is.na(value))) {
-            value <- NA_character_
+            NA_character_
         } else {
+            # if we should replace NA with the system environment variable?
             na <- Sys.getenv(nm, unset = NA_character_, names = FALSE)
             # By default, we use `sep = " "`
-            sep <- attr(value, "sep", exact = TRUE) %||% " "
             # if the environment variable is not set
             if (is.na(na)) {
                 value <- value[!is.na(value)]
             } else {
                 value[is.na(value)] <- na
             }
-            value <- paste(value, collapse = sep)
+            sep <- attr(value, "sep", exact = TRUE) %||% " "
+            paste(value, collapse = sep)
         }
-        value
-    })
+    }, character(1L))
 }
 
 set_envvar <- function(envs) {
     unset <- vapply(envs, is.na, logical(1L), USE.NAMES = FALSE)
     if (any(!unset)) {
-        do.call("Sys.setenv", envs[!unset])
+        rlang::inject(Sys.setenv(!!!envs[!unset]))
     }
     if (any(unset)) {
         Sys.unsetenv(names(envs)[unset])

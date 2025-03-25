@@ -98,9 +98,10 @@ print.command <- function(x, ...) {
         cat(sprintf("Working directory: %s", wd), sep = "\n")
     }
     if (!is.null(envvar <- .subset2(x, "envvar"))) {
-        cat("Environment Variables:", sep = "\n")
-        nms <- format(names(envvar), justify = "right")
-        values <- format(envvar, justify = "left")
+        cat("Environment Variables", sep = "\n")
+        envs <- envvar_parse(envvar)
+        nms <- format(names(envs), justify = "right")
+        values <- format(unlist(envs, FALSE, FALSE), justify = "left")
         cat(paste0("  ", nms, ": ", values), sep = "\n")
     }
     invisible(x)
