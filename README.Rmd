@@ -99,7 +99,7 @@ cmd_parallel(
 )
 ```
 
-Several functions allow you to control the environment when running the command:
+Several functions allow you to control the environment or schedule expressions:
 
   - `cmd_wd`: define the working directory.
   - `cmd_envvar`: define the environment variables.
