@@ -2,6 +2,10 @@
 
 ## New features
 
+* new function `cmd_on_fail` to define the expression to be evaluated when the command failed.
+
+* new function `cmd_on_succeed`to define the expression to be evaluated when the command succeeded.
+
 * new function `cmd_on_start()` to define the expressions which will be run when command started
 
 * new function `cmd_on_exit()` to define the expressions which will be run when command finished
