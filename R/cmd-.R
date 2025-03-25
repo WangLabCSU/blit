@@ -101,7 +101,7 @@ print.command <- function(x, ...) {
         cat("Environment Variables", sep = "\n")
         envs <- envvar_parse(envvar)
         nms <- format(names(envs), justify = "right")
-        values <- format(unlist(envs, FALSE, FALSE), justify = "left")
+        values <- format(envs, justify = "left")
         cat(paste0("  ", nms, ": ", values), sep = "\n")
     }
     invisible(x)
