@@ -23,7 +23,7 @@ License: GPL (>= 3)
 Imports: 
     cli,
     processx,
-    R6,
+    R6 (>= 2.4.0),
     rlang (>= 1.1.0),
     utils
 Suggests: 
