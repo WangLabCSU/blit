@@ -328,20 +328,19 @@ BlitProcess <- R6Class(
         },
         # Must run `$wait()` method to get the exit status before using
         .blit_finish = function() {
+            # `$get_exit_status` returns the exit code of the process if it
+            # has finished and `NULL` otherwise. On Unix, in some rare
+            # cases, the exit status might be `NA`. This happens if another
+            # package (or R itself) overwrites the processx `SIGCHLD`
+            # handler, after the processx process has started. In these
+            # cases processx cannot determine the real exit status of the
+            # process. One such package is parallel, if used with fork
+            # clusters, e.g. through the `parallel::mcparallel()` function.
+            # # complete the collection of stdout
             if (!is.null(status <- self$get_exit_status())) {
                 if (private$.blit_finished) {
                     return(invisible(self))
                 }
-
-                # `$get_exit_status` returns the exit code of the process if it
-                # has finished and `NULL` otherwise. On Unix, in some rare
-                # cases, the exit status might be `NA`. This happens if another
-                # package (or R itself) overwrites the processx `SIGCHLD`
-                # handler, after the processx process has started. In these
-                # cases processx cannot determine the real exit status of the
-                # process. One such package is parallel, if used with fork
-                # clusters, e.g. through the `parallel::mcparallel()` function.
-                # # complete the collection of stdout
 
                 # complete the collection of stdout -----------------
                 if (self$has_output_connection()) {
