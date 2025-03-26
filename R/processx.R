@@ -80,15 +80,23 @@ processx_command <- function(
         ))
         cli::cat_line()
     }
+
+    # on_start ------------------
     on_start_list <- lapply(command_series, function(cmd) cmd$get_on_start())
     on_start_list <- unlist(on_start_list, FALSE, FALSE)
     on_start_list <- c(on_start_list, .subset2(command, "on_start"))
+
+    # on_exit ------------------
     on_exit_list <- lapply(command_series, function(cmd) cmd$get_on_exit())
     on_exit_list <- unlist(on_exit_list, FALSE, FALSE)
     on_exit_list <- c(on_exit_list, .subset2(command, "on_exit"))
+
+    # on_fail ------------------
     on_fail_list <- lapply(command_series, function(cmd) cmd$get_on_fail())
     on_fail_list <- unlist(on_fail_list, FALSE, FALSE)
     on_fail_list <- c(on_fail_list, .subset2(command, "on_fail"))
+
+    # on_succeed ------------------
     on_succeed_list <- lapply(command_series, function(cmd) {
         cmd$get_on_succeed()
     })
@@ -108,39 +116,23 @@ processx_command <- function(
         .blit_content = content,
         .blit_stdout_callback = stdout_callback,
         .blit_stderr_callback = stderr_callback,
-        .blit_start = function() {
-            for (on_start in on_start_list) {
-                rlang::try_fetch(
-                    rlang::eval_tidy(on_start),
-                    error = function(cnd) cli::cli_warn(conditionMessage(cnd))
-                )
-            }
-        },
-        .blit_exit = function() {
-            for (on_exit in on_exit_list) {
-                rlang::try_fetch(
-                    rlang::eval_tidy(on_exit),
-                    error = function(cnd) cli::cli_warn(conditionMessage(cnd))
-                )
-            }
-        },
-        .blit_fail = function() {
-            for (on_fail in on_fail_list) {
-                rlang::try_fetch(
-                    rlang::eval_tidy(on_fail),
-                    error = function(cnd) cli::cli_warn(conditionMessage(cnd))
-                )
-            }
-        },
-        .blit_succeed = function() {
-            for (on_succeed in on_succeed_list) {
-                rlang::try_fetch(
-                    rlang::eval_tidy(on_succeed),
-                    error = function(cnd) cli::cli_warn(conditionMessage(cnd))
-                )
-            }
-        }
+        .blit_start = blit_schedule(on_start_list),
+        .blit_exit = blit_schedule(on_exit_list),
+        .blit_fail = blit_schedule(on_fail_list),
+        .blit_succeed = blit_schedule(on_succeed_list)
     )
+}
+
+blit_schedule <- function(expressions) {
+    if (length(expressions) == 0L) return(NULL) # styler: off
+    function() {
+        for (expression in expressions) {
+            rlang::try_fetch(
+                rlang::eval_tidy(expression),
+                error = function(cnd) cli::cli_warn(conditionMessage(cnd))
+            )
+        }
+    }
 }
 
 #' @keywords internal
@@ -404,7 +396,7 @@ BlitProcess <- R6Class(
                 }
                 private$.blit_finished <- TRUE
             } else {
-                cli::cli_abort("Please using `$wait()` method before cleanning")
+                cli::cli_abort("Please using `$wait()` method before finishing")
             }
             invisible(self)
         },
