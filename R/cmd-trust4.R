@@ -19,7 +19,7 @@
 #'  - `trust4_imgt_annot`: `r rd_dots("trust4_imgt_annot")`.
 #' @inheritParams allele_counter
 #' @param trust4 `r rd_cmd("run-trust4")`.
-#' @seealso 
+#' @seealso
 #' - <https://github.com/liulab-dfci/TRUST4>
 #'
 #' `r rd_seealso()`
@@ -51,9 +51,9 @@ Trust4 <- R6Class(
                                         ref_coordinate, ofile, odir) {
             assert_string(file1, allow_empty = FALSE)
             if (is.null(mode)) {
-                if (grepl("(fastq|fq)(\\.gz)?$", file1, perl = TRUE)) {
+                if (grepl("(fastq|fq)(\\.gz)?$", file1)) {
                     mode <- "fastq"
-                } else if (endsWith(file1, "bam")) {
+                } else if (endsWith(file1, ".bam")) {
                     mode <- "bam"
                 } else {
                     cli::cli_abort(c(
@@ -62,7 +62,7 @@ Trust4 <- R6Class(
                     ))
                 }
             } else {
-                mode <- match.arg(mode, c("bam", "fastq"))
+                mode <- rlang::arg_match0(mode, c("bam", "fastq"))
             }
             if (mode == "bam") {
                 if (!is.null(file2)) {
@@ -70,24 +70,24 @@ Trust4 <- R6Class(
                         "{.arg file2} must be {.code NULL} for {.code mode = \"bam\"}"
                     )
                 }
-                params <- arg_internal("-b", file1)
+                params <- arg0("-b", file1)
             } else {
                 if (is.null(file2)) {
-                    params <- arg_internal("-u", file1)
+                    params <- arg0("-u", file1)
                 } else {
                     params <- c(
-                        arg_internal("-1", file1),
-                        arg_internal("-2", file2)
+                        arg0("-1", file1),
+                        arg0("-2", file2)
                     )
                 }
             }
             odir <- build_opath(odir)
             c(
                 params,
-                arg_internal("-f", ref_coordinate),
-                arg_internal("-ref", ref_annot, allow_null = TRUE),
-                arg_internal("-o", ofile, allow_null = TRUE),
-                arg_internal("--od", odir)
+                arg0("-f", ref_coordinate),
+                arg0("-ref", ref_annot, allow_null = TRUE),
+                arg0("-o", ofile, allow_null = TRUE),
+                arg0("--od", odir)
             )
         }
     )
@@ -146,7 +146,8 @@ trust4_gene_names <- function(imgt_annot, ofile = "bcr_tcr_gene_name.txt",
     gene_lines <- grep("^>", lines, value = TRUE, perl = TRUE)
     genes <- sub("^>", "", gene_lines, perl = TRUE)
     genes <- vapply(strsplit(genes, "*", fixed = TRUE),
-        `[[`, character(1L), 1L, USE.NAMES = FALSE 
+        `[[`, character(1L), 1L,
+        USE.NAMES = FALSE
     )
     write_lines(genes, opath)
 }
