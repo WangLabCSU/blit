@@ -57,9 +57,9 @@ Gistic2 <- R6Class(
             write_table(seg, seg_file)
             private$setup_on_exit(file.remove(seg_file))
             c(
-                arg_internal("-seg", seg_file),
-                arg_internal("-refgene", refgene),
-                arg_internal("-b", odir)
+                arg0("-seg", seg_file),
+                arg0("-refgene", refgene),
+                arg0("-b", odir)
             )
         }
     )

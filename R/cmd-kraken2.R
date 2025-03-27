@@ -93,18 +93,18 @@ Kraken2 <- R6Class(
             if (!is.null(report)) report <- file_path(odir, report)
             opath <- c(ofile, report)
             c(
-                arg_internal(
+                arg0(
                     "--classified-out",
                     classified_out,
                     allow_null = TRUE
                 ),
-                arg_internal(
+                arg0(
                     "--unclassified-out",
                     classified_out,
                     allow_null = TRUE
                 ),
-                arg_internal("--output", ofile, allow_null = TRUE),
-                arg_internal("--report", report, allow_null = TRUE),
+                arg0("--output", ofile, allow_null = TRUE),
+                arg0("--report", report, allow_null = TRUE),
                 if (!is.null(fq2)) "--paired",
                 fq1,
                 fq2

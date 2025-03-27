@@ -47,9 +47,9 @@ AlleleCounter <- R6Class(
         setup_command_params = function(hts_file, loci_file, ofile, odir) {
             opath <- build_opath(odir, ofile)
             c(
-                arg_internal("-l", loci_file),
-                arg_internal("-b", hts_file),
-                arg_internal("-o", opath)
+                arg0("-l", loci_file),
+                arg0("-b", hts_file),
+                arg0("-o", opath)
             )
         }
     )

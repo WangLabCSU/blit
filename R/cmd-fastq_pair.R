@@ -86,7 +86,7 @@ FastqPair <- R6Class(
                 hash_table_size <- min(hash_table_size, max_hash_table_size)
             }
             c(
-                arg_internal("-t", hash_table_size, format = "%d"),
+                arg0("-t", hash_table_size, format = "%d"),
                 fq1,
                 fq2,
                 ">",

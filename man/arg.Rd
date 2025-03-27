@@ -2,9 +2,22 @@
 % Please edit documentation in R/argument.R
 \name{arg}
 \alias{arg}
+\alias{arg0}
 \title{Deliver arguments of command}
 \usage{
 arg(tag, value, indicator = FALSE, lgl2int = FALSE, format = "\%s", sep = " ")
+
+arg0(
+  tag,
+  value,
+  indicator = FALSE,
+  lgl2int = FALSE,
+  format = "\%s",
+  sep = " ",
+  allow_null = FALSE,
+  arg = caller_arg(value),
+  call = caller_call()
+)
 }
 \arguments{
 \item{tag}{A string specifying argument tag, like "-i", "-o".}
@@ -20,11 +33,21 @@ tag.}
 
 \item{format}{The format of the value, details see \code{\link{sprintf}}.}
 
-\item{sep}{A character string used to separate "tag" and "value", usually \code{" "} or \code{"="}.}
+\item{sep}{A character string used to separate \code{"tag"} and \code{"value"}, usually
+\code{" "} or \code{"="}.}
+
+\item{allow_null}{A single logical value indicates whether \code{value} can be
+\code{NULL}.}
+
+\item{arg}{An argument name as a string. This argument will be mentioned in
+error messages as the input that is at the origin of a problem.}
+
+\item{call}{The execution environment of a currently running function.}
 }
 \value{
 A string.
 }
 \description{
-Deliver arguments of command
+\code{arg()} is intended for user use, while \code{arg0()} is for developers and does
+not perform argument validation.
 }
