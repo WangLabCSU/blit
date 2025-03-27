@@ -25,7 +25,7 @@ arg0(
 \item{value}{Value passed to the argument.}
 
 \item{indicator}{A logical value specifying whether value should be an
-indicator of tag. If TRUE, logical value will explain the set or unset of
+indicator of tag. If \code{TRUE}, logical value will explain the set or unset of
 tag.}
 
 \item{lgl2int}{A logical value indicates whether transfrom value \code{TRUE} to

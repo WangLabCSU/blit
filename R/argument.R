@@ -6,7 +6,7 @@
 #' @param tag A string specifying argument tag, like "-i", "-o".
 #' @param value Value passed to the argument.
 #' @param indicator A logical value specifying whether value should be an
-#'  indicator of tag. If TRUE, logical value will explain the set or unset of
+#'  indicator of tag. If `TRUE`, logical value will explain the set or unset of
 #'  tag.
 #' @param lgl2int A logical value indicates whether transfrom value `TRUE` to
 #'  `1` or `FALSE` to `0`. If `TRUE`, format will always be set to `"%d"`.
