@@ -154,7 +154,11 @@ appmamba_use_system <- function() {
 appmamba_installer_download <- function(url) {
     # reuse an already-existing installer
     installer <- file.path(cache_dir(), "appmamba")
-    download_file(url, installer, method = "libcurl")
+    download_file(url,
+        installer,
+        method = "libcurl",
+        mode = if (is_windows()) "wb" else "w"
+    )
 }
 
 appmamba_installer_url <- function() {
