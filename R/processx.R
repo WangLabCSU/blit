@@ -62,11 +62,9 @@ processx_command <- function(
         character(1L),
         USE.NAMES = FALSE
     )
-    if (!is.null(stdin)) {
-        if (!is_processx_inherit(stdin)) {
-            content[1L] <- paste(content[1L], "<", shQuote(stdin))
-            stdin <- if (processx::is_valid_fd(0L)) "" else NULL
-        }
+    if (is_processx_std_file(stdin, pipe = FALSE)) {
+        content[1L] <- paste(content[1L], "<", shQuote(stdin))
+        stdin <- TRUE
     }
     if (length(content) > 1L) {
         content[-length(content)] <- sprintf("%s |", content[-length(content)])
@@ -149,7 +147,6 @@ processx_command <- function(
         env = NULL,
         stdout = stdout,
         stderr = stderr,
-        # try to inherit the terminal
         stdin = stdin,
         cleanup_tree = TRUE,
         .blit_verbose = verbose,
@@ -180,7 +177,7 @@ BlitProcess <- R6Class(
     inherit = processx::process,
     public = list(
         # fmt: skip
-        initialize = function(..., stdout, stderr,
+        initialize = function(..., stdin, stdout, stderr,
                               .blit_stdout_callback,
                               .blit_stderr_callback,
                               .blit_start = NULL,
@@ -194,35 +191,60 @@ BlitProcess <- R6Class(
             private$.blit_stderr <- stderr
             private$.blit_stderr_callback <- .blit_stderr_callback
 
-            # translate the stdout and stderr from `blit` into `processx`
-            # fmt: skip
-            if (is.null(stdout) ||
-                is_processx_inherit(stdout)) {
+            # translate the stdin, stdout and stderr from `blit` into `processx`
+            if (isFALSE(stdin)) {
+                stdin <- NULL
+            } else if (isTRUE(stdin)) {
+                if (processx::is_valid_fd(0L)) {
+                    stdin <- ""
+                } else {
+                    stdin <- NULL
+                }
+            }
+
+            if (is.null(stdout)) {
 
             } else if (isFALSE(stdout)) {
                 stdout <- NULL
-            } else if (isTRUE(stdout) || inherits(stdout, "connection")) {
+            } else if (inherits(stdout, "connection")) {
                 # we need echo the stdout
                 stdout <- "|"
-            } else if (!is.null(.blit_stdout_callback)) {
-                stdout <- "|"
+            } else if (isTRUE(stdout)) {
+                if (!is.null(.blit_stdout_callback)) {
+                    # when callback is not `NULL`, we must use pipe
+                    stdout <- "|"
+                    # when the callback is `NULL`, we try to inherit the R
+                    # process stdout
+                } else if (processx::is_valid_fd(1L)) {
+                    stdout <- ""
+                } else {
+                    stdout <- "|"
+                }
             }
 
             # fmt: skip
-            if (is.null(stderr) ||
-                is_processx_inherit(stderr)) {
+            if (is.null(stderr)) {
 
             } else if (isFALSE(stderr)) {
                 stderr <- NULL
-            } else if (is.null(stderr)) {
-                stderr <- "2>&1"
-            } else if (isTRUE(stderr) || inherits(stderr, "connection")) {
+            } else if (inherits(stderr, "connection")) {
+                # we need echo the stderr
                 stderr <- "|"
-            } else if (!is.null(.blit_stderr_callback)) {
-                stderr <- "|"
+            } else if (isTRUE(stderr)) {
+                if (!is.null(.blit_stderr_callback)) {
+                    # when callback is not `NULL`, we must use pipe
+                    stderr <- "|"
+                    # when the callback is `NULL`, we try to inherit the R
+                    # process stderr
+                } else if (processx::is_valid_fd(2L)) {
+                    stderr <- ""
+                } else {
+                    stderr <- "|"
+                }
             }
             super$initialize(
                 ...,
+                stdin = stdin,
                 stdout = stdout,
                 stderr = stderr
             )
@@ -466,7 +488,7 @@ BlitProcess <- R6Class(
             if (!self$has_output_connection()) {
                 return(NULL)
             }
-            if (isTRUE(stdout)) {
+            if (isTRUE(stdout) || is_processx_pipe(stdout)) {
                 private$.blit_stdout_push <- function(text) {
                     cat(text, sep = "\n")
                 }
@@ -527,7 +549,7 @@ BlitProcess <- R6Class(
             if (!self$has_error_connection()) {
                 return(NULL)
             }
-            if (isTRUE(stderr)) {
+            if (isTRUE(stderr) || is_processx_pipe(stderr)) {
                 private$.blit_stderr_push <- function(text) {
                     cat(cli::col_red(text), sep = "\n")
                 }
@@ -565,3 +587,11 @@ BlitProcess <- R6Class(
 
 is_processx_inherit <- function(x) rlang::is_string(x) && x == ""
 is_processx_pipe <- function(x) rlang::is_string(x) && x == "|"
+is_processx_string <- function(x, pipe = TRUE, redirect = FALSE) {
+    rlang::is_string(x) &&
+        any(x == c("", if (pipe) "|", if (redirect) "2>&1"))
+}
+is_processx_std_file <- function(x, pipe = TRUE, redirect = FALSE) {
+    rlang::is_string(x) &&
+        !(any(x == c("", if (pipe) "|", if (redirect) "2>&1")))
+}

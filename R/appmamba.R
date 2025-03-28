@@ -40,21 +40,6 @@ appmamba <- function(...) {
             )
         ))
     }
-    if (processx::is_valid_fd(0L)) {
-        stdin <- ""
-    } else {
-        stdin <- TRUE
-    }
-    if (processx::is_valid_fd(1L)) {
-        stdout <- ""
-    } else {
-        stdout <- TRUE
-    }
-    if (processx::is_valid_fd(2L)) {
-        stderr <- ""
-    } else {
-        stderr <- TRUE
-    }
     args <- rlang::dots_list(..., .ignore_empty = "all")
     args <- as.character(unlist(args, FALSE, FALSE))
     if (length(args) == 0L) args <- "--help"
@@ -63,10 +48,10 @@ appmamba <- function(...) {
     proc <- processx_command(
         command,
         help = FALSE,
-        stdout = stdout,
-        stderr = stderr,
-        stdin = stdin,
-        verbose = TRUE,
+        stdout = TRUE,
+        stderr = TRUE,
+        stdin = TRUE,
+        verbose = FALSE,
         echo_command = TRUE
     )
     proc$.blit_run(spinner = FALSE)

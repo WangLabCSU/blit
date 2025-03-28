@@ -1,35 +1,42 @@
 #' Execute a list of commands
 #'
 #' @param ... A list of `command` object.
-#' @param stdouts,stderrs Specifies how the output streams of the child process
-#' are handled. One of or a list of following values:
+#' @param stdouts,stderrs Specifies how the output/error streams of the child
+#' process are handled. One of or a list of following values:
 #'
-#'  - `TRUE`: Prints the child process output to the R console. Note that the
-#'    subprocess does not inherit the terminal. If the command requires a
-#'    terminal, use an empty string `""` instead.
-#'  - `FALSE`: Suppresses the output stream.
-#'  - **string**: An empty string `""` inherits the standard output stream from
-#'    the main R process (Printing in the R console). If the main R process
-#'    lacks a standard output stream, such as in RGui on Windows, an error is
-#'    thrown. Alternative, a file name or path to redirect the output. If a
-#'    relative path is specified, it remains relative to the current working
-#'    directory, even if a different directory is set using [`cmd_wd()`].
+#'  - `FALSE`/`NULL`: Suppresses the output/error stream.
+#'  - `TRUE`: Prints the child process output/error to the R console. If a
+#'    standard output/error stream exists, `""` is used; otherwise, `"|"` is
+#'    used.
+#'  - **string**: An empty string `""` inherits the standard output/error stream
+#'    from the main R process (Printing in the R console). If the main R process
+#'    lacks a standard output/error stream, such as in `RGui` on Windows, an
+#'    error is thrown. A string `"|"` prints to the standard output connection
+#'    of R process (Using [`cat()`]). Alternative, a file name or path to
+#'    redirect the output/error. If a relative path is specified, it remains
+#'    relative to the current working directory, even if a different directory
+#'    is set using [`cmd_wd()`].
 #'  - `connection`: A writable R [`connection`] object. If the connection is not
 #'    [`open()`], it will be automatically opened.
 #'
-#' The `stderrs` parameter also accepts `NULL`, which redirects it to the same
-#' connection (i.e., pipe or file) as `stdouts`.
+#' For `stderrs`, use string `"2>&1"` to redirect it to the same connection
+#' (i.e.  pipe or file) as `stdout`.
 #'
 #' When a single file path is specified, the stdout/stderr of all commands will
 #' be merged into this single file.
 #'
 #' @param stdins should the input be diverted? One of or a list of following
 #' values:
-#'  - `NULL`: No standard input.
+#'  - `FALSE`/`NULL`: no standard input.
+#'  - `TRUE`: If a standard input stream exists, `""` is used; otherwise, `NULL`
+#'    is used.
 #'  - **string**: An empty string `""` inherits the standard input stream from
 #'    the main R process. If the main R process lacks a standard input stream,
-#'    such as in RGui on Windows, an error is thrown. Alternative, a file name
-#'    or path to be used as standard input.
+#'    such as in `RGui` on Windows, an error is thrown. Alternative, a file name
+#'    or path to redirect the input. If a relative path is specified, it remains
+#'    relative to the current working directory, even if a different directory
+#'    is set using [`cmd_wd()`].
+#'
 #' @param stdout_callbacks,stderr_callbacks One of or a list of following
 #' values:
 #'  - `NULL`: no callback function.
@@ -76,14 +83,10 @@ cmd_parallel <- function(
 
     stdout_list <- check_stdio_list(
         stdouts, n, "...",
-        allow_null = FALSE,
-        pipe_note = "Do you mean {.code TRUE}?",
         arg = "stdouts"
     )
     stderr_list <- check_stdio_list(stderrs, n, "...",
-        pipe_note = "Do you mean {.code TRUE}?",
-        redirect_note = "Do you mean {.code NULL}?",
-        arg = "stderrs"
+        redirect = TRUE, arg = "stderrs"
     )
     stdin_list <- check_stdin_list(stdins, n, "...", arg = "stdins")
     stdout_callback_list <- check_callback_list(
@@ -221,8 +224,7 @@ cmd_parallel <- function(
 
     # merging stdout_list
     # fmt: skip
-    if (rlang::is_string(stdouts) &&
-        !is_processx_inherit(stdouts) &&
+    if (is_processx_std_file(stdouts) &&
         n > 1L) {
         if (verbose) {
             cli::cli_inform("Merging all stdouts into {.path {stdouts}}")
@@ -233,8 +235,7 @@ cmd_parallel <- function(
 
     # merging stderr_list
     # fmt: skip
-    if (rlang::is_string(stderrs) &&
-        !is_processx_inherit(stdouts) &&
+    if (is_processx_std_file(stderrs, redirect = TRUE) &&
         n > 1L) {
         if (verbose) {
             cli::cli_inform("Merging all stderrs into {.path {stderrs}}")
@@ -246,18 +247,11 @@ cmd_parallel <- function(
 }
 
 # For `stdout` and `stderr`
-check_stdio_list <- function(x, n, n_arg, allow_null = TRUE,
-                             pipe_note = NULL, redirect_note = NULL,
+check_stdio_list <- function(x, n, n_arg, redirect = FALSE,
                              arg = caller_arg(x), call = caller_call()) {
     if (length(x) == 1L || is.null(x)) {
-        x <- check_stdio(x,
-            allow_null = allow_null,
-            pipe_note = pipe_note,
-            redirect_note = redirect_note,
-            arg = arg, call = call
-        )
-        if (rlang::is_string(x) &&
-            !is_processx_inherit(x) &&
+        x <- check_stdio(x, arg = arg, call = call)
+        if (is_processx_std_file(x, redirect = redirect) &&
             n > 1L) {
             return(vapply(
                 seq_len(n),
@@ -280,12 +274,7 @@ check_stdio_list <- function(x, n, n_arg, allow_null = TRUE,
             call = call
         )
     }
-    lapply(x, check_stdio,
-        allow_null = allow_null,
-        pipe_note = pipe_note,
-        redirect_note = redirect_note,
-        arg = arg, call = call
-    )
+    lapply(x, check_stdio, arg = arg, call = call)
 }
 
 check_stdin_list <- function(x, n, n_arg, arg = caller_arg(x),
@@ -293,7 +282,6 @@ check_stdin_list <- function(x, n, n_arg, arg = caller_arg(x),
     if (length(x) == 1L || is.null(x)) {
         x <- check_stdio(
             x,
-            allow_bool = FALSE,
             allow_connection = FALSE,
             arg = arg,
             call = call

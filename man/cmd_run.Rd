@@ -10,7 +10,7 @@ cmd_run(
   command,
   stdout = TRUE,
   stderr = TRUE,
-  stdin = NULL,
+  stdin = TRUE,
   stdout_callback = NULL,
   stderr_callback = NULL,
   timeout = NULL,
@@ -38,42 +38,48 @@ cmd_background(
 \arguments{
 \item{command}{A \code{command} object.}
 
-\item{stdout, stderr}{Specifies how the output streams of the child process
-are handled. Possible values include:
+\item{stdout, stderr}{Specifies how the output/error streams of the child
+process are handled. Possible values include:
 \itemize{
-\item \code{TRUE}: Prints the child process output to the R console. Note that the
-subprocess does not inherit the terminal. If the command requires a
-terminal, use an empty string \code{""} instead.
-\item \code{FALSE}: Suppresses the output stream.
-\item \strong{string}: An empty string \code{""} inherits the standard output stream from
-the main R process (Printing in the R console). If the main R process
-lacks a standard output stream, such as in RGui on Windows, an error is
-thrown. Alternative, a file name or path to redirect the output. If a
-relative path is specified, it remains relative to the current working
-directory, even if a different directory is set using \code{\link[=cmd_wd]{cmd_wd()}}.
+\item \code{FALSE}/\code{NULL}: Suppresses the output/error stream.
+\item \code{TRUE}: Prints the child process output/error to the R console. If a
+standard output/error stream exists, \code{""} is used; otherwise, \code{"|"} is
+used.
+\item \strong{string}: An empty string \code{""} inherits the standard output/error stream
+from the main R process (Printing in the R console). If the main R process
+lacks a standard output/error stream, such as in \code{RGui} on Windows, an
+error is thrown. A string \code{"|"} prints to the standard output connection
+of R process (Using \code{\link[=cat]{cat()}}). Alternative, a file name or path to
+redirect the output/error. If a relative path is specified, it remains
+relative to the current working directory, even if a different directory
+is set using \code{\link[=cmd_wd]{cmd_wd()}}.
 \item \code{connection}: A writable R \code{\link{connection}} object. If the connection is not
 \code{\link[=open]{open()}}, it will be automatically opened.
 }
 
-For \code{cmd_help()}, use \code{FALSE} will do nothing, since it always want to
+For \code{stderr}, use string \code{"2>&1"} to redirect it to the same connection (i.e.
+pipe or file) as \code{stdout}.
+
+For \code{cmd_help()}, use \code{FALSE}/\code{NULL} will do nothing, since it always want to
 display the help document.
 
 For \code{cmd_background()}, \code{connection} cannot be used, and \code{TRUE} and \code{"|"}
-will fallback to the empty string \code{""}, with a warning message.
+will fallback to the empty string \code{""}.
 
 When using a \code{connection} (if not already open) or a \code{string}, wrapping it
-with \code{\link[=I]{I()}} prevents overwriting existing content.
-
-The \code{stderr} parameter also accepts \code{NULL}, which redirects it to the same
-connection (i.e., pipe or file) as \code{stdout}.}
+with \code{\link[=I]{I()}} prevents overwriting existing content.}
 
 \item{stdin}{should the input be diverted? Possible values include:
 \itemize{
-\item \code{NULL}: No standard input.
+\item \code{FALSE}/\code{NULL}: no standard input.
+\item \code{TRUE}: If a standard input stream exists, \code{""} is used; otherwise, \code{NULL}
+is used.
 \item \strong{string}: An empty string \code{""} inherits the standard input stream from
 the main R process. If the main R process lacks a standard input stream,
-such as in RGui on Windows, an error is thrown. Alternative, a file name
-or path to be used as standard input.
+such as in \code{RGui} on Windows, an error is thrown. Alternative, a file name
+or path to redirect the input. If a relative path is specified, it remains
+relative to the current working directory, even if a different directory
+is set using \code{\link[=cmd_wd]{cmd_wd()}}.
 }}
 
 \item{stdout_callback, stderr_callback}{Possible values include:

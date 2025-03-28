@@ -19,25 +19,27 @@ cmd_parallel(
 \arguments{
 \item{...}{A list of \code{command} object.}
 
-\item{stdouts, stderrs}{Specifies how the output streams of the child process
-are handled. One of or a list of following values:
+\item{stdouts, stderrs}{Specifies how the output/error streams of the child
+process are handled. One of or a list of following values:
 \itemize{
-\item \code{TRUE}: Prints the child process output to the R console. Note that the
-subprocess does not inherit the terminal. If the command requires a
-terminal, use an empty string \code{""} instead.
-\item \code{FALSE}: Suppresses the output stream.
-\item \strong{string}: An empty string \code{""} inherits the standard output stream from
-the main R process (Printing in the R console). If the main R process
-lacks a standard output stream, such as in RGui on Windows, an error is
-thrown. Alternative, a file name or path to redirect the output. If a
-relative path is specified, it remains relative to the current working
-directory, even if a different directory is set using \code{\link[=cmd_wd]{cmd_wd()}}.
+\item \code{FALSE}/\code{NULL}: Suppresses the output/error stream.
+\item \code{TRUE}: Prints the child process output/error to the R console. If a
+standard output/error stream exists, \code{""} is used; otherwise, \code{"|"} is
+used.
+\item \strong{string}: An empty string \code{""} inherits the standard output/error stream
+from the main R process (Printing in the R console). If the main R process
+lacks a standard output/error stream, such as in \code{RGui} on Windows, an
+error is thrown. A string \code{"|"} prints to the standard output connection
+of R process (Using \code{\link[=cat]{cat()}}). Alternative, a file name or path to
+redirect the output/error. If a relative path is specified, it remains
+relative to the current working directory, even if a different directory
+is set using \code{\link[=cmd_wd]{cmd_wd()}}.
 \item \code{connection}: A writable R \code{\link{connection}} object. If the connection is not
 \code{\link[=open]{open()}}, it will be automatically opened.
 }
 
-The \code{stderrs} parameter also accepts \code{NULL}, which redirects it to the same
-connection (i.e., pipe or file) as \code{stdouts}.
+For \code{stderrs}, use string \code{"2>&1"} to redirect it to the same connection
+(i.e.  pipe or file) as \code{stdout}.
 
 When a single file path is specified, the stdout/stderr of all commands will
 be merged into this single file.}
@@ -45,11 +47,15 @@ be merged into this single file.}
 \item{stdins}{should the input be diverted? One of or a list of following
 values:
 \itemize{
-\item \code{NULL}: No standard input.
+\item \code{FALSE}/\code{NULL}: no standard input.
+\item \code{TRUE}: If a standard input stream exists, \code{""} is used; otherwise, \code{NULL}
+is used.
 \item \strong{string}: An empty string \code{""} inherits the standard input stream from
 the main R process. If the main R process lacks a standard input stream,
-such as in RGui on Windows, an error is thrown. Alternative, a file name
-or path to be used as standard input.
+such as in \code{RGui} on Windows, an error is thrown. Alternative, a file name
+or path to redirect the input. If a relative path is specified, it remains
+relative to the current working directory, even if a different directory
+is set using \code{\link[=cmd_wd]{cmd_wd()}}.
 }}
 
 \item{stdout_callbacks, stderr_callbacks}{One of or a list of following
