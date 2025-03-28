@@ -4,6 +4,7 @@
 \alias{appmamba}
 \alias{install_appmamba}
 \alias{uninstall_appmamba}
+\alias{appmamba_rc}
 \title{Manage Environment with \code{micromamba}}
 \usage{
 appmamba(...)
@@ -11,6 +12,8 @@ appmamba(...)
 install_appmamba(force = FALSE)
 
 uninstall_appmamba()
+
+appmamba_rc(edit = FALSE)
 }
 \arguments{
 \item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to
@@ -18,6 +21,8 @@ uninstall_appmamba()
 
 \item{force}{A logical value indicating whether to reinstall \code{appmamba}
 if it is already installed.}
+
+\item{edit}{A logical value indicating whether to open the file for editing.}
 }
 \description{
 Manage Environment with \code{micromamba}
@@ -30,6 +35,8 @@ This function simply executes the specified \code{micromamba} command.
 \item \code{install_appmamba()}: Install appmamba (\code{micromamba}).
 
 \item \code{uninstall_appmamba()}: Remove appmamba (\code{micromamba}).
+
+\item \code{appmamba_rc()}: Get the \verb{run commands} config file of the \code{micromamba}.
 
 }}
 \examples{
