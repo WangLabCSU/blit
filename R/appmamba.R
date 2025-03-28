@@ -26,7 +26,11 @@ appmamba <- function(...) {
             ))
         }
     }
-    command <- file.path(path, "bin", "micromamba")
+    command <- if (is_windows()) {
+        file.path(path, "Library", "bin", "micromamba.exe")
+    } else {
+        file.path(path, "bin", "micromamba")
+    }
     if (!file.exists(command)) {
         cli::cli_abort(c(
             "Invalid installation of {.pkg appmamba}",
