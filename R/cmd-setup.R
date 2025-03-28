@@ -65,7 +65,7 @@ cmd_envvar <- function(command, ..., action = "replace", sep = NULL) {
 #' `PYTHONPATH`.
 #' @return
 #' - `cmd_envpath`: The `command` object itself, with running environment
-#' variable `name` updated.
+#' variable specified in `name` updated.
 #' @importFrom rlang :=
 #' @export
 cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {

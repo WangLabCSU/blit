@@ -53,7 +53,7 @@ variable updated.
 
 \itemize{
 \item \code{cmd_envpath}: The \code{command} object itself, with running environment
-variable \code{name} updated.
+variable specified in \code{name} updated.
 }
 
 \itemize{
