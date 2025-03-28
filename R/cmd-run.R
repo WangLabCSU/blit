@@ -185,7 +185,6 @@ cmd_background <- function(
         }
     }
     stdin <- check_stdio(stdin, allow_connection = FALSE)
-    if (isTRUE(stderr) || is_processx_pipe(stderr)) stderr <- ""
     processx_command(
         command,
         help = FALSE,
