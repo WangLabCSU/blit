@@ -52,7 +52,7 @@ exec("echo", "$PATH")
 To run the command, just pass the `command` object to the `cmd_run()`
 ```{r}
 Sys.setenv(TEST = "blit is awesome")
-exec("echo", "$TEST") |> cmd_run()
+exec("echo", "$TEST") |> cmd_run(stdout = "|")
 ```
 
 Alternatively, you can run it in the background. In this case, a
