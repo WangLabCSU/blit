@@ -81,15 +81,53 @@ processx_command <- function(
         cli::cat_line()
     }
 
+    # prepare the shell -------------------------
+    script <- tempfile(pkg_nm())
+    if (.Platform$OS.type == "windows") {
+        # https://stackoverflow.com/questions/605686/how-to-write-a-multiline-command
+        # for cmd "^"
+        # for powershell "`"
+        cmd <- shell %||% "cmd"
+        arg <- switch(cmd,
+            cmd = "/C",
+            powershell = c("-ExecutionPolicy", "Bypass", "-File")
+        )
+        cmd <- paste(cmd, "exe", sep = ".")
+    } else {
+        cmd <- shell %||% "sh" # or "bash"
+        arg <- NULL
+    }
+
+    # write the content to the script
+    write_lines(content, script)
+
+    # ensure the file is executable
+    file_executable(script)
+
     # on_start ------------------
     on_start_list <- lapply(command_series, function(cmd) cmd$get_on_start())
     on_start_list <- unlist(on_start_list, FALSE, FALSE)
     on_start_list <- c(on_start_list, .subset2(command, "on_start"))
 
-    # on_exit ------------------
+    # on_exit -------------------
     on_exit_list <- lapply(command_series, function(cmd) cmd$get_on_exit())
     on_exit_list <- unlist(on_exit_list, FALSE, FALSE)
     on_exit_list <- c(on_exit_list, .subset2(command, "on_exit"))
+
+    # remove the script created -------------------------
+    call <- as.call(list(
+        function() {
+            if (file.exists(script)) {
+                # if (verbose) {
+                #     cli::cli_inform(
+                #         "Removing temporaty script {.path {script}}"
+                #     )
+                # }
+                file.remove(script)
+            }
+        }
+    ))
+    on_exit_list <- c(on_exit_list, list(call))
 
     # on_fail ------------------
     on_fail_list <- lapply(command_series, function(cmd) cmd$get_on_fail())
@@ -105,6 +143,8 @@ processx_command <- function(
 
     # execute the command ----------------------
     BlitProcess$new(
+        command = cmd,
+        args = c(arg, script),
         wd = wd,
         env = NULL,
         stdout = stdout,
@@ -113,7 +153,6 @@ processx_command <- function(
         stdin = stdin,
         cleanup_tree = TRUE,
         .blit_verbose = verbose,
-        .blit_content = content,
         .blit_stdout_callback = stdout_callback,
         .blit_stderr_callback = stderr_callback,
         .blit_start = blit_schedule(on_start_list),
@@ -140,45 +179,15 @@ BlitProcess <- R6Class(
     "BlitProcess",
     inherit = processx::process,
     public = list(
-        .blit_content = NULL,
-        .blit_script = NULL,
         # fmt: skip
         initialize = function(..., stdout, stderr,
                               .blit_stdout_callback,
                               .blit_stderr_callback,
-                              .blit_content = NULL,
                               .blit_start = NULL,
                               .blit_exit = NULL,
                               .blit_fail = NULL,
                               .blit_succeed = NULL,
-                              .blit_shell = NULL,
                               .blit_verbose = NULL) {
-            # prepare the shell -------------------------
-            script <- tempfile(pkg_nm())
-            if (.Platform$OS.type == "windows") {
-                # https://stackoverflow.com/questions/605686/how-to-write-a-multiline-command
-                # for cmd "^"
-                # for powershell "`"
-                cmd <- .blit_shell %||% "cmd"
-                arg <- switch(cmd,
-                    cmd = "/C",
-                    powershell = c("-ExecutionPolicy", "Bypass", "-File")
-                )
-                cmd <- paste(cmd, "exe", sep = ".")
-            } else {
-                cmd <- .blit_shell %||% "sh" # or "bash"
-                arg <- NULL
-            }
-
-            # write the content to the script
-            write_lines(.blit_content, script)
-
-            # ensure the file is executable
-            file_executable(script)
-
-            self$.blit_content <- .blit_content
-            self$.blit_script <- script
-
             # prepare the stdout and stderr ---------------
             private$.blit_stdout <- stdout
             private$.blit_stdout_callback <- .blit_stdout_callback
@@ -213,8 +222,6 @@ BlitProcess <- R6Class(
                 stderr <- "|"
             }
             super$initialize(
-                command = cmd,
-                args = c(arg, script),
                 ...,
                 stdout = stdout,
                 stderr = stderr
@@ -371,16 +378,6 @@ BlitProcess <- R6Class(
                     if (!is.null(private$.blit_stderr_done)) {
                         private$.blit_stderr_done()
                     }
-                }
-
-                # remove the script created -------------------------
-                if (file.exists(self$.blit_script)) {
-                    rlang::try_fetch(
-                        file.remove(self$.blit_script),
-                        error = function(cnd) {
-                            cli::cli_warn(conditionMessage(cnd))
-                        }
-                    )
                 }
 
                 # run the cleanup function --------------------------
