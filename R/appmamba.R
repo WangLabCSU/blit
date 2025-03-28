@@ -60,7 +60,6 @@ appmamba <- function(...) {
 #'   if it is already installed.
 #' @export
 install_appmamba <- function(force = FALSE) {
-    cli::cli_inform("Installing {.pkg appmamba}")
     path <- app_dir("appmamba")
     if (dir.exists(path)) {
         if (isTRUE(force)) {
@@ -76,6 +75,7 @@ install_appmamba <- function(force = FALSE) {
             return(invisible(TRUE))
         }
     }
+    cli::cli_inform("Installing {.pkg appmamba}")
     dir_create(path, recursive = TRUE)
     installer <- appmamba_installer_download(appmamba_installer_url())
     status <- utils::untar(installer, exdir = path)
