@@ -248,6 +248,7 @@ BlitProcess <- R6Class(
                 stdout = stdout,
                 stderr = stderr
             )
+            private$starttime <- Sys.time()
             if (is.function(.blit_start)) .blit_start()
             if (is.function(.blit_exit)) private$.blit_exit <- .blit_exit
             if (is.function(.blit_succeed)) {
@@ -268,7 +269,7 @@ BlitProcess <- R6Class(
             if (out <- self$is_alive()) {
                 # Timeout? Maybe finished by now...
                 # fmt: skip
-                start_time <- self$get_start_time()
+                start_time <- private$starttime
                 if (!is.null(timeout) &&
                     is.finite(timeout) &&
                     (diff <- Sys.time() - start_time) > timeout) {
