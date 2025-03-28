@@ -312,10 +312,10 @@ BlitProcess <- R6Class(
             )
         },
         .blit_kill = function(close_connections = TRUE) {
-            self$kill(close_connections = close_connections)
             if (private$cleanup_tree) {
                 self$kill_tree(close_connections = close_connections)
             }
+            self$kill(close_connections = close_connections)
             invisible(self)
         },
         # Must run `$wait()` method to get the exit status before using
