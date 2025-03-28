@@ -13,7 +13,7 @@ processx_command <- function(
     stdin = NULL,
     stdout_callback = NULL,
     stderr_callback = NULL,
-    verbose = TRUE,
+    verbose = TRUE, echo_command = verbose,
     call = caller_call()) {
     assert_bool(verbose, call = call)
 
@@ -73,7 +73,7 @@ processx_command <- function(
         content[-1L] <- paste0("    ", content[-1L])
     }
 
-    if (verbose) {
+    if (echo_command) {
         cli::cli_text(paste(
             "Running command ({as.character(Sys.time(), digits = 0)}):",
             "{.field {paste(content, collapse = ' ')}}"

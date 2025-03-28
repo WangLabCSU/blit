@@ -59,7 +59,7 @@
 #' @return
 #' - `cmd_run`: Exit status invisiblely.
 #' @seealso
-#'  - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]
+#'  - [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]/[`cmd_conda()`]
 #'  - [`cmd_on_start()`]/[`cmd_on_exit()`]
 #'  - [`cmd_on_succeed()`]/[`cmd_on_fail()`]
 #'  - [`cmd_parallel()`]

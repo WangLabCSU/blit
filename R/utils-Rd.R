@@ -23,7 +23,7 @@ rd_help <- function(cmd) sprintf("`cmd_help(%s())`", cmd)
 
 rd_seealso <- function() {
     paste(
-        "- [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]",
+        "- [`cmd_wd()`]/[`cmd_envvar()`]/[`cmd_envpath()`]/[`cmd_conda()`]",
         "- [`cmd_on_start()`]/[`cmd_on_exit()`]",
         "- [`cmd_on_succeed()`]/[`cmd_on_fail()`]",
         "- [`cmd_parallel()`]",

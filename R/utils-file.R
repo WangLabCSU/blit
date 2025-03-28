@@ -1,3 +1,13 @@
+blit_dir <- function(which) {
+    dir_create(tools::R_user_dir(pkg_nm(), which), recursive = TRUE)
+}
+
+data_dir <- function() blit_dir("data")
+
+cache_dir <- function() blit_dir("cache")
+
+config_dir <- function() blit_dir("config")
+
 path_ext_remove <- function(path) {
     sub("\\.[[:alnum:]]*$", "", path, perl = TRUE)
 }

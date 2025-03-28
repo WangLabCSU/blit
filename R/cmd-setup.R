@@ -7,6 +7,8 @@
 #' - `cmd_wd`: The `command` object itself, with working directory updated.
 #' @seealso
 #' - [`cmd_run()`]/[`cmd_help()`]/[`cmd_background()`]
+#' - [`cmd_on_start()`]/[`cmd_on_exit()`]
+#' - [`cmd_on_succeed()`]/[`cmd_on_fail()`]
 #' - [`cmd_parallel()`]
 #' @export
 cmd_wd <- function(command, wd = NULL) {
@@ -22,6 +24,7 @@ cmd_wd <- function(command, wd = NULL) {
 #'  - `cmd_envvar`: Named character define the environment variables.
 #'  - `cmd_envpath`: Unnamed character to define the `PATH`-like environment
 #' variables `name`.
+#'  - `cmd_conda`: Unnamed character to specify the name of conda environment.
 #' @param action Should the new values `"replace"`, `"prefix"` or `"suffix"`
 #' existing environment variables?
 #' @param sep A string to separate new and old value when `action` is `"prefix"`
@@ -76,7 +79,7 @@ cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
         envpath <- envpath[!is.na(envpath)]
     }
     if (length(envpath) == 0L) {
-        cli::cli_abort("No valid path is provided in {.arg ...}")
+        return(command)
     }
     envpath <- normalizePath(envpath, "/", mustWork = FALSE)
     envpath <- rev(envpath)
@@ -86,6 +89,38 @@ cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
         !!name := envpath, # nolint
         action = action,
         sep = .Platform$path.sep
+    )
+}
+
+#' @describeIn cmd_wd Set `conda-like` path to the `PATH` environment
+#' variables.
+#' @param root A string of path defines the conda root prefix. By default, the
+#' root prefix of [`appmamba()`] will be used.
+#' @return
+#' - `cmd_conda`: The `command` object itself, with running environment
+#' variable `PATH` updated.
+#' @export
+cmd_conda <- function(command, ..., root = NULL, action = "prefix") {
+    assert_s3_class(command, "command")
+    rlang::check_dots_unnamed()
+    envs <- rlang::dots_list(..., .ignore_empty = "all")
+    envs <- as.character(unlist(envs, FALSE, FALSE))
+    if (anyNA(envs)) {
+        cli::cli_abort("Cannot using missing value in {.arg ...}")
+    }
+    root <- root %||% appmamba_root()
+    envs_dir <- file.path(root, "envs", envs, fsep = "/")
+    envs_exists <- dir.exists(envs_dir)
+    if (length(missing <- envs_dir[!envs_exists])) { # nolint
+        cli::cli_warn("Cannot find environment {.envvar {missing}}")
+    }
+    envs_dir <- envs_dir[envs_exists]
+    if (length(envs_dir) == 0L) {
+        return(command)
+    }
+    cmd_envpath(command,
+        file.path(envs_dir, "bin", fsep = "/"),
+        action = action
     )
 }
 

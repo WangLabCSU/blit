@@ -4,6 +4,7 @@
 \alias{cmd_wd}
 \alias{cmd_envvar}
 \alias{cmd_envpath}
+\alias{cmd_conda}
 \title{Setup the context for the command}
 \usage{
 cmd_wd(command, wd = NULL)
@@ -11,6 +12,8 @@ cmd_wd(command, wd = NULL)
 cmd_envvar(command, ..., action = "replace", sep = NULL)
 
 cmd_envpath(command, ..., action = "prefix", name = "PATH")
+
+cmd_conda(command, ..., root = NULL, action = "prefix")
 }
 \arguments{
 \item{command}{A \code{command} object.}
@@ -22,6 +25,7 @@ cmd_envpath(command, ..., action = "prefix", name = "PATH")
 \item \code{cmd_envvar}: Named character define the environment variables.
 \item \code{cmd_envpath}: Unnamed character to define the \code{PATH}-like environment
 variables \code{name}.
+\item \code{cmd_conda}: Unnamed character to specify the name of conda environment.
 }}
 
 \item{action}{Should the new values \code{"replace"}, \code{"prefix"} or \code{"suffix"}
@@ -33,6 +37,9 @@ or \code{"suffix"}. By default, \code{" "} will be used.}
 \item{name}{A string define the PATH environment variable name. You
 can use this to define other \code{PATH}-like environment variable such as
 \code{PYTHONPATH}.}
+
+\item{root}{A string of path defines the conda root prefix. By default, the
+root prefix of \code{\link[=appmamba]{appmamba()}} will be used.}
 }
 \value{
 \itemize{
@@ -48,6 +55,11 @@ variable updated.
 \item \code{cmd_envpath}: The \code{command} object itself, with running environment
 variable \code{name} updated.
 }
+
+\itemize{
+\item \code{cmd_conda}: The \code{command} object itself, with running environment
+variable \code{PATH} updated.
+}
 }
 \description{
 Setup the context for the command
@@ -60,10 +72,15 @@ Setup the context for the command
 
 \item \code{cmd_envpath()}: define the \code{PATH}-like environment variables.
 
+\item \code{cmd_conda()}: Set \code{conda-like} path to the \code{PATH} environment
+variables.
+
 }}
 \seealso{
 \itemize{
 \item \code{\link[=cmd_run]{cmd_run()}}/\code{\link[=cmd_help]{cmd_help()}}/\code{\link[=cmd_background]{cmd_background()}}
+\item \code{\link[=cmd_on_start]{cmd_on_start()}}/\code{\link[=cmd_on_exit]{cmd_on_exit()}}
+\item \code{\link[=cmd_on_succeed]{cmd_on_succeed()}}/\code{\link[=cmd_on_fail]{cmd_on_fail()}}
 \item \code{\link[=cmd_parallel]{cmd_parallel()}}
 }
 }
