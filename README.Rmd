@@ -33,8 +33,8 @@ install.packages("blit")
 Alternatively, install the development version from
 [GitHub](https://github.com/) with:
 ``` r
-# install.packages("devtools")
-devtools::install_github("WangLabCSU/blit")
+# install.packages("remotes")
+remotes::install_github("WangLabCSU/blit")
 ```
 
 ## Example
@@ -148,7 +148,7 @@ file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_succeed(file.remove(file)) |>
     cmd_run(timeout = 5) # terminate it after 5s
-file.exists(file) # file remain exist since timeout means command failed
+file.exists(file) # file remain exist as timeout means command failed
 file.remove(file)
 ```
 
