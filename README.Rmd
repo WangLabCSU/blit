@@ -49,7 +49,9 @@ This will create a `command` object:
 exec("echo", "$PATH")
 ```
 
-To run the command, just pass the `command` object to the `cmd_run()`
+To run the command, just pass the `command` object to the `cmd_run()` (Note:
+`stdout = "|"` is always used in the vignette to ensure that the standard output
+is captured by knitr.)
 ```{r}
 Sys.setenv(TEST = "blit is awesome")
 exec("echo", "$TEST") |> cmd_run(stdout = "|")
@@ -110,13 +112,13 @@ Several functions allow you to control the environment or schedule expressions:
 ```{r}
 exec("echo", "$(pwd)") |>
     cmd_wd(tempdir()) |>
-    cmd_run()
+    cmd_run(stdout = "|")
 ```
 
 ```{r}
 exec("echo", "$TEST") |>
     cmd_envvar(TEST = "blit is very awesome") |>
-    cmd_run()
+    cmd_run(stdout = "|")
 ```
 
 ```{r}
@@ -125,7 +127,7 @@ file.create(file)
 file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_exit(file.remove(file)) |>
-    cmd_run(timeout = 5) # terminate it after 5s
+    cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
 file.exists(file)
 ```
 
@@ -137,7 +139,7 @@ file.create(file)
 file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_fail(file.remove(file)) |>
-    cmd_run(timeout = 5) # terminate it after 5s
+    cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
 file.exists(file)
 ```
 
@@ -147,7 +149,7 @@ file.create(file)
 file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_succeed(file.remove(file)) |>
-    cmd_run(timeout = 5) # terminate it after 5s
+    cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
 file.exists(file) # file remain exist as timeout means command failed
 file.remove(file)
 ```
@@ -167,11 +169,11 @@ commands., these include:
 
 For these commands, you can also use `cmd_help()` to print the help document.
 ```{r}
-python() |> cmd_help()
+python() |> cmd_help(stdout = "|")
 ```
 
 ```{r}
-perl() |> cmd_help()
+perl() |> cmd_help(stdout = "|")
 ```
 
 And it is very easily to extend for other commands.
@@ -191,7 +193,7 @@ writeLines(letters, con = file)
 file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
-    cmd_run()
+    cmd_run(stdout = "|")
 identical(readLines(file), readLines(file2))
 ```
 
@@ -232,7 +234,7 @@ Ping <- R6::R6Class(
 ping <- make_command("ping", function(..., ping = NULL) {
     Ping$new(cmd = ping, ...)
 })
-ping("8.8.8.8") |> cmd_run(timeout = 5) # terminate it after 5s
+ping("8.8.8.8") |> cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
 ```
 
 For command-line tools, the input parameters should always be characters. The
