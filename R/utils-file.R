@@ -75,10 +75,16 @@ unzip2 <- function(path, exdir, ..., basename = TRUE, overwrite = TRUE) {
 }
 
 download_file <- function(url, path, ...) {
-    cli::cli_inform("Downloading from {.path {url}}")
-    if (utils::download.file(url = url, destfile = path, ...) > 0L) {
-        cli::cli_abort("Cannot download {.path {url}}")
+    if (file.exists(path)) {
+        cli::cli_inform("Using cached file: {.path {path}}")
+        return(path)
     }
+    cli::cli_inform("Downloading from {.path {url}}")
+    status <- utils::download.file(url = url, destfile = path, ...)
+    if (status > 0L) {
+        cli::cli_abort("Cannot download {.path {url}} [status = {status}]")
+    }
+    invisible(path)
 }
 
 read_lines <- function(path, n = Inf) {
