@@ -1,4 +1,4 @@
-# blit (development version)
+# blit 0.2.0
 
 ## New features
 
