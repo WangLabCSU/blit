@@ -37,7 +37,7 @@ path_equal <- function(path1, path2) {
 
 file_executable <- function(file) {
     if (file.access(file, mode = 1L)) {
-        if (!Sys.chmod(file, "555")) {
+        if (!Sys.chmod(file, "755")) {
             cli::cli_abort("{.path {file}} is not executable")
         }
     }
