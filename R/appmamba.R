@@ -44,7 +44,11 @@ appmamba <- function(...) {
     args <- rlang::dots_list(..., .ignore_empty = "all")
     args <- as.character(unlist(args, FALSE, FALSE))
     if (length(args) == 0L) args <- "--help"
-    args <- c("--root-prefix", appmamba_root(), args)
+    args <- c(
+        "--root-prefix",
+        normalizePath(appmamba_root(), winslash = "/", mustWork = FALSE),
+        args
+    )
     command <- exec(command, args)
     proc <- processx_command(
         command,
@@ -138,10 +142,7 @@ appmamba_rc <- function(edit = FALSE) {
 
 appmamba_installed <- function() dir.exists(app_dir("appmamba"))
 
-appmamba_root <- function() {
-    path <- file.path(data_dir(), "appmamba")
-    dir_create(normalizePath(path, winslash = "/", mustWork = FALSE))
-}
+appmamba_root <- function() dir_create(file.path(data_dir(), "appmamba"))
 
 appmamba_use_system <- function() {
     system <- Sys.getenv("BLIT_APPMAMBA_SYSTEM", NA_character_)
