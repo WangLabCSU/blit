@@ -40,6 +40,7 @@ appmamba <- function(...) {
             )
         ))
     }
+    command <- normalizePath(command, winslash = "/", mustWork = FALSE)
     args <- rlang::dots_list(..., .ignore_empty = "all")
     args <- as.character(unlist(args, FALSE, FALSE))
     if (length(args) == 0L) args <- "--help"
