@@ -80,8 +80,6 @@ processx_command <- function(
     }
 
     # prepare the shell -------------------------
-    script <- tempfile(pkg_nm())
-    script <- normalizePath(script, winslash = "/", mustWork = FALSE)
     if (.Platform$OS.type == "windows") {
         # https://stackoverflow.com/questions/605686/how-to-write-a-multiline-command
         # for cmd "^"
@@ -92,12 +90,15 @@ processx_command <- function(
             powershell = c("-ExecutionPolicy", "Bypass", "-File")
         )
         cmd <- paste(cmd, "exe", sep = ".")
+        script <- tempfile(pkg_nm(), fileext = ".bat")
     } else {
         cmd <- shell %||% "sh" # or "bash"
         arg <- NULL
+        script <- tempfile(pkg_nm(), fileext = ".sh")
     }
 
     # write the content to the script
+    script <- normalizePath(script, winslash = "/", mustWork = FALSE)
     write_lines(content, script)
 
     # ensure the file is executable
