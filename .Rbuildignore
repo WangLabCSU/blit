@@ -10,3 +10,4 @@
 README.html
 ^data-raw$
 ^codecov\.yml$
+^revdep$
