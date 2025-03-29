@@ -111,7 +111,8 @@ uninstall_appmamba <- function() {
 }
 
 #' @describeIn appmamba Get the `run commands` config file of the `micromamba`.
-#' @param edit A logical value indicating whether to open the file for editing.
+#' @param edit A logical value indicating whether to open the config file for
+#' editing.
 #' @export
 appmamba_rc <- function(edit = FALSE) {
     if (!appmamba_installed()) {

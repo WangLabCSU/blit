@@ -22,7 +22,8 @@ appmamba_rc(edit = FALSE)
 \item{force}{A logical value indicating whether to reinstall \code{appmamba}
 if it is already installed.}
 
-\item{edit}{A logical value indicating whether to open the file for editing.}
+\item{edit}{A logical value indicating whether to open the config file for
+editing.}
 }
 \description{
 Manage Environment with \code{micromamba}
