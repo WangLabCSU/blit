@@ -177,14 +177,18 @@ BlitProcess <- R6Class(
     inherit = processx::process,
     public = list(
         # fmt: skip
-        initialize = function(..., stdin, stdout, stderr,
-                              .blit_stdout_callback,
-                              .blit_stderr_callback,
+        initialize = function(...,
+                              stdin = NULL,
+                              stdout = NULL,
+                              stderr = NULL,
+                              env = NULL,
+                              .blit_stdout_callback = NULL,
+                              .blit_stderr_callback = NULL,
                               .blit_start = NULL,
                               .blit_exit = NULL,
                               .blit_fail = NULL,
                               .blit_succeed = NULL,
-                              .blit_verbose = NULL) {
+                              .blit_verbose = FALSE) {
             # prepare the stdout and stderr ---------------
             private$.blit_stdout <- stdout
             private$.blit_stdout_callback <- .blit_stdout_callback
@@ -209,20 +213,21 @@ BlitProcess <- R6Class(
             } else if (inherits(stdout, "connection")) {
                 # we need echo the stdout
                 stdout <- "|"
-            } else if (isTRUE(stdout)) {
-                if (!is.null(.blit_stdout_callback)) {
-                    # when callback is not `NULL`, we must use pipe
+            } else if (!is.null(.blit_stdout_callback)) {
+                # when callback is not `NULL`, we must use pipe
+                if (isTRUE(stdout) || is_processx_std_file(stdout)) {
                     stdout <- "|"
-                    # when the callback is `NULL`, we try to inherit the R
-                    # process stdout
-                } else if (processx::is_valid_fd(1L)) {
+                }
+            } else if (isTRUE(stdout)) {
+                # when the callback is `NULL`, we try to inherit the R
+                # process stdout
+                if (processx::is_valid_fd(1L)) {
                     stdout <- ""
                 } else {
                     stdout <- "|"
                 }
             }
 
-            # fmt: skip
             if (is.null(stderr)) {
 
             } else if (isFALSE(stderr)) {
@@ -230,25 +235,36 @@ BlitProcess <- R6Class(
             } else if (inherits(stderr, "connection")) {
                 # we need echo the stderr
                 stderr <- "|"
-            } else if (isTRUE(stderr)) {
-                if (!is.null(.blit_stderr_callback)) {
-                    # when callback is not `NULL`, we must use pipe
+            } else if (!is.null(.blit_stderr_callback)) {
+                # when callback is not `NULL`, we must use pipe
+                if (isTRUE(stderr) ||
+                    is_processx_std_file(stderr, redirect = TRUE)) {
                     stderr <- "|"
-                    # when the callback is `NULL`, we try to inherit the R
-                    # process stderr
-                } else if (processx::is_valid_fd(2L)) {
+                }
+            } else if (isTRUE(stderr)) {
+                # when the callback is `NULL`, we try to inherit the R
+                # process stderr
+                if (processx::is_valid_fd(2L)) {
                     stderr <- ""
                 } else {
                     stderr <- "|"
                 }
             }
+            if (!is.null(env) && !inherits(env, "AsIs")) {
+                env <- c(env, "current")
+            }
+            # workaround for https://github.com/r-lib/processx/issues/394
+            starttime <- Sys.time()
             super$initialize(
                 ...,
+                env = env,
                 stdin = stdin,
                 stdout = stdout,
                 stderr = stderr
             )
-            private$starttime <- Sys.time()
+            if (starttime > self$get_start_time()) {
+                private$starttime <- Sys.time()
+            }
             if (is.function(.blit_start)) .blit_start()
             if (is.function(.blit_exit)) private$.blit_exit <- .blit_exit
             if (is.function(.blit_succeed)) {
@@ -342,9 +358,10 @@ BlitProcess <- R6Class(
             )
         },
         .blit_kill = function(close_connections = TRUE) {
-            self$kill(close_connections = close_connections)
             if (private$cleanup_tree) {
                 self$kill_tree(close_connections = close_connections)
+            } else {
+                self$kill(close_connections = close_connections)
             }
             invisible(self)
         },
