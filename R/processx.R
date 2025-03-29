@@ -89,15 +89,19 @@ processx_command <- function(
             cmd = "/C",
             powershell = c("-ExecutionPolicy", "Bypass", "-File")
         )
+        fileext <- switch(cmd,
+            cmd = "bat",
+            powershell = "ps1"
+        )
         cmd <- paste(cmd, "exe", sep = ".")
-        script <- tempfile(pkg_nm(), fileext = ".bat")
     } else {
         cmd <- shell %||% "sh" # or "bash"
         arg <- NULL
-        script <- tempfile(pkg_nm(), fileext = ".sh")
+        fileext <- "sh"
     }
 
     # write the content to the script
+    script <- tempfile(pkg_nm(), fileext = sprintf(".%s", fileext))
     script <- normalizePath(script, winslash = "/", mustWork = FALSE)
     write_lines(content, script)
 
