@@ -254,7 +254,7 @@ BlitProcess <- R6Class(
                 env <- c(env, "current")
             }
             # workaround for https://github.com/r-lib/processx/issues/394
-            starttime <- Sys.time()
+            starttime0 <- Sys.time()
             super$initialize(
                 ...,
                 env = env,
@@ -262,8 +262,9 @@ BlitProcess <- R6Class(
                 stdout = stdout,
                 stderr = stderr
             )
-            if (starttime > self$get_start_time()) {
-                private$starttime <- Sys.time()
+            starttime <- Sys.time()
+            if (starttime0 > self$get_start_time()) {
+                private$starttime <- starttime
             }
             if (is.function(.blit_start)) .blit_start()
             if (is.function(.blit_exit)) private$.blit_exit <- .blit_exit
@@ -358,10 +359,9 @@ BlitProcess <- R6Class(
             )
         },
         .blit_kill = function(close_connections = TRUE) {
+            self$kill(close_connections = close_connections)
             if (private$cleanup_tree) {
                 self$kill_tree(close_connections = close_connections)
-            } else {
-                self$kill(close_connections = close_connections)
             }
             invisible(self)
         },
