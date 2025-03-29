@@ -28,8 +28,8 @@ jobs:
       - name: Install dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::roxygen2
-          needs: roxygen2
+          extra-packages: any::usethis
+          needs: usethis
 
       - name: Github Release
         run: usethis::use_github_release()
