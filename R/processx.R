@@ -81,6 +81,7 @@ processx_command <- function(
 
     # prepare the shell -------------------------
     script <- tempfile(pkg_nm())
+    script <- normalizePath(script, winslash = "/", mustWork = FALSE)
     if (.Platform$OS.type == "windows") {
         # https://stackoverflow.com/questions/605686/how-to-write-a-multiline-command
         # for cmd "^"
