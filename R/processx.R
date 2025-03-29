@@ -253,8 +253,7 @@ BlitProcess <- R6Class(
             if (!is.null(env) && !inherits(env, "AsIs")) {
                 env <- c(env, "current")
             }
-            # workaround for https://github.com/r-lib/processx/issues/394
-            starttime0 <- Sys.time()
+
             super$initialize(
                 ...,
                 env = env,
@@ -262,10 +261,10 @@ BlitProcess <- R6Class(
                 stdout = stdout,
                 stderr = stderr
             )
-            starttime <- Sys.time()
-            if (starttime0 > self$get_start_time()) {
-                private$starttime <- starttime
-            }
+
+            # workaround for https://github.com/r-lib/processx/issues/394
+            private$starttime <- Sys.time()
+
             if (is.function(.blit_start)) .blit_start()
             if (is.function(.blit_exit)) private$.blit_exit <- .blit_exit
             if (is.function(.blit_succeed)) {
