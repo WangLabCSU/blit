@@ -2,6 +2,10 @@
 
 ## New features
 
+* new function `cmd_conda` to define the `PATH` environment variables with conda environment.
+
+* new function `appmamba` to install software and manage Environment with `micromamba`.
+
 * new function `cmd_on_fail` to define the expression to be evaluated when the command failed.
 
 * new function `cmd_on_succeed`to define the expression to be evaluated when the command succeeded.
