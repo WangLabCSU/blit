@@ -52,7 +52,7 @@ standard output is captured by knitr.)
 ``` r
 Sys.setenv(TEST = "blit is awesome")
 exec("echo", "$TEST") |> cmd_run(stdout = "|")
-#> Running command (2025-03-29 17:12:15): echo $TEST
+#> Running command (2025-03-29 19:39:26): echo $TEST
 #> 
 #> blit is awesome
 #> Command process finished
@@ -73,7 +73,7 @@ Sys.unsetenv("TEST")
 > The actual implementation in the `README.Rmd` differs, but the output
 > remains the same.
 
-    #> Running command (2025-03-29 17:12:15): echo $TEST
+    #> Running command (2025-03-29 19:39:26): echo $TEST
     #> blit is awesome
 
 `cmd_background()` is provided for completeness. Instead of using this
@@ -99,68 +99,68 @@ cmd_parallel(
     timeouts = 4, # terminate after 4s
     threads = 4
 )
-#> Running command (2025-03-29 17:12:15): ping localhost
-#> Running command (2025-03-29 17:12:15): ping 208.67.222.222
-#> Running command (2025-03-29 17:12:15): ping 8.8.8.8
-#> Running command (2025-03-29 17:12:15): ping 8.8.4.4
+#> Running command (2025-03-29 19:39:26): ping localhost
+#> Running command (2025-03-29 19:39:26): ping 208.67.222.222
+#> Running command (2025-03-29 19:39:26): ping 8.8.8.8
+#> Running command (2025-03-29 19:39:26): ping 8.8.4.4
 #> 
 #> Connection 1: PING localhost (127.0.0.1) 56(84) bytes of data.
-#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.010 ms
-#> ⠙ 0/4 [0/s] [elapsed in 38ms] @ 2025-03-29 17:12:15
+#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.015 ms
+#> ⠙ 0/4 [0/s] [elapsed in 34ms] @ 2025-03-29 19:39:26
 #> Connection 2: PING 208.67.222.222 (208.67.222.222) 56(84) bytes of data.
-#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=1 ttl=48 time=55.0 ms
-#> ⠹ 0/4 [0/s] [elapsed in 75ms] @ 2025-03-29 17:12:15
+#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=1 ttl=48 time=54.7 ms
+#> ⠹ 0/4 [0/s] [elapsed in 72ms] @ 2025-03-29 19:39:26
 #> Connection 3: PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=50.9 ms
-#> ⠸ 0/4 [0/s] [elapsed in 79ms] @ 2025-03-29 17:12:15
+#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=47.6 ms
+#> ⠸ 0/4 [0/s] [elapsed in 77ms] @ 2025-03-29 19:39:26
 #> Connection 4: PING 8.8.4.4 (8.8.4.4) 56(84) bytes of data.
-#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=1 ttl=104 time=214 ms
-#> ⠼ 0/4 [0/s] [elapsed in 249ms] @ 2025-03-29 17:12:15
-#> ⠴ 0/4 [0/s] [elapsed in 459ms] @ 2025-03-29 17:12:16
-#> ⠦ 0/4 [0/s] [elapsed in 664ms] @ 2025-03-29 17:12:16
-#> ⠧ 0/4 [0/s] [elapsed in 868ms] @ 2025-03-29 17:12:16
-#> ⠇ 0/4 [0/s] [elapsed in 1.1s] @ 2025-03-29 17:12:16
-#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.014 ms
-#> ⠏ 0/4 [0/s] [elapsed in 1.1s] @ 2025-03-29 17:12:16
-#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=2 ttl=48 time=53.4 ms
-#> ⠋ 0/4 [0/s] [elapsed in 1.1s] @ 2025-03-29 17:12:16
-#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=46.8 ms
-#> ⠙ 0/4 [0/s] [elapsed in 1.1s] @ 2025-03-29 17:12:16
-#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=2 ttl=104 time=207 ms
-#> ⠹ 0/4 [0/s] [elapsed in 1.2s] @ 2025-03-29 17:12:16
-#> ⠸ 0/4 [0/s] [elapsed in 1.4s] @ 2025-03-29 17:12:17
-#> ⠼ 0/4 [0/s] [elapsed in 1.7s] @ 2025-03-29 17:12:17
-#> ⠴ 0/4 [0/s] [elapsed in 1.9s] @ 2025-03-29 17:12:17
-#> ⠦ 0/4 [0/s] [elapsed in 2.1s] @ 2025-03-29 17:12:17
+#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=1 ttl=46 time=199 ms
+#> ⠼ 0/4 [0/s] [elapsed in 233ms] @ 2025-03-29 19:39:26
+#> ⠴ 0/4 [0/s] [elapsed in 442ms] @ 2025-03-29 19:39:27
+#> ⠦ 0/4 [0/s] [elapsed in 647ms] @ 2025-03-29 19:39:27
+#> ⠧ 0/4 [0/s] [elapsed in 852ms] @ 2025-03-29 19:39:27
+#> ⠇ 0/4 [0/s] [elapsed in 1.1s] @ 2025-03-29 19:39:27
+#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.013 ms
+#> ⠏ 0/4 [0/s] [elapsed in 1.1s] @ 2025-03-29 19:39:27
+#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=2 ttl=48 time=54.1 ms
+#> ⠋ 0/4 [0/s] [elapsed in 1.1s] @ 2025-03-29 19:39:27
+#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=46.9 ms
+#> ⠙ 0/4 [0/s] [elapsed in 1.1s] @ 2025-03-29 19:39:27
+#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=2 ttl=46 time=183 ms
+#> ⠹ 0/4 [0/s] [elapsed in 1.2s] @ 2025-03-29 19:39:27
+#> ⠸ 0/4 [0/s] [elapsed in 1.4s] @ 2025-03-29 19:39:28
+#> ⠼ 0/4 [0/s] [elapsed in 1.6s] @ 2025-03-29 19:39:28
+#> ⠴ 0/4 [0/s] [elapsed in 1.8s] @ 2025-03-29 19:39:28
+#> ⠦ 0/4 [0/s] [elapsed in 2s] @ 2025-03-29 19:39:28
 #> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.009 ms
-#> ⠧ 0/4 [0/s] [elapsed in 2.1s] @ 2025-03-29 17:12:17
-#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=3 ttl=48 time=54.2 ms
-#> ⠇ 0/4 [0/s] [elapsed in 2.1s] @ 2025-03-29 17:12:17
-#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=47.1 ms
-#> ⠏ 0/4 [0/s] [elapsed in 2.1s] @ 2025-03-29 17:12:17
-#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=3 ttl=104 time=189 ms
-#> ⠋ 0/4 [0/s] [elapsed in 2.2s] @ 2025-03-29 17:12:17
-#> ⠙ 0/4 [0/s] [elapsed in 2.4s] @ 2025-03-29 17:12:18
-#> ⠹ 0/4 [0/s] [elapsed in 2.6s] @ 2025-03-29 17:12:18
-#> ⠸ 0/4 [0/s] [elapsed in 2.8s] @ 2025-03-29 17:12:18
-#> ⠼ 0/4 [0/s] [elapsed in 3s] @ 2025-03-29 17:12:18
-#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.009 ms
-#> ⠴ 0/4 [0/s] [elapsed in 3.1s] @ 2025-03-29 17:12:18
-#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=4 ttl=48 time=56.0 ms
-#> ⠦ 0/4 [0/s] [elapsed in 3.1s] @ 2025-03-29 17:12:18
-#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=51.5 ms
-#> ⠧ 0/4 [0/s] [elapsed in 3.1s] @ 2025-03-29 17:12:18
-#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=4 ttl=104 time=177 ms
-#> ⠇ 0/4 [0/s] [elapsed in 3.2s] @ 2025-03-29 17:12:18
-#> ⠏ 0/4 [0/s] [elapsed in 3.4s] @ 2025-03-29 17:12:19
-#> ⠋ 0/4 [0/s] [elapsed in 3.6s] @ 2025-03-29 17:12:19
-#> ⠙ 0/4 [0/s] [elapsed in 3.8s] @ 2025-03-29 17:12:19
-#> ⠹ 0/4 [0/s] [elapsed in 4s] @ 2025-03-29 17:12:19
+#> ⠧ 0/4 [0/s] [elapsed in 2.1s] @ 2025-03-29 19:39:28
+#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=3 ttl=48 time=54.4 ms
+#> ⠇ 0/4 [0/s] [elapsed in 2.1s] @ 2025-03-29 19:39:28
+#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=47.3 ms
+#> ⠏ 0/4 [0/s] [elapsed in 2.1s] @ 2025-03-29 19:39:28
+#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=3 ttl=46 time=163 ms
+#> ⠋ 0/4 [0/s] [elapsed in 2.2s] @ 2025-03-29 19:39:28
+#> ⠙ 0/4 [0/s] [elapsed in 2.4s] @ 2025-03-29 19:39:29
+#> ⠹ 0/4 [0/s] [elapsed in 2.6s] @ 2025-03-29 19:39:29
+#> ⠸ 0/4 [0/s] [elapsed in 2.8s] @ 2025-03-29 19:39:29
+#> ⠼ 0/4 [0/s] [elapsed in 3s] @ 2025-03-29 19:39:29
+#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.008 ms
+#> ⠴ 0/4 [0/s] [elapsed in 3.1s] @ 2025-03-29 19:39:29
+#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=4 ttl=48 time=55.1 ms
+#> ⠦ 0/4 [0/s] [elapsed in 3.1s] @ 2025-03-29 19:39:29
+#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=47.9 ms
+#> ⠧ 0/4 [0/s] [elapsed in 3.1s] @ 2025-03-29 19:39:29
+#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=4 ttl=46 time=178 ms
+#> ⠇ 0/4 [0/s] [elapsed in 3.2s] @ 2025-03-29 19:39:29
+#> ⠏ 0/4 [0/s] [elapsed in 3.4s] @ 2025-03-29 19:39:30
+#> ⠋ 0/4 [0/s] [elapsed in 3.6s] @ 2025-03-29 19:39:30
+#> ⠙ 0/4 [0/s] [elapsed in 3.8s] @ 2025-03-29 19:39:30
+#> ⠹ 0/4 [0/s] [elapsed in 4s] @ 2025-03-29 19:39:30
 #> Command process finished
 #> Command process finished
 #> Command process finished
 #> Command process finished
-#> ⠹ 4/4 [0.99/s] [elapsed in 4.1s] @ 2025-03-29 17:12:19
+#> ⠹ 4/4 [0.99/s] [elapsed in 4.1s] @ 2025-03-29 19:39:30
 #> Warning: [Command: 1] System command timed out in 4 secs (status: -9)
 #> Warning: [Command: 2] System command timed out in 4 secs (status: -9)
 #> Warning: [Command: 3] System command timed out in 4 secs (status: -9)
@@ -184,10 +184,10 @@ expressions:
 exec("echo", "$(pwd)") |>
     cmd_wd(tempdir()) |>
     cmd_run(stdout = "|")
-#> Working Directory: '/tmp/Rtmp71vcwz'
-#> Running command (2025-03-29 17:12:19): echo $(pwd)
+#> Working Directory: '/tmp/Rtmpz2f1oS'
+#> Running command (2025-03-29 19:39:30): echo $(pwd)
 #> 
-#> /tmp/Rtmp71vcwz
+#> /tmp/Rtmpz2f1oS
 #> Command process finished
 #> System command succeed
 ```
@@ -197,7 +197,7 @@ exec("echo", "$TEST") |>
     cmd_envvar(TEST = "blit is very awesome") |>
     cmd_run(stdout = "|")
 #> Setting environment variables: TEST
-#> Running command (2025-03-29 17:12:19): echo $TEST
+#> Running command (2025-03-29 19:39:30): echo $TEST
 #> 
 #> blit is very awesome
 #> Command process finished
@@ -213,14 +213,14 @@ file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_exit(file.remove(file)) |>
     cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
-#> Running command (2025-03-29 17:12:19): ping localhost
+#> Running command (2025-03-29 19:39:30): ping localhost
 #> 
 #> PING localhost (127.0.0.1) 56(84) bytes of data.
 #> 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.010 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.014 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.017 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.011 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.012 ms
 #> 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.015 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=5 ttl=64 time=0.012 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=5 ttl=64 time=0.014 ms
 #> Command process finished
 #> Warning: System command timed out in 5 secs (status: -9)
 file.exists(file)
@@ -239,14 +239,14 @@ file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_fail(file.remove(file)) |>
     cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
-#> Running command (2025-03-29 17:12:24): ping localhost
+#> Running command (2025-03-29 19:39:35): ping localhost
 #> 
 #> PING localhost (127.0.0.1) 56(84) bytes of data.
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.011 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.020 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.014 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.021 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=5 ttl=64 time=0.010 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.008 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.015 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.011 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.014 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=5 ttl=64 time=0.012 ms
 #> Command process finished
 #> Warning: System command timed out in 5 secs (status: -9)
 file.exists(file)
@@ -262,14 +262,14 @@ file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_succeed(file.remove(file)) |>
     cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
-#> Running command (2025-03-29 17:12:29): ping localhost
+#> Running command (2025-03-29 19:39:40): ping localhost
 #> 
 #> PING localhost (127.0.0.1) 56(84) bytes of data.
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.008 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.009 ms
 #> 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.009 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.011 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.009 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=5 ttl=64 time=0.014 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.013 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.012 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=5 ttl=64 time=0.017 ms
 #> Command process finished
 #> Warning: System command timed out in 5 secs (status: -9)
 file.exists(file) # file remain exist as timeout means command failed
@@ -297,7 +297,7 @@ document.
 
 ``` r
 python() |> cmd_help(stdout = "|")
-#> Running command (2025-03-29 17:12:34): /usr/bin/python3 --help
+#> Running command (2025-03-29 19:39:45): /usr/bin/python3 --help
 #> 
 #> usage: /usr/bin/python3 [option] ... [-c cmd | -m mod | file | -] [arg] ...
 #> Options (and corresponding environment variables):
@@ -347,7 +347,7 @@ python() |> cmd_help(stdout = "|")
 
 ``` r
 perl() |> cmd_help(stdout = "|")
-#> Running command (2025-03-29 17:12:34): /usr/bin/perl --help
+#> Running command (2025-03-29 19:39:45): /usr/bin/perl --help
 #> 
 #> 
 #> Usage: /usr/bin/perl [switches] [--] [programfile] [arguments]
@@ -404,8 +404,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run(stdout = "|")
-#> Running command (2025-03-29 17:12:34): gzip -c /tmp/Rtmp71vcwz/filed4991afdf232
-#> | gzip -d > /tmp/Rtmp71vcwz/filed4992cb93280
+#> Running command (2025-03-29 19:39:45): gzip -c
+#> /tmp/Rtmpz2f1oS/file184d0262ae4d0 | gzip -d > /tmp/Rtmpz2f1oS/file184d0258b4276
 #> Command process finished
 #> System command succeed
 identical(readLines(file), readLines(file2))
@@ -457,14 +457,14 @@ ping <- make_command("ping", function(..., ping = NULL) {
     Ping$new(cmd = ping, ...)
 })
 ping("8.8.8.8") |> cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
-#> Running command (2025-03-29 17:12:34): /usr/bin/ping 8.8.8.8
+#> Running command (2025-03-29 19:39:45): /usr/bin/ping 8.8.8.8
 #> 
 #> PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=47.7 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=48.6 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=46.5 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=47.0 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=46.7 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=48.2 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=46.4 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=47.5 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=47.5 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=47.6 ms
 #> Command process finished
 #> Warning: System command timed out in 5 secs (status: -9)
 ```
