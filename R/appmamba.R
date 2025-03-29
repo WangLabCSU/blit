@@ -140,7 +140,7 @@ appmamba_installed <- function() dir.exists(app_dir("appmamba"))
 
 appmamba_root <- function() {
     path <- file.path(data_dir(), "appmamba")
-    dir_create(path.expand(path))
+    dir_create(normalizePath(path, winslash = "/", mustWork = FALSE))
 }
 
 appmamba_use_system <- function() {
