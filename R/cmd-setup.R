@@ -108,7 +108,7 @@ cmd_conda <- function(command, ..., root = NULL, action = "prefix") {
     envs <- rlang::dots_list(..., .ignore_empty = "all")
     envs <- as.character(unlist(envs, FALSE, FALSE))
     if (anyNA(envs)) {
-        cli::cli_abort("Cannot using missing value in {.arg ...}")
+        cli::cli_abort("Cannot use missing value in {.arg ...}")
     }
     root <- root %||% conda_root()
     envs_dir <- file.path(root, "envs", envs, fsep = "/")
