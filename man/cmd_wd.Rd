@@ -38,7 +38,9 @@ or \code{"suffix"}. By default, \code{" "} will be used.}
 can use this to define other \code{PATH}-like environment variable such as
 \code{PYTHONPATH}.}
 
-\item{root}{A string of path defines the conda root prefix. By default, the
+\item{root}{A string specifying the path to the conda root prefix. By
+default, it utilizes the \link[=Sys.getenv]{environment variable}
+\code{BLIT_CONDA_ROOT} or the \link{option} \code{blit.conda.root}. If neither is set, the
 root prefix of \code{\link[=appmamba]{appmamba()}} will be used.}
 }
 \value{

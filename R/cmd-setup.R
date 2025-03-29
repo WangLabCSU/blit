@@ -94,7 +94,9 @@ cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
 
 #' @describeIn cmd_wd Set `conda-like` path to the `PATH` environment
 #' variables.
-#' @param root A string of path defines the conda root prefix. By default, the
+#' @param root A string specifying the path to the conda root prefix. By
+#' default, it utilizes the [environment variable][Sys.getenv()]
+#' `BLIT_CONDA_ROOT` or the [option] `blit.conda.root`. If neither is set, the
 #' root prefix of [`appmamba()`] will be used.
 #' @return
 #' - `cmd_conda`: The `command` object itself, with running environment
@@ -108,7 +110,7 @@ cmd_conda <- function(command, ..., root = NULL, action = "prefix") {
     if (anyNA(envs)) {
         cli::cli_abort("Cannot using missing value in {.arg ...}")
     }
-    root <- root %||% appmamba_root()
+    root <- root %||% conda_root()
     envs_dir <- file.path(root, "envs", envs, fsep = "/")
     envs_exists <- dir.exists(envs_dir)
     if (length(missing <- envs_dir[!envs_exists])) { # nolint
@@ -122,6 +124,16 @@ cmd_conda <- function(command, ..., root = NULL, action = "prefix") {
         file.path(envs_dir, "bin", fsep = "/"),
         action = action
     )
+}
+
+conda_root <- function() {
+    root <- Sys.getenv("BLIT_CONDA_ROOT", unset = NA_character_)
+    if (is.na(root)) root <- getOption("blit.conda.root")
+    if (!rlang::is_string(root) || nzchar(root) || is.na(root)) {
+        appmamba_root()
+    } else {
+        root
+    }
 }
 
 envvar_add <- function(new, old, action, sep) {
