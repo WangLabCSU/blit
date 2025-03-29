@@ -1,7 +1,12 @@
-Thank you for your valuable feedback. Following your suggestions, I have thoroughly reviewed all the code included from external sources. In response, I have added a LICENSE.note file to describe the overall license of the package and the specific licenses for each individual component. Accordingly, the Authors@R field has been updated to reflect the LICENSE information.
+This release is a minor update that includes lots of new features (some will break the old behaviour) and bug fix.
 
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
 
-* This is a new release.
+## revdepcheck results
+
+We checked 1 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
