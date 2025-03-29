@@ -129,7 +129,7 @@ cmd_conda <- function(command, ..., root = NULL, action = "prefix") {
 conda_root <- function() {
     root <- Sys.getenv("BLIT_CONDA_ROOT", unset = NA_character_)
     if (is.na(root)) root <- getOption("blit.conda.root")
-    if (!rlang::is_string(root) || nzchar(root) || is.na(root)) {
+    if (!rlang::is_string(root) || is.na(root) || !nzchar(root)) {
         appmamba_root()
     } else {
         root
