@@ -171,28 +171,28 @@ appmamba_installer_url <- function() {
     if (!is.null(url)) {
         return(url)
     }
-    info <- Sys.info()
     base <- "https://micro.mamba.pm/api/micromamba"
     if (is_windows()) {
         name <- "win-64"
-    } else if (is_linux()) {
-        if (info["machine"] == "x86_64") {
-            name <- "linux-64"
-        } else if (info["machine"] == "arm64") {
-            name <- "linux-aarch64"
-        } else {
-            name <- "linux-ppc64le"
-        }
-    } else if (is_osx()) {
-        if (info["machine"] == "x86_64") {
-            name <- "osx-64"
-        } else {
-            name <- "osx-arm64"
-        }
     } else {
-        cli::cli_abort(
-            "unsupported platform {.field {Sys.info()[\"sysname\"]}}"
-        )
+        info <- Sys.info()
+        if (is_linux()) {
+            if (info["machine"] == "ppc64le") {
+                name <- "linux-ppc64le"
+            } else if (info["machine"] == "arm64") {
+                name <- "linux-aarch64"
+            } else {
+                name <- "linux-64"
+            }
+        } else if (is_osx()) {
+            if (info["machine"] == "x86_64") {
+                name <- "osx-64"
+            } else {
+                name <- "osx-arm64"
+            }
+        } else {
+            cli::cli_abort("unsupported platform {.field {info[\"sysname\"]}}")
+        }
     }
     file.path(base, name, "latest")
 }
