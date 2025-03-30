@@ -6,10 +6,12 @@
 #' @param ... <[dynamic dots][rlang::dyn-dots]> Additional arguments passed to
 #'   `micromamba`. Run `appmamba()` for more details.
 #' @examples
+#' \donttest{
 #' install_appmamba()
 #' appmamba()
 #' appmamba("env", "list")
 #' # uninstall_appmamba() # Uninstall the `micromamba`
+#' }
 #' @export
 appmamba <- function(...) {
     path <- app_dir("appmamba")
@@ -81,7 +83,7 @@ install_appmamba <- function(force = FALSE) {
             }
         } else {
             cli::cli_inform("{.pkg appmamba} is already installed")
-            return(invisible(TRUE))
+            return(invisible())
         }
     }
     cli::cli_inform("Installing {.pkg appmamba}")

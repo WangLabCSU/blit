@@ -41,8 +41,10 @@ This function simply executes the specified \code{micromamba} command.
 
 }}
 \examples{
+\donttest{
 install_appmamba()
 appmamba()
 appmamba("env", "list")
 # uninstall_appmamba() # Uninstall the `micromamba`
+}
 }
