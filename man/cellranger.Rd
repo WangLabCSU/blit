@@ -30,7 +30,7 @@ cellranger(
     sprintf("--sample=\%s", basename(fastq_dir)),
     sprintf("--localcores=\%s", parallel::detectCores()),
     sprintf("--transcriptome=\%s", genome_ref),
-    sprintf("--chemistry=\%s", shQuote("threeprime")),
+    sprintf("--chemistry=\%s", shQuote("auto")),
     "--nosecondary"
 )
 }
