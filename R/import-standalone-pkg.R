@@ -6,7 +6,7 @@
 # ---
 # repo: Yunuuuu/standalone
 # file: standalone-pkg.R
-# last-updated: 2025-03-10
+# last-updated: 2025-03-30
 # license: https://unlicense.org
 # imports: [utils]
 # ---
@@ -16,6 +16,9 @@
 # other packages that are not listed in Imports, so use them with caution.
 
 # ## Changelog
+# 2025-03-30
+# - Add `use_github_release`
+# 
 # 2025-03-12
 # - Add `from_namespace`
 #
@@ -80,6 +83,50 @@ pkg_extdata <- function(..., mustWork = TRUE) {
     system.file("extdata", ..., package = pkg_nm(), mustWork = mustWork)
 }
 
+############################################################
+# I’m having trouble connecting to GitHub, and it seems that `gert` does not
+# respect the proxy settings in my Git config. To work around this, I modified
+# `usethis::use_github_release()` to skip the check that relies on the `gert`
+# package.
+use_github_release <- function(publish = TRUE) {
+    usethis_ns <- getNamespace("usethis")
+    usethis <- function(fun) getFromNamespace(fun, usethis_ns)
+    usethis("check_is_package")("use_github_release()")
+    tr <- usethis("target_repo")(
+        github_get = TRUE,
+        ok_configs = c("ours", "fork")
+    )
+    usethis("check_can_push")(tr = tr, "to create a release")
+    dat <- usethis("get_release_data")(tr)
+    release_name <- paste(dat$Package, dat$Version)
+    tag_name <- sprintf("v%s", dat$Version)
+    usethis("kv_line")("Release name", release_name)
+    usethis("kv_line")("Tag name", tag_name)
+    usethis("kv_line")("SHA", dat$SHA)
+    usethis("check_github_has_SHA")(SHA = dat$SHA, tr = tr)
+    on_cran <- !is.null(usethis("cran_version")())
+    news <- usethis("get_release_news")(
+        SHA = dat$SHA, tr = tr, on_cran = on_cran
+    )
+    gh <- usethis("gh_tr")(tr)
+    usethis("ui_bullets")("Publishing {tag_name} release to GitHub")
+    release <- gh( # nolint
+        "POST /repos/{owner}/{repo}/releases",
+        name = release_name,
+        tag_name = tag_name,
+        target_commitish = dat$SHA,
+        body = news,
+        draft = !publish
+    )
+    usethis("ui_bullets")("Release at {.url {release$html_url}}")
+    if (!is.null(dat$file)) {
+        usethis("ui_bullets")("Deleting {.path {dat$file}}")
+        getExportedValue("fs", "file_delete")(dat$file)
+    }
+    invisible()
+}
+
+############################################################
 #' @param ... The last argument must be a string representing the variable name.
 #' For all others, provide a list of formulas where:
 #' - The left-hand side should return a single boolean value and may reference a
@@ -88,7 +135,7 @@ pkg_extdata <- function(..., mustWork = TRUE) {
 #' @examples
 #' from_namespace(
 #'     "ggplot2",
-#'      version < "3.5.1" ~ "complete_theme",
+#'     version < "3.5.1" ~ "complete_theme",
 #'     "plot_theme"
 #' )
 #' @noRd
@@ -179,8 +226,7 @@ oxford_comma <- function(x, sep = ", ", final = "and") {
 rd_collect_family <- function(
     family,
     section_title = paste(family, "family"),
-    code_style = TRUE
-) {
+    code_style = TRUE) {
     # get blocks objects from the roxygenize function
     blocks <- NULL
     pos <- sys.nframe()
