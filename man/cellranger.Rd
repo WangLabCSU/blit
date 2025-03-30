@@ -19,8 +19,27 @@ A \code{command} object.
 \description{
 Run cellranger
 }
+\examples{
+\dontrun{
+fastq_dir  # 10x raw fastq files directory
+genome_ref # Please download the transcriptome reference data
+cellranger(
+    "count",
+    sprintf("--fastqs=\%s", fastq_dir),
+    sprintf("--id=\%s", basename(fastq_dir)),
+    sprintf("--sample=\%s", basename(fastq_dir)),
+    sprintf("--localcores=\%s", parallel::detectCores()),
+    sprintf("--transcriptome=\%s", genome_ref),
+    sprintf("--chemistry=\%s", shQuote("threeprime")),
+    "--nosecondary"
+)
+}
+}
 \seealso{
 \itemize{
+\item \url{https://github.com/10XGenomics/cellranger}
+\item \url{https://www.10xgenomics.com/support/software/cell-ranger/latest}
+\item \url{https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads}
 \item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}/\code{\link[=cmd_conda]{cmd_conda()}}
 \item \code{\link[=cmd_on_start]{cmd_on_start()}}/\code{\link[=cmd_on_exit]{cmd_on_exit()}}
 \item \code{\link[=cmd_on_succeed]{cmd_on_succeed()}}/\code{\link[=cmd_on_fail]{cmd_on_fail()}}
