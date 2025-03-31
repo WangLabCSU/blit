@@ -24,7 +24,8 @@ cmd_wd <- function(command, wd = NULL) {
 #'  - `cmd_envvar`: Named character define the environment variables.
 #'  - `cmd_envpath`: Unnamed character to define the `PATH`-like environment
 #' variables `name`.
-#'  - `cmd_conda`: Unnamed character to specify the name of conda environment.
+#'  - `cmd_condaenv`: Unnamed character to specify the name of conda
+#'    environment.
 #' @param action Should the new values `"replace"`, `"prefix"` or `"suffix"`
 #' existing environment variables?
 #' @param sep A string to separate new and old value when `action` is `"prefix"`

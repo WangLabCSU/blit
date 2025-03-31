@@ -25,7 +25,8 @@ cmd_condaenv(command, ..., root = NULL, action = "prefix")
 \item \code{cmd_envvar}: Named character define the environment variables.
 \item \code{cmd_envpath}: Unnamed character to define the \code{PATH}-like environment
 variables \code{name}.
-\item \code{cmd_conda}: Unnamed character to specify the name of conda environment.
+\item \code{cmd_condaenv}: Unnamed character to specify the name of conda
+environment.
 }}
 
 \item{action}{Should the new values \code{"replace"}, \code{"prefix"} or \code{"suffix"}

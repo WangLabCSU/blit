@@ -106,7 +106,7 @@ Several functions allow you to control the environment or schedule expressions:
   - `cmd_wd`: define the working directory.
   - `cmd_envvar`: define the environment variables.
   - `cmd_envpath`: define the `PATH`-like environment variables.
-  - `cmd_conda`: define the `PATH` environment variables with conda environment.
+  - `cmd_condaenv`: define the `PATH` environment variables with conda environment.
   - `cmd_on_start`/`cmd_on_exit`: define the startup, or exit code of the command.
   - `cmd_on_succeed`/`cmd_on_fail`: define the code to be run when command fail or succeed.
 
