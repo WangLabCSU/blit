@@ -11,5 +11,5 @@ cmd_conda(...)
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Set \code{conda-like} environment prefix to the
-\code{PATH} environment variables
+\code{PATH} environment variables.
 }
