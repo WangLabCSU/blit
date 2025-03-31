@@ -119,7 +119,9 @@ read_lines <- function(path, n = Inf) {
         getExportedValue("readr", "read_lines")(path, n_max = n, na = "NA")
     } else {
         if (is.infinite(n) || n < 0L) n <- -1L
-        readLines(path, n = n, warn = FALSE)
+        out <- readLines(path, n = n, warn = FALSE)
+        out[out == "NA"] <- NA_character_
+        out
     }
 }
 
