@@ -71,7 +71,8 @@ new_command <- function(Command) {
             wd = NULL,
             on_start = NULL,
             on_exit = NULL,
-            on_fail = NULL
+            on_fail = NULL,
+            on_succeed = NULL
         ),
         class = "command"
     )
