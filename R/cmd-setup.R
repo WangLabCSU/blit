@@ -112,6 +112,7 @@ cmd_condaenv <- function(command, ..., root = NULL, action = "prefix") {
     if (anyNA(envs)) {
         cli::cli_abort("Cannot use missing value in {.arg ...}")
     }
+    assert_string(root, allow_null = TRUE)
     root <- root %||% conda_root()
     if (is.null(root)) {
         cli::cli_warn("No conda environment found")
@@ -132,6 +133,18 @@ cmd_condaenv <- function(command, ..., root = NULL, action = "prefix") {
     )
 }
 
+conda_root <- function() {
+    root <- getOption("blit.conda.root")
+    if (is.null(root)) {
+        root <- Sys.getenv("BLIT_CONDA_ROOT", unset = NA_character_)
+    }
+    if (!rlang::is_string(root) || !nzchar(root)) {
+        root <- appmamba_root()
+        if (!dir.exists(root)) root <- NULL
+    }
+    root
+}
+
 #' Set `conda-like` environment prefix to the `PATH` environment variables
 #'
 #' @description
@@ -143,18 +156,6 @@ cmd_condaenv <- function(command, ..., root = NULL, action = "prefix") {
 cmd_conda <- function(...) {
     lifecycle::deprecate_warn("0.2.0.9999", "cmd_conda()", "cmd_condaenv()")
     cmd_condaenv(...)
-}
-
-conda_root <- function() {
-    root <- getOption("blit.conda.root")
-    if (is.null(root)) {
-        root <- Sys.getenv("BLIT_CONDA_ROOT", unset = NA_character_)
-    }
-    if (!rlang::is_string(root) || is.na(root) || !nzchar(root)) {
-        root <- appmamba_root()
-        if (!dir.exists(root)) root <- NULL
-    }
-    root
 }
 
 envvar_add <- function(new, old, action, sep) {
