@@ -17,6 +17,35 @@ processx_command <- function(
     call = caller_call()) {
     assert_bool(verbose, call = call)
 
+    # prepare the shell -------------------------
+    if (.Platform$OS.type == "windows") {
+        # https://stackoverflow.com/questions/605686/how-to-write-a-multiline-command
+        # for cmd "^"
+        # for powershell "`"
+        shell <- shell %||% "cmd"
+        arg <- switch(shell,
+            cmd = "/C",
+            powershell = c("-ExecutionPolicy", "Bypass", "-File")
+        )
+        fileext <- switch(shell,
+            cmd = "bat",
+            powershell = "ps1"
+        )
+        shell <- paste(shell, "exe", sep = ".")
+    } else {
+        shell <- shell %||% "sh" # or "bash"
+        arg <- NULL
+        fileext <- "sh"
+    }
+    shell0 <- Sys.which(shell)
+    if (!nzchar(shell0)) {
+        cli::cli_abort(
+            "Cannot find executable shell {.field {shell}}",
+            call = call
+        )
+    }
+    shell <- shell0
+
     # set working directory ---------------------
     if (!is.null(wd <- .subset2(command, "wd"))) {
         # fmt: skip
@@ -71,35 +100,6 @@ processx_command <- function(
         content[-1L] <- paste0("    ", content[-1L])
     }
 
-    if (echo_command) {
-        cli::cli_text(paste(
-            "Running command ({as.character(Sys.time(), digits = 0)}):",
-            "{.field {paste(content, collapse = ' ')}}"
-        ))
-        cli::cat_line()
-    }
-
-    # prepare the shell -------------------------
-    if (.Platform$OS.type == "windows") {
-        # https://stackoverflow.com/questions/605686/how-to-write-a-multiline-command
-        # for cmd "^"
-        # for powershell "`"
-        cmd <- shell %||% "cmd"
-        arg <- switch(cmd,
-            cmd = "/C",
-            powershell = c("-ExecutionPolicy", "Bypass", "-File")
-        )
-        fileext <- switch(cmd,
-            cmd = "bat",
-            powershell = "ps1"
-        )
-        cmd <- paste(cmd, "exe", sep = ".")
-    } else {
-        cmd <- shell %||% "sh" # or "bash"
-        arg <- NULL
-        fileext <- "sh"
-    }
-
     # write the content to the script
     script <- tempfile(pkg_nm(), fileext = sprintf(".%s", fileext))
     script <- normalizePath(script, winslash = "/", mustWork = FALSE)
@@ -145,9 +145,17 @@ processx_command <- function(
     on_succeed_list <- unlist(on_succeed_list, FALSE, FALSE)
     on_succeed_list <- c(on_succeed_list, .subset2(command, "on_succeed"))
 
+    if (echo_command) {
+        cli::cli_text(paste(
+            "Running command ({as.character(Sys.time(), digits = 0)}):",
+            "{.field {paste(content, collapse = ' ')}}"
+        ))
+        cli::cat_line()
+    }
+
     # execute the command ----------------------
     BlitProcess$new(
-        command = cmd,
+        command = shell,
         args = c(arg, script),
         wd = wd,
         env = NULL,
