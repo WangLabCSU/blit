@@ -11,8 +11,6 @@ on:
 
 name: render-rmarkdown.yaml
 
-permissions: read-all
-
 jobs:
   render-rmarkdown:
     runs-on: ubuntu-latest
