@@ -116,7 +116,7 @@ processx_command <- function(
     on_exit_list <- c(on_exit_list, .subset2(command, "on_exit"))
 
     # remove the script created -------------------------
-    call <- as.call(list(
+    on_exit_list <- c(on_exit_list, list(as.call(list(
         function() {
             if (file.exists(script)) {
                 # if (verbose) {
@@ -127,8 +127,7 @@ processx_command <- function(
                 file.remove(script)
             }
         }
-    ))
-    on_exit_list <- c(on_exit_list, list(call))
+    ))))
 
     # on_fail ------------------
     on_fail_list <- lapply(command_series, function(cmd) cmd$get_on_fail())
