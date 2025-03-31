@@ -92,17 +92,17 @@ cmd_envpath <- function(command, ..., action = "prefix", name = "PATH") {
     )
 }
 
-#' @describeIn cmd_wd Set `conda-like` path to the `PATH` environment
-#' variables.
+#' @describeIn cmd_wd Set `conda-like` environment prefix to the `PATH`
+#' environment variables.
 #' @param root A string specifying the path to the conda root prefix. By
 #' default, it utilizes the [environment variable][Sys.getenv()]
 #' `BLIT_CONDA_ROOT` or the [option] `blit.conda.root`. If neither is set, the
 #' root prefix of [`appmamba()`] will be used.
 #' @return
-#' - `cmd_conda`: The `command` object itself, with running environment
+#' - `cmd_condaenv`: The `command` object itself, with running environment
 #' variable `PATH` updated.
 #' @export
-cmd_conda <- function(command, ..., root = NULL, action = "prefix") {
+cmd_condaenv <- function(command, ..., root = NULL, action = "prefix") {
     assert_s3_class(command, "command")
     rlang::check_dots_unnamed()
     envs <- rlang::dots_list(..., .ignore_empty = "all")
@@ -124,6 +124,19 @@ cmd_conda <- function(command, ..., root = NULL, action = "prefix") {
         file.path(envs_dir, "bin", fsep = "/"),
         action = action
     )
+}
+
+#' Set `conda-like` environment prefix to the `PATH` environment variables
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")` Set `conda-like` environment prefix to the
+#' `PATH` environment variables
+#'
+#' @param ... Additional arguments passed to [`cmd_condaenv()`].
+#' @export
+cmd_conda <- function(...) {
+    lifecycle::deprecate_warn("0.2.0.9999", "cmd_conda()", "cmd_condaenv()")
+    cmd_condaenv(...)
 }
 
 conda_root <- function() {

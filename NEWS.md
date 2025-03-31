@@ -1,3 +1,7 @@
+# blit (development version)
+
+* Rename `cmd_conda` to `cmd_codnaenv()`.
+
 # blit 0.2.0
 
 ## New features

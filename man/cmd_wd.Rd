@@ -4,7 +4,7 @@
 \alias{cmd_wd}
 \alias{cmd_envvar}
 \alias{cmd_envpath}
-\alias{cmd_conda}
+\alias{cmd_condaenv}
 \title{Setup the context for the command}
 \usage{
 cmd_wd(command, wd = NULL)
@@ -13,7 +13,7 @@ cmd_envvar(command, ..., action = "replace", sep = NULL)
 
 cmd_envpath(command, ..., action = "prefix", name = "PATH")
 
-cmd_conda(command, ..., root = NULL, action = "prefix")
+cmd_condaenv(command, ..., root = NULL, action = "prefix")
 }
 \arguments{
 \item{command}{A \code{command} object.}
@@ -59,7 +59,7 @@ variable specified in \code{name} updated.
 }
 
 \itemize{
-\item \code{cmd_conda}: The \code{command} object itself, with running environment
+\item \code{cmd_condaenv}: The \code{command} object itself, with running environment
 variable \code{PATH} updated.
 }
 }
@@ -74,8 +74,8 @@ Setup the context for the command
 
 \item \code{cmd_envpath()}: define the \code{PATH}-like environment variables.
 
-\item \code{cmd_conda()}: Set \code{conda-like} path to the \code{PATH} environment
-variables.
+\item \code{cmd_condaenv()}: Set \code{conda-like} environment prefix to the \code{PATH}
+environment variables.
 
 }}
 \seealso{
