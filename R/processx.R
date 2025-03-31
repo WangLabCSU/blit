@@ -39,10 +39,7 @@ processx_command <- function(
     }
     shell0 <- Sys.which(shell)
     if (!nzchar(shell0)) {
-        cli::cli_abort(
-            "Cannot find executable shell {.field {shell}}",
-            call = call
-        )
+        cli::cli_abort("Cannot find shell {.field {shell}}", call = call)
     }
     shell <- shell0
 
