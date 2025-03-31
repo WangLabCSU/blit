@@ -42,6 +42,7 @@ remotes::install_github("WangLabCSU/blit")
 library(blit)
 ```
 
+### Execute command
 To build a `command`, simply use `exec`. The first argument is the command name,
 and you can also provide the full path. After that, pass the command parameters.
 This will create a `command` object:
@@ -51,7 +52,7 @@ exec("echo", "$PATH")
 
 To run the command, just pass the `command` object to the `cmd_run()` (Note:
 `stdout = "|"` is always used in the vignette to ensure that the standard output
-is captured by knitr.)
+can be captured by knitr.)
 ```{r}
 Sys.setenv(TEST = "blit is awesome")
 exec("echo", "$TEST") |> cmd_run(stdout = "|")
@@ -101,14 +102,14 @@ cmd_parallel(
 )
 ```
 
-Several functions allow you to control the environment or schedule expressions:
+### Environment context
+The `blit` package provides several functions to manage and control the
+environment context:
 
   - `cmd_wd`: define the working directory.
   - `cmd_envvar`: define the environment variables.
   - `cmd_envpath`: define the `PATH`-like environment variables.
   - `cmd_condaenv`: define the `PATH` environment variables with conda environment.
-  - `cmd_on_start`/`cmd_on_exit`: define the startup, or exit code of the command.
-  - `cmd_on_succeed`/`cmd_on_fail`: define the code to be run when command fail or succeed.
 
 ```{r}
 exec("echo", "$(pwd)") |>
@@ -121,6 +122,78 @@ exec("echo", "$TEST") |>
     cmd_envvar(TEST = "blit is very awesome") |>
     cmd_run(stdout = "|")
 ```
+
+```{r}
+exec("echo", "$PATH") |>
+    cmd_envpath("PATH_IS_HERE", action = "replace") |>
+    cmd_run(stdout = "|")
+```
+
+> Note: `echo` is a built-in command of the linux shell, so it remains available
+even after modifying the `PATH` environment variable.
+
+`cmd_condaenv()` can add `conda`/`mamba` environment prefix to the `PATH`
+environment variable.
+
+`Conda`/`mamba` are open-source package and environment management systems that
+facilitate the installation of multiple software versions and their
+dependencies. They allow easy switching between environments and are compatible
+with Linux, macOS, and Windows.
+
+`cmd_condaenv()` function accepts multiple `conda`/`mamba` environment prefixes
+and an optional `root` argument specifying the path to the `conda`/`mamba` root
+prefix. If `root` is not provided, the function searches for the root in the
+following order:
+
+   1. the option: `blit.conda.root`.
+   2. the environment variable: `BLIT_CONDA_ROOT`.
+   3. the root prefix of [`appmamba()`] (Please see the `Software management` section for details).
+
+The `cmd_condaenv()` function searches for the specified environment prefix within
+the provided `root` path.
+
+### Software management
+The `blit` package integrates with `micromamba`, a lightweight version of the
+mamba package manager, for efficient software environment management.
+
+You can install `micromamba` with `install_appmamba()`.
+```{r}
+install_appmamba()
+```
+
+The `appmamba()` function executes specified `micromamba` commands. Running it
+without arguments shows the help document:
+```{r}
+appmamba()
+```
+
+To create a new environment named `samtools` and install `samtools` from
+`Bioconda`, use:
+```{r}
+appmamba("create", "--yes", "--name samtools", "bioconda::samtools")
+```
+
+Once the environment is created, you can execute commands within it. The
+following example locates the samtools binary within the specified environment:
+```{r}
+exec("which", "samtools") |>
+    cmd_condaenv("samtools") |>
+    cmd_run()
+```
+
+You may want to clean the created environment-`samtools`.
+```{r}
+appmamba("env", "remove", "--yes", "--name samtools")
+```
+
+For more details, please see
+<https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html>.
+
+### Schedule expressions
+Several functions allow you to schedule expressions:
+
+  - `cmd_on_start`/`cmd_on_exit`: define the startup, or exit code of the command.
+  - `cmd_on_succeed`/`cmd_on_fail`: define the code to be run when command succeed or fail.
 
 ```{r}
 file <- tempfile()
@@ -155,6 +228,7 @@ file.exists(file) # file remain exist as timeout means command failed
 file.remove(file)
 ```
 
+### Built-in commands
 `blit` provides several built-in functions for directly executing specific
 commands., these include:
 [samtools](https://www.htslib.org/),
@@ -179,6 +253,7 @@ perl() |> cmd_help(stdout = "|")
 
 And it is very easily to extend for other commands.
 
+### Pipe
 One of the great features of `blit` is its ability to translate the R pipe
 (`%>%` or `|>`) into the Linux pipe (`|`). All functions used to create a
 `command` object can accept another `command` object. The internal will capture

@@ -36,6 +36,8 @@ remotes::install_github("WangLabCSU/blit")
 library(blit)
 ```
 
+### Execute command
+
 To build a `command`, simply use `exec`. The first argument is the
 command name, and you can also provide the full path. After that, pass
 the command parameters. This will create a `command` object:
@@ -47,12 +49,12 @@ exec("echo", "$PATH")
 
 To run the command, just pass the `command` object to the `cmd_run()`
 (Note: `stdout = "|"` is always used in the vignette to ensure that the
-standard output is captured by knitr.)
+standard output can be captured by knitr.)
 
 ``` r
 Sys.setenv(TEST = "blit is awesome")
 exec("echo", "$TEST") |> cmd_run(stdout = "|")
-#> Running command (2025-03-31 09:41:36): echo $TEST
+#> Running command (2025-03-31 17:32:42): echo $TEST
 #> 
 #> blit is awesome
 #> Command process finished
@@ -73,7 +75,7 @@ Sys.unsetenv("TEST")
 > The actual implementation in the `README.Rmd` differs, but the output
 > remains the same.
 
-    #> Running command (2025-03-31 09:41:36): echo $TEST
+    #> Running command (2025-03-31 17:32:42): echo $TEST
     #> blit is awesome
 
 `cmd_background()` is provided for completeness. Instead of using this
@@ -99,99 +101,97 @@ cmd_parallel(
     timeouts = 4, # terminate after 4s
     threads = 4
 )
-#> Running command (2025-03-31 09:41:36): ping localhost
-#> Running command (2025-03-31 09:41:36): ping 208.67.222.222
-#> Running command (2025-03-31 09:41:36): ping 8.8.8.8
-#> Running command (2025-03-31 09:41:36): ping 8.8.4.4
+#> Running command (2025-03-31 17:32:42): ping localhost
+#> Running command (2025-03-31 17:32:42): ping 208.67.222.222
+#> Running command (2025-03-31 17:32:42): ping 8.8.8.8
+#> Running command (2025-03-31 17:32:42): ping 8.8.4.4
 #> 
 #> Connection 1: PING localhost (127.0.0.1) 56(84) bytes of data.
-#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.008 ms
-#> ⠙ 0/4 [0/s] [elapsed in 39ms] @ 2025-03-31 09:41:36
+#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.012 ms
+#> ⠙ 0/4 [0/s] [elapsed in 38ms] @ 2025-03-31 17:32:42
 #> Connection 2: PING 208.67.222.222 (208.67.222.222) 56(84) bytes of data.
-#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=1 ttl=48 time=57.4 ms
-#> ⠹ 0/4 [0/s] [elapsed in 78ms] @ 2025-03-31 09:41:36
+#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=1 ttl=48 time=53.7 ms
+#> ⠹ 0/4 [0/s] [elapsed in 73ms] @ 2025-03-31 17:32:42
 #> Connection 3: PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=45.5 ms
-#> ⠸ 0/4 [0/s] [elapsed in 83ms] @ 2025-03-31 09:41:36
+#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=49.2 ms
+#> ⠸ 0/4 [0/s] [elapsed in 77ms] @ 2025-03-31 17:32:42
 #> Connection 4: PING 8.8.4.4 (8.8.4.4) 56(84) bytes of data.
-#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=1 ttl=104 time=153 ms
-#> ⠼ 0/4 [0/s] [elapsed in 191ms] @ 2025-03-31 09:41:36
-#> ⠴ 0/4 [0/s] [elapsed in 401ms] @ 2025-03-31 09:41:36
-#> ⠦ 0/4 [0/s] [elapsed in 606ms] @ 2025-03-31 09:41:37
-#> ⠧ 0/4 [0/s] [elapsed in 813ms] @ 2025-03-31 09:41:37
-#> ⠇ 0/4 [0/s] [elapsed in 1s] @ 2025-03-31 09:41:37
-#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.019 ms
-#> ⠏ 0/4 [0/s] [elapsed in 1s] @ 2025-03-31 09:41:37
-#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=2 ttl=48 time=51.9 ms
-#> ⠋ 0/4 [0/s] [elapsed in 1.1s] @ 2025-03-31 09:41:37
-#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=45.4 ms
-#> ⠙ 0/4 [0/s] [elapsed in 1.1s] @ 2025-03-31 09:41:37
-#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=2 ttl=104 time=154 ms
-#> ⠹ 0/4 [0/s] [elapsed in 1.2s] @ 2025-03-31 09:41:37
-#> ⠸ 0/4 [0/s] [elapsed in 1.4s] @ 2025-03-31 09:41:37
-#> ⠼ 0/4 [0/s] [elapsed in 1.6s] @ 2025-03-31 09:41:38
-#> ⠴ 0/4 [0/s] [elapsed in 1.8s] @ 2025-03-31 09:41:38
-#> ⠦ 0/4 [0/s] [elapsed in 2s] @ 2025-03-31 09:41:38
-#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.014 ms
-#> ⠧ 0/4 [0/s] [elapsed in 2s] @ 2025-03-31 09:41:38
-#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=3 ttl=48 time=52.0 ms
-#> ⠇ 0/4 [0/s] [elapsed in 2.1s] @ 2025-03-31 09:41:38
-#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=45.1 ms
-#> ⠏ 0/4 [0/s] [elapsed in 2.1s] @ 2025-03-31 09:41:38
-#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=3 ttl=104 time=153 ms
-#> ⠋ 0/4 [0/s] [elapsed in 2.2s] @ 2025-03-31 09:41:38
-#> ⠙ 0/4 [0/s] [elapsed in 2.4s] @ 2025-03-31 09:41:38
-#> ⠹ 0/4 [0/s] [elapsed in 2.6s] @ 2025-03-31 09:41:39
-#> ⠸ 0/4 [0/s] [elapsed in 2.8s] @ 2025-03-31 09:41:39
-#> ⠼ 0/4 [0/s] [elapsed in 3s] @ 2025-03-31 09:41:39
-#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.013 ms
-#> ⠴ 0/4 [0/s] [elapsed in 3.1s] @ 2025-03-31 09:41:39
-#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=4 ttl=48 time=53.6 ms
-#> ⠦ 0/4 [0/s] [elapsed in 3.1s] @ 2025-03-31 09:41:39
-#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=45.9 ms
-#> ⠧ 0/4 [0/s] [elapsed in 3.1s] @ 2025-03-31 09:41:39
-#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=4 ttl=104 time=155 ms
-#> ⠇ 0/4 [0/s] [elapsed in 3.2s] @ 2025-03-31 09:41:39
-#> ⠏ 0/4 [0/s] [elapsed in 3.4s] @ 2025-03-31 09:41:39
-#> ⠋ 0/4 [0/s] [elapsed in 3.6s] @ 2025-03-31 09:41:40
-#> ⠙ 0/4 [0/s] [elapsed in 3.8s] @ 2025-03-31 09:41:40
-#> ⠹ 0/4 [0/s] [elapsed in 4s] @ 2025-03-31 09:41:40
-#> ⠸ 0/4 [0/s] [elapsed in 4s] @ 2025-03-31 09:41:40
-#> ⠼ 0/4 [0/s] [elapsed in 4s] @ 2025-03-31 09:41:40
-#> ⠴ 0/4 [0/s] [elapsed in 4s] @ 2025-03-31 09:41:40
-#> ⠦ 0/4 [0/s] [elapsed in 4s] @ 2025-03-31 09:41:40
+#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=1 ttl=104 time=154 ms
+#> ⠼ 0/4 [0/s] [elapsed in 191ms] @ 2025-03-31 17:32:42
+#> ⠴ 0/4 [0/s] [elapsed in 400ms] @ 2025-03-31 17:32:42
+#> ⠦ 0/4 [0/s] [elapsed in 605ms] @ 2025-03-31 17:32:42
+#> ⠧ 0/4 [0/s] [elapsed in 811ms] @ 2025-03-31 17:32:42
+#> ⠇ 0/4 [0/s] [elapsed in 1s] @ 2025-03-31 17:32:43
+#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.013 ms
+#> ⠏ 0/4 [0/s] [elapsed in 1s] @ 2025-03-31 17:32:43
+#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=2 ttl=48 time=53.4 ms
+#> ⠋ 0/4 [0/s] [elapsed in 1.1s] @ 2025-03-31 17:32:43
+#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=49.6 ms
+#> ⠙ 0/4 [0/s] [elapsed in 1.1s] @ 2025-03-31 17:32:43
+#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=2 ttl=104 time=153 ms
+#> ⠹ 0/4 [0/s] [elapsed in 1.2s] @ 2025-03-31 17:32:43
+#> ⠸ 0/4 [0/s] [elapsed in 1.4s] @ 2025-03-31 17:32:43
+#> ⠼ 0/4 [0/s] [elapsed in 1.6s] @ 2025-03-31 17:32:43
+#> ⠴ 0/4 [0/s] [elapsed in 1.8s] @ 2025-03-31 17:32:43
+#> ⠦ 0/4 [0/s] [elapsed in 2s] @ 2025-03-31 17:32:44
+#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.034 ms
+#> ⠧ 0/4 [0/s] [elapsed in 2s] @ 2025-03-31 17:32:44
+#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=3 ttl=48 time=52.3 ms
+#> ⠇ 0/4 [0/s] [elapsed in 2.1s] @ 2025-03-31 17:32:44
+#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=45.3 ms
+#> ⠏ 0/4 [0/s] [elapsed in 2.1s] @ 2025-03-31 17:32:44
+#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=3 ttl=104 time=145 ms
+#> ⠋ 0/4 [0/s] [elapsed in 2.2s] @ 2025-03-31 17:32:44
+#> ⠙ 0/4 [0/s] [elapsed in 2.4s] @ 2025-03-31 17:32:44
+#> ⠹ 0/4 [0/s] [elapsed in 2.6s] @ 2025-03-31 17:32:44
+#> ⠸ 0/4 [0/s] [elapsed in 2.8s] @ 2025-03-31 17:32:44
+#> ⠼ 0/4 [0/s] [elapsed in 3s] @ 2025-03-31 17:32:45
+#> Connection 1: 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.010 ms
+#> ⠴ 0/4 [0/s] [elapsed in 3.1s] @ 2025-03-31 17:32:45
+#> Connection 2: 64 bytes from 208.67.222.222: icmp_seq=4 ttl=48 time=50.3 ms
+#> ⠦ 0/4 [0/s] [elapsed in 3.1s] @ 2025-03-31 17:32:45
+#> Connection 3: 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=42.2 ms
+#> ⠧ 0/4 [0/s] [elapsed in 3.1s] @ 2025-03-31 17:32:45
+#> Connection 4: 64 bytes from 8.8.4.4: icmp_seq=4 ttl=104 time=147 ms
+#> ⠇ 0/4 [0/s] [elapsed in 3.2s] @ 2025-03-31 17:32:45
+#> ⠏ 0/4 [0/s] [elapsed in 3.4s] @ 2025-03-31 17:32:45
+#> ⠋ 0/4 [0/s] [elapsed in 3.6s] @ 2025-03-31 17:32:45
+#> ⠙ 0/4 [0/s] [elapsed in 3.8s] @ 2025-03-31 17:32:45
+#> ⠹ 0/4 [0/s] [elapsed in 4s] @ 2025-03-31 17:32:46
+#> ⠸ 0/4 [0/s] [elapsed in 4s] @ 2025-03-31 17:32:46
+#> ⠼ 0/4 [0/s] [elapsed in 4s] @ 2025-03-31 17:32:46
+#> ⠴ 0/4 [0/s] [elapsed in 4s] @ 2025-03-31 17:32:46
+#> ⠦ 0/4 [0/s] [elapsed in 4s] @ 2025-03-31 17:32:46
 #> Command process finished
 #> Command process finished
 #> Command process finished
 #> Command process finished
-#> ⠦ 4/4 [0.98/s] [elapsed in 4.1s] @ 2025-03-31 09:41:40
+#> ⠦ 4/4 [0.98/s] [elapsed in 4.1s] @ 2025-03-31 17:32:46
 #> Warning: [Command: 1] System command timed out in 4 secs (status: -9)
 #> Warning: [Command: 2] System command timed out in 4 secs (status: -9)
 #> Warning: [Command: 3] System command timed out in 4 secs (status: -9)
 #> Warning: [Command: 4] System command timed out in 4 secs (status: -9)
 ```
 
-Several functions allow you to control the environment or schedule
-expressions:
+### Environment context
+
+The `blit` package provides several functions to manage and control the
+environment context:
 
 - `cmd_wd`: define the working directory.
 - `cmd_envvar`: define the environment variables.
 - `cmd_envpath`: define the `PATH`-like environment variables.
 - `cmd_condaenv`: define the `PATH` environment variables with conda
   environment.
-- `cmd_on_start`/`cmd_on_exit`: define the startup, or exit code of the
-  command.
-- `cmd_on_succeed`/`cmd_on_fail`: define the code to be run when command
-  fail or succeed.
 
 ``` r
 exec("echo", "$(pwd)") |>
     cmd_wd(tempdir()) |>
     cmd_run(stdout = "|")
-#> Working Directory: '/tmp/RtmpNwcuWW'
-#> Running command (2025-03-31 09:41:40): echo $(pwd)
+#> Working Directory: '/tmp/RtmpIDa7yr'
+#> Running command (2025-03-31 17:32:46): echo $(pwd)
 #> 
-#> /tmp/RtmpNwcuWW
+#> /tmp/RtmpIDa7yr
 #> Command process finished
 #> System command succeed
 ```
@@ -201,12 +201,119 @@ exec("echo", "$TEST") |>
     cmd_envvar(TEST = "blit is very awesome") |>
     cmd_run(stdout = "|")
 #> Setting environment variables: TEST
-#> Running command (2025-03-31 09:41:40): echo $TEST
+#> Running command (2025-03-31 17:32:46): echo $TEST
 #> 
 #> blit is very awesome
 #> Command process finished
 #> System command succeed
 ```
+
+``` r
+exec("echo", "$PATH") |>
+    cmd_envpath("PATH_IS_HERE", action = "replace") |>
+    cmd_run(stdout = "|")
+#> Setting environment variables: PATH
+#> Running command (2025-03-31 17:32:46): echo $PATH
+#> 
+#> PATH_IS_HERE
+#> Command process finished
+#> System command succeed
+```
+
+> Note: `echo` is a built-in command of the linux shell, so it remains
+> available even after modifying the `PATH` environment variable.
+
+`cmd_condaenv()` can add `conda`/`mamba` environment prefix to the
+`PATH` environment variable.
+
+`Conda`/`mamba` are open-source package and environment management
+systems that facilitate the installation of multiple software versions
+and their dependencies. They allow easy switching between environments
+and are compatible with Linux, macOS, and Windows.
+
+`cmd_condaenv()` function accepts multiple `conda`/`mamba` environment
+prefixes and an optional `root` argument specifying the path to the
+`conda`/`mamba` root prefix. If `root` is not provided, the function
+searches for the root in the following order:
+
+1.  the option: `blit.conda.root`.
+2.  the environment variable: `BLIT_CONDA_ROOT`.
+3.  the root prefix of \[`appmamba()`\] (Please see the
+    `Software management` section for details).
+
+The `cmd_condaenv()` function searches for the specified environment
+prefix within the provided `root` path.
+
+### Software management
+
+The `blit` package integrates with `micromamba`, a lightweight version
+of the mamba package manager, for efficient software environment
+management.
+
+You can install `micromamba` with `install_appmamba()`.
+
+``` r
+install_appmamba()
+#> Installing appmamba
+#> Using cached file: '/home/yun/.cache/R/blit/appmamba'
+#> Install appmamba successfully!
+```
+
+The `appmamba()` function executes specified `micromamba` commands.
+Running it without arguments shows the help document:
+
+``` r
+appmamba()
+#> Running command (2025-03-31 17:32:46):
+#> /home/yun/.local/share/R/blit/apps/appmamba/bin/micromamba --root-prefix
+#> /home/yun/.local/share/R/blit/appmamba --help
+```
+
+To create a new environment named `samtools` and install `samtools` from
+`Bioconda`, use:
+
+``` r
+appmamba("create", "--yes", "--name samtools", "bioconda::samtools")
+#> Running command (2025-03-31 17:32:46):
+#> /home/yun/.local/share/R/blit/apps/appmamba/bin/micromamba --root-prefix
+#> /home/yun/.local/share/R/blit/appmamba create --yes --name samtools
+#> bioconda::samtools
+```
+
+Once the environment is created, you can execute commands within it. The
+following example locates the samtools binary within the specified
+environment:
+
+``` r
+exec("which", "samtools") |>
+    cmd_condaenv("samtools") |>
+    cmd_run()
+#> Setting environment variables: PATH
+#> Running command (2025-03-31 17:32:50): which samtools
+#> Command process finished
+#> System command succeed
+```
+
+You may want to clean the created environment-`samtools`.
+
+``` r
+appmamba("env", "remove", "--yes", "--name samtools")
+#> Running command (2025-03-31 17:32:50):
+#> /home/yun/.local/share/R/blit/apps/appmamba/bin/micromamba --root-prefix
+#> /home/yun/.local/share/R/blit/appmamba env remove --yes --name samtools
+```
+
+For more details, please see
+<https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html>.
+
+### Schedule expressions
+
+Several functions allow you to schedule expressions:
+
+- `cmd_on_start`/`cmd_on_exit`: define the startup, or exit code of the
+  command.
+- `cmd_on_succeed`/`cmd_on_fail`: define the code to be run when command
+  succeed or fail.
 
 ``` r
 file <- tempfile()
@@ -217,14 +324,14 @@ file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_exit(file.remove(file)) |>
     cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
-#> Running command (2025-03-31 09:41:40): ping localhost
+#> Running command (2025-03-31 17:32:50): ping localhost
 #> 
 #> PING localhost (127.0.0.1) 56(84) bytes of data.
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.008 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.020 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.016 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.018 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=5 ttl=64 time=0.012 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.007 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.013 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.025 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.020 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=5 ttl=64 time=0.015 ms
 #> Command process finished
 #> Warning: System command timed out in 5 secs (status: -9)
 file.exists(file)
@@ -243,14 +350,14 @@ file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_fail(file.remove(file)) |>
     cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
-#> Running command (2025-03-31 09:41:45): ping localhost
+#> Running command (2025-03-31 17:32:55): ping localhost
 #> 
 #> PING localhost (127.0.0.1) 56(84) bytes of data.
 #> 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.010 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.026 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.012 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.011 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=5 ttl=64 time=0.011 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.009 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.018 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.018 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=5 ttl=64 time=0.017 ms
 #> Command process finished
 #> Warning: System command timed out in 5 secs (status: -9)
 file.exists(file)
@@ -266,14 +373,14 @@ file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_succeed(file.remove(file)) |>
     cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
-#> Running command (2025-03-31 09:41:50): ping localhost
+#> Running command (2025-03-31 17:33:00): ping localhost
 #> 
 #> PING localhost (127.0.0.1) 56(84) bytes of data.
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.007 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.017 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.013 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.014 ms
-#> 64 bytes from localhost (127.0.0.1): icmp_seq=5 ttl=64 time=0.013 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.009 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.016 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=3 ttl=64 time=0.018 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=4 ttl=64 time=0.010 ms
+#> 64 bytes from localhost (127.0.0.1): icmp_seq=5 ttl=64 time=0.029 ms
 #> Command process finished
 #> Warning: System command timed out in 5 secs (status: -9)
 file.exists(file) # file remain exist as timeout means command failed
@@ -281,6 +388,8 @@ file.exists(file) # file remain exist as timeout means command failed
 file.remove(file)
 #> [1] TRUE
 ```
+
+### Built-in commands
 
 `blit` provides several built-in functions for directly executing
 specific commands., these include: [samtools](https://www.htslib.org/),
@@ -301,7 +410,7 @@ document.
 
 ``` r
 python() |> cmd_help(stdout = "|")
-#> Running command (2025-03-31 09:41:55): /usr/bin/python3 --help
+#> Running command (2025-03-31 17:33:05): /usr/bin/python3 --help
 #> 
 #> usage: /usr/bin/python3 [option] ... [-c cmd | -m mod | file | -] [arg] ...
 #> Options (and corresponding environment variables):
@@ -351,7 +460,7 @@ python() |> cmd_help(stdout = "|")
 
 ``` r
 perl() |> cmd_help(stdout = "|")
-#> Running command (2025-03-31 09:41:55): /usr/bin/perl --help
+#> Running command (2025-03-31 17:33:05): /usr/bin/perl --help
 #> 
 #> 
 #> Usage: /usr/bin/perl [switches] [--] [programfile] [arguments]
@@ -391,6 +500,8 @@ perl() |> cmd_help(stdout = "|")
 
 And it is very easily to extend for other commands.
 
+### Pipe
+
 One of the great features of `blit` is its ability to translate the R
 pipe (`%>%` or `|>`) into the Linux pipe (`|`). All functions used to
 create a `command` object can accept another `command` object. The
@@ -408,8 +519,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run(stdout = "|")
-#> Running command (2025-03-31 09:41:55): gzip -c
-#> /tmp/RtmpNwcuWW/filed4a221f61373a | gzip -d > /tmp/RtmpNwcuWW/filed4a22730790
+#> Running command (2025-03-31 17:33:05): gzip -c /tmp/RtmpIDa7yr/fileeeecb765a604
+#> | gzip -d > /tmp/RtmpIDa7yr/fileeeecb2083dc37
 #> Command process finished
 #> System command succeed
 identical(readLines(file), readLines(file2))
@@ -461,14 +572,13 @@ ping <- make_command("ping", function(..., ping = NULL) {
     Ping$new(cmd = ping, ...)
 })
 ping("8.8.8.8") |> cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
-#> Running command (2025-03-31 09:41:55): /usr/bin/ping 8.8.8.8
+#> Running command (2025-03-31 17:33:05): /usr/bin/ping 8.8.8.8
 #> 
 #> PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
-#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=45.7 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=45.0 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=51.4 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=46.3 ms
-#> 64 bytes from 8.8.8.8: icmp_seq=5 ttl=106 time=47.2 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=1 ttl=106 time=45.2 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=2 ttl=106 time=48.4 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=3 ttl=106 time=49.3 ms
+#> 64 bytes from 8.8.8.8: icmp_seq=4 ttl=106 time=47.2 ms
 #> Command process finished
 #> Warning: System command timed out in 5 secs (status: -9)
 ```
