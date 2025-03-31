@@ -300,7 +300,6 @@ check_stdin_list <- function(x, n, n_arg, arg = caller_arg(x),
     lapply(
         x,
         check_stdio,
-        allow_bool = FALSE,
         allow_connection = FALSE,
         arg = arg,
         call = call
