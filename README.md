@@ -54,7 +54,7 @@ standard output can be captured by knitr.)
 ``` r
 Sys.setenv(TEST = "blit is awesome")
 exec("echo", "$TEST") |> cmd_run(stdout = "|")
-#> Running command (2025-04-04 02:16:27): echo $TEST
+#> Running command (2025-04-04 02:19:34): echo $TEST
 #> 
 #> blit is awesome
 #> Command process finished
@@ -75,7 +75,7 @@ Sys.unsetenv("TEST")
 > The actual implementation in the `README.Rmd` differs, but the output
 > remains the same.
 
-    #> Running command (2025-04-04 02:16:28): echo $TEST
+    #> Running command (2025-04-04 02:19:34): echo $TEST
     #> blit is awesome
 
 `cmd_background()` is provided for completeness. Instead of using this
@@ -101,45 +101,45 @@ cmd_parallel(
     timeouts = 4, # terminate after 4s
     threads = 4
 )
-#> Running command (2025-04-04 02:16:28): ping localhost
-#> Running command (2025-04-04 02:16:28): ping 208.67.222.222
-#> Running command (2025-04-04 02:16:28): ping 8.8.8.8
-#> Running command (2025-04-04 02:16:28): ping 8.8.4.4
+#> Running command (2025-04-04 02:19:34): ping localhost
+#> Running command (2025-04-04 02:19:34): ping 208.67.222.222
+#> Running command (2025-04-04 02:19:34): ping 8.8.8.8
+#> Running command (2025-04-04 02:19:34): ping 8.8.4.4
 #> 
 #> Connection 1: PING localhost (::1) 56 data bytes
-#> Connection 1: 64 bytes from localhost (::1): icmp_seq=1 ttl=64 time=0.023 ms
-#> ⠙ 0/4 [0/s] [elapsed in 81ms] @ 2025-04-04 02:16:28
-#> ⠹ 0/4 [0/s] [elapsed in 300ms] @ 2025-04-04 02:16:28
-#> ⠸ 0/4 [0/s] [elapsed in 511ms] @ 2025-04-04 02:16:28
-#> ⠼ 0/4 [0/s] [elapsed in 721ms] @ 2025-04-04 02:16:28
-#> ⠴ 0/4 [0/s] [elapsed in 941ms] @ 2025-04-04 02:16:29
-#> ⠦ 0/4 [0/s] [elapsed in 1.2s] @ 2025-04-04 02:16:29
-#> ⠧ 0/4 [0/s] [elapsed in 1.4s] @ 2025-04-04 02:16:29
-#> ⠇ 0/4 [0/s] [elapsed in 1.6s] @ 2025-04-04 02:16:29
-#> Connection 1: 64 bytes from localhost (::1): icmp_seq=2 ttl=64 time=0.039 ms
-#> ⠏ 0/4 [0/s] [elapsed in 1.6s] @ 2025-04-04 02:16:29
-#> ⠋ 0/4 [0/s] [elapsed in 1.8s] @ 2025-04-04 02:16:29
-#> ⠙ 0/4 [0/s] [elapsed in 2s] @ 2025-04-04 02:16:30
-#> ⠹ 0/4 [0/s] [elapsed in 2.2s] @ 2025-04-04 02:16:30
-#> Connection 1: 64 bytes from localhost (::1): icmp_seq=3 ttl=64 time=0.043 ms
-#> ⠸ 0/4 [0/s] [elapsed in 2.2s] @ 2025-04-04 02:16:30
-#> ⠼ 0/4 [0/s] [elapsed in 2.4s] @ 2025-04-04 02:16:30
-#> ⠴ 0/4 [0/s] [elapsed in 2.6s] @ 2025-04-04 02:16:30
-#> ⠦ 0/4 [0/s] [elapsed in 2.9s] @ 2025-04-04 02:16:31
-#> ⠧ 0/4 [0/s] [elapsed in 3.1s] @ 2025-04-04 02:16:31
-#> ⠇ 0/4 [0/s] [elapsed in 3.3s] @ 2025-04-04 02:16:31
-#> ⠏ 0/4 [0/s] [elapsed in 3.5s] @ 2025-04-04 02:16:31
-#> ⠋ 0/4 [0/s] [elapsed in 3.7s] @ 2025-04-04 02:16:31
-#> Connection 1: 64 bytes from localhost (::1): icmp_seq=4 ttl=64 time=0.039 ms
-#> ⠙ 0/4 [0/s] [elapsed in 3.7s] @ 2025-04-04 02:16:31
-#> ⠹ 0/4 [0/s] [elapsed in 3.9s] @ 2025-04-04 02:16:32
-#> ⠸ 0/4 [0/s] [elapsed in 4.1s] @ 2025-04-04 02:16:32
-#> ⠼ 0/4 [0/s] [elapsed in 4.1s] @ 2025-04-04 02:16:32
+#> Connection 1: 64 bytes from localhost (::1): icmp_seq=1 ttl=64 time=0.016 ms
+#> ⠙ 0/4 [0/s] [elapsed in 83ms] @ 2025-04-04 02:19:34
+#> ⠹ 0/4 [0/s] [elapsed in 299ms] @ 2025-04-04 02:19:34
+#> ⠸ 0/4 [0/s] [elapsed in 509ms] @ 2025-04-04 02:19:34
+#> ⠼ 0/4 [0/s] [elapsed in 719ms] @ 2025-04-04 02:19:35
+#> ⠴ 0/4 [0/s] [elapsed in 941ms] @ 2025-04-04 02:19:35
+#> ⠦ 0/4 [0/s] [elapsed in 1.1s] @ 2025-04-04 02:19:35
+#> ⠧ 0/4 [0/s] [elapsed in 1.4s] @ 2025-04-04 02:19:35
+#> ⠇ 0/4 [0/s] [elapsed in 1.6s] @ 2025-04-04 02:19:36
+#> Connection 1: 64 bytes from localhost (::1): icmp_seq=2 ttl=64 time=0.033 ms
+#> ⠏ 0/4 [0/s] [elapsed in 1.6s] @ 2025-04-04 02:19:36
+#> ⠋ 0/4 [0/s] [elapsed in 1.8s] @ 2025-04-04 02:19:36
+#> ⠙ 0/4 [0/s] [elapsed in 2s] @ 2025-04-04 02:19:36
+#> ⠹ 0/4 [0/s] [elapsed in 2.2s] @ 2025-04-04 02:19:36
+#> Connection 1: 64 bytes from localhost (::1): icmp_seq=3 ttl=64 time=0.041 ms
+#> ⠸ 0/4 [0/s] [elapsed in 2.2s] @ 2025-04-04 02:19:36
+#> ⠼ 0/4 [0/s] [elapsed in 2.4s] @ 2025-04-04 02:19:36
+#> ⠴ 0/4 [0/s] [elapsed in 2.6s] @ 2025-04-04 02:19:37
+#> ⠦ 0/4 [0/s] [elapsed in 2.9s] @ 2025-04-04 02:19:37
+#> ⠧ 0/4 [0/s] [elapsed in 3.1s] @ 2025-04-04 02:19:37
+#> ⠇ 0/4 [0/s] [elapsed in 3.3s] @ 2025-04-04 02:19:37
+#> ⠏ 0/4 [0/s] [elapsed in 3.5s] @ 2025-04-04 02:19:37
+#> ⠋ 0/4 [0/s] [elapsed in 3.7s] @ 2025-04-04 02:19:38
+#> Connection 1: 64 bytes from localhost (::1): icmp_seq=4 ttl=64 time=0.032 ms
+#> ⠙ 0/4 [0/s] [elapsed in 3.7s] @ 2025-04-04 02:19:38
+#> ⠹ 0/4 [0/s] [elapsed in 3.9s] @ 2025-04-04 02:19:38
+#> ⠸ 0/4 [0/s] [elapsed in 4.1s] @ 2025-04-04 02:19:38
+#> ⠼ 0/4 [0/s] [elapsed in 4.1s] @ 2025-04-04 02:19:38
 #> Command process finished
 #> Command process finished
 #> Command process finished
 #> Command process finished
-#> ⠼ 4/4 [0.96/s] [elapsed in 4.2s] @ 2025-04-04 02:16:32
+#> ⠼ 4/4 [0.96/s] [elapsed in 4.2s] @ 2025-04-04 02:19:38
 #> Warning: [Command: 1] System command timed out in 4.1 secs (status: -9)
 #> Warning: [Command: 2] System command timed out in 4.1 secs (status: -9)
 #> Warning: [Command: 3] System command timed out in 4.1 secs (status: -9)
@@ -161,10 +161,10 @@ environment context:
 exec("echo", "$(pwd)") |>
     cmd_wd(tempdir()) |>
     cmd_run(stdout = "|")
-#> Working Directory: '/tmp/Rtmpq6OBi5'
-#> Running command (2025-04-04 02:16:32): echo $(pwd)
+#> Working Directory: '/tmp/RtmpmtrLuL'
+#> Running command (2025-04-04 02:19:38): echo $(pwd)
 #> 
-#> /tmp/Rtmpq6OBi5
+#> /tmp/RtmpmtrLuL
 #> Command process finished
 #> System command succeed
 ```
@@ -174,7 +174,7 @@ exec("echo", "$TEST") |>
     cmd_envvar(TEST = "blit is very awesome") |>
     cmd_run(stdout = "|")
 #> Setting environment variables: TEST
-#> Running command (2025-04-04 02:16:32): echo $TEST
+#> Running command (2025-04-04 02:19:38): echo $TEST
 #> 
 #> blit is very awesome
 #> Command process finished
@@ -186,7 +186,7 @@ exec("echo", "$PATH") |>
     cmd_envpath("PATH_IS_HERE", action = "replace") |>
     cmd_run(stdout = "|")
 #> Setting environment variables: PATH
-#> Running command (2025-04-04 02:16:32): echo $PATH
+#> Running command (2025-04-04 02:19:38): echo $PATH
 #> 
 #> PATH_IS_HERE
 #> Command process finished
@@ -237,7 +237,7 @@ Running it without arguments shows the help document:
 
 ``` r
 appmamba()
-#> Running command (2025-04-04 02:16:35):
+#> Running command (2025-04-04 02:19:41):
 #> /home/runner/.local/share/R/blit/apps/appmamba/bin/micromamba --root-prefix
 #> /home/runner/.local/share/R/blit/appmamba --help
 ```
@@ -247,7 +247,7 @@ To create a new environment named `samtools` and install `samtools` from
 
 ``` r
 appmamba("create", "--yes", "--name samtools", "bioconda::samtools")
-#> Running command (2025-04-04 02:16:35):
+#> Running command (2025-04-04 02:19:41):
 #> /home/runner/.local/share/R/blit/apps/appmamba/bin/micromamba --root-prefix
 #> /home/runner/.local/share/R/blit/appmamba create --yes --name samtools
 #> bioconda::samtools
@@ -262,7 +262,7 @@ exec("which", "samtools") |>
     cmd_condaenv("samtools") |>
     cmd_run()
 #> Setting environment variables: PATH
-#> Running command (2025-04-04 02:16:47): which samtools
+#> Running command (2025-04-04 02:19:53): which samtools
 #> Command process finished
 #> System command succeed
 ```
@@ -271,7 +271,7 @@ You may want to clean the created environment-`samtools`.
 
 ``` r
 appmamba("env", "remove", "--yes", "--name samtools")
-#> Running command (2025-04-04 02:16:47):
+#> Running command (2025-04-04 02:19:53):
 #> /home/runner/.local/share/R/blit/apps/appmamba/bin/micromamba --root-prefix
 #> /home/runner/.local/share/R/blit/appmamba env remove --yes --name samtools
 ```
@@ -297,14 +297,14 @@ file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_exit(file.remove(file)) |>
     cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
-#> Running command (2025-04-04 02:16:47): ping localhost
+#> Running command (2025-04-04 02:19:54): ping localhost
 #> 
 #> PING localhost (::1) 56 data bytes
-#> 64 bytes from localhost (::1): icmp_seq=1 ttl=64 time=0.016 ms
-#> 64 bytes from localhost (::1): icmp_seq=2 ttl=64 time=0.027 ms
-#> 64 bytes from localhost (::1): icmp_seq=3 ttl=64 time=0.030 ms
-#> 64 bytes from localhost (::1): icmp_seq=4 ttl=64 time=0.037 ms
-#> 64 bytes from localhost (::1): icmp_seq=5 ttl=64 time=0.035 ms
+#> 64 bytes from localhost (::1): icmp_seq=1 ttl=64 time=0.018 ms
+#> 64 bytes from localhost (::1): icmp_seq=2 ttl=64 time=0.032 ms
+#> 64 bytes from localhost (::1): icmp_seq=3 ttl=64 time=0.033 ms
+#> 64 bytes from localhost (::1): icmp_seq=4 ttl=64 time=0.032 ms
+#> 64 bytes from localhost (::1): icmp_seq=5 ttl=64 time=0.033 ms
 #> Command process finished
 #> Warning: System command timed out in 5 secs (status: -9)
 file.exists(file)
@@ -323,14 +323,14 @@ file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_fail(file.remove(file)) |>
     cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
-#> Running command (2025-04-04 02:16:52): ping localhost
+#> Running command (2025-04-04 02:19:59): ping localhost
 #> 
 #> PING localhost (::1) 56 data bytes
-#> 64 bytes from localhost (::1): icmp_seq=1 ttl=64 time=0.017 ms
-#> 64 bytes from localhost (::1): icmp_seq=2 ttl=64 time=0.030 ms
-#> 64 bytes from localhost (::1): icmp_seq=3 ttl=64 time=0.032 ms
-#> 64 bytes from localhost (::1): icmp_seq=4 ttl=64 time=0.030 ms
-#> 64 bytes from localhost (::1): icmp_seq=5 ttl=64 time=0.028 ms
+#> 64 bytes from localhost (::1): icmp_seq=1 ttl=64 time=0.019 ms
+#> 64 bytes from localhost (::1): icmp_seq=2 ttl=64 time=0.032 ms
+#> 64 bytes from localhost (::1): icmp_seq=3 ttl=64 time=0.031 ms
+#> 64 bytes from localhost (::1): icmp_seq=4 ttl=64 time=0.032 ms
+#> 64 bytes from localhost (::1): icmp_seq=5 ttl=64 time=0.039 ms
 #> Command process finished
 #> Warning: System command timed out in 5 secs (status: -9)
 file.exists(file)
@@ -346,14 +346,14 @@ file.exists(file)
 exec("ping", "localhost") |>
     cmd_on_succeed(file.remove(file)) |>
     cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
-#> Running command (2025-04-04 02:16:58): ping localhost
+#> Running command (2025-04-04 02:20:04): ping localhost
 #> 
 #> PING localhost (::1) 56 data bytes
-#> 64 bytes from localhost (::1): icmp_seq=1 ttl=64 time=0.018 ms
-#> 64 bytes from localhost (::1): icmp_seq=2 ttl=64 time=0.030 ms
+#> 64 bytes from localhost (::1): icmp_seq=1 ttl=64 time=0.016 ms
+#> 64 bytes from localhost (::1): icmp_seq=2 ttl=64 time=0.031 ms
 #> 64 bytes from localhost (::1): icmp_seq=3 ttl=64 time=0.032 ms
 #> 64 bytes from localhost (::1): icmp_seq=4 ttl=64 time=0.034 ms
-#> 64 bytes from localhost (::1): icmp_seq=5 ttl=64 time=0.029 ms
+#> 64 bytes from localhost (::1): icmp_seq=5 ttl=64 time=0.033 ms
 #> Command process finished
 #> Warning: System command timed out in 5 secs (status: -9)
 file.exists(file) # file remain exist as timeout means command failed
@@ -383,7 +383,7 @@ document.
 
 ``` r
 python() |> cmd_help(stdout = "|")
-#> Running command (2025-04-04 02:17:03): /usr/bin/python --help
+#> Running command (2025-04-04 02:20:09): /usr/bin/python --help
 #> 
 #> usage: /usr/bin/python [option] ... [-c cmd | -m mod | file | -] [arg] ...
 #> Options (and corresponding environment variables):
@@ -433,7 +433,7 @@ python() |> cmd_help(stdout = "|")
 
 ``` r
 perl() |> cmd_help(stdout = "|")
-#> Running command (2025-04-04 02:17:03): /usr/bin/perl --help
+#> Running command (2025-04-04 02:20:09): /usr/bin/perl --help
 #> 
 #> 
 #> Usage: /usr/bin/perl [switches] [--] [programfile] [arguments]
@@ -492,8 +492,8 @@ file2 <- tempfile()
 exec("gzip", "-c", file) |>
     exec("gzip", "-d", ">", file2) |>
     cmd_run(stdout = "|")
-#> Running command (2025-04-04 02:17:03): gzip -c /tmp/Rtmpq6OBi5/file1dae848dc04
-#> | gzip -d > /tmp/Rtmpq6OBi5/file1dae674e7bc9
+#> Running command (2025-04-04 02:20:09): gzip -c /tmp/RtmpmtrLuL/file1da94c2c4763
+#> | gzip -d > /tmp/RtmpmtrLuL/file1da9427e7232
 #> Command process finished
 #> System command succeed
 identical(readLines(file), readLines(file2))
@@ -545,7 +545,7 @@ ping <- make_command("ping", function(..., ping = NULL) {
     Ping$new(cmd = ping, ...)
 })
 ping("8.8.8.8") |> cmd_run(timeout = 5, stdout = "|") # terminate it after 5s
-#> Running command (2025-04-04 02:17:03): /usr/bin/ping 8.8.8.8
+#> Running command (2025-04-04 02:20:09): /usr/bin/ping 8.8.8.8
 #> Command process finished
 #> Warning: System command timed out in 5 secs (status: -9)
 ```
