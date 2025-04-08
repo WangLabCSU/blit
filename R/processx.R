@@ -158,7 +158,7 @@ processx_command <- function(
         stdout = stdout,
         stderr = stderr,
         stdin = stdin,
-        cleanup_tree = TRUE,
+        cleanup = TRUE,
         .blit_verbose = verbose,
         .blit_stdout_callback = stdout_callback,
         .blit_stderr_callback = stderr_callback,
@@ -188,10 +188,11 @@ BlitProcess <- R6Class(
     public = list(
         # fmt: skip
         initialize = function(...,
+                              env = NULL,
                               stdin = NULL,
                               stdout = NULL,
                               stderr = NULL,
-                              env = NULL,
+                              cleanup = TRUE,
                               .blit_stdout_callback = NULL,
                               .blit_stderr_callback = NULL,
                               .blit_start = NULL,
@@ -266,6 +267,8 @@ BlitProcess <- R6Class(
 
             super$initialize(
                 ...,
+                cleanup = cleanup,
+                cleanup_tree = cleanup,
                 env = env,
                 stdin = stdin,
                 stdout = stdout,
@@ -275,7 +278,15 @@ BlitProcess <- R6Class(
             # workaround for https://github.com/r-lib/processx/issues/394
             private$starttime <- Sys.time()
 
-            if (is.function(.blit_start)) .blit_start()
+            if (is.function(.blit_start)) {
+                if (.blit_verbose) {
+                    cli::cli_inform("Running scheduled startup task")
+                }
+                rlang::try_fetch(
+                    .blit_start(),
+                    error = function(cnd) cli::cli_warn(conditionMessage(cnd))
+                )
+            }
             if (is.function(.blit_exit)) private$.blit_exit <- .blit_exit
             if (is.function(.blit_succeed)) {
                 private$.blit_succeed <- .blit_succeed
@@ -338,7 +349,6 @@ BlitProcess <- R6Class(
                         )
                     )
                     # for spinner, always use 200 `poll_timeout`
-                    # fmt: skip
                     while (self$.blit_collect_active(timeout, 200)) {
                         cli::cli_progress_update(
                             0L,
@@ -431,11 +441,43 @@ BlitProcess <- R6Class(
 
                 # run the cleanup function --------------------------
                 if (is.na(status) || status != 0L) {
-                    if (!is.null(private$.blit_fail)) private$.blit_fail()
+                    if (!is.null(private$.blit_fail)) {
+                        if (private$.blit_verbose) {
+                            cli::cli_inform("Running the scheduled failed task")
+                        }
+                        rlang::try_fetch(
+                            private$.blit_fail(),
+                            error = function(cnd) {
+                                cli::cli_warn(conditionMessage(cnd))
+                            }
+                        )
+                    }
                 } else {
-                    if (!is.null(private$.blit_succeed)) private$.blit_succeed()
+                    if (!is.null(private$.blit_succeed)) {
+                        if (private$.blit_verbose) {
+                            cli::cli_inform(
+                                "Running the scheduled successful task"
+                            )
+                        }
+                        rlang::try_fetch(
+                            private$.blit_succeed(),
+                            error = function(cnd) {
+                                cli::cli_warn(conditionMessage(cnd))
+                            }
+                        )
+                    }
                 }
-                if (!is.null(private$.blit_exit)) private$.blit_exit()
+                if (!is.null(private$.blit_exit)) {
+                    if (private$.blit_verbose) {
+                        cli::cli_inform("Running scheduled exit task")
+                    }
+                    rlang::try_fetch(
+                        private$.blit_exit(),
+                        error = function(cnd) {
+                            cli::cli_warn(conditionMessage(cnd))
+                        }
+                    )
+                }
                 self$.blit_kill(close_connections = TRUE)
                 if (private$.blit_verbose) {
                     cli::cli_inform("Command process finished")
