@@ -6,6 +6,8 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-2801-3332")),
     person("Shixiang", "Wang", , "w_shixiang@163.com", role = c("aut"),
            comment = c(ORCID = "0000-0001-9855-7357")),
+    person("Jia", "Ding", , "jiading682@qq.com", role = c("ctb"),
+           comment = c(ORCID = "0009-0002-2530-0897")),
     person("Jennifer", "Lu", , "jennifer.lu717@gmail.com", 
            role = c("cph"), comment = "Author of the included scripts from Kraken2 and KrakenTools libraries"),
     person("Li", "Song", , "Li.Song@dartmouth.edu", 
