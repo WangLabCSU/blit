@@ -28,6 +28,7 @@ Authors:
 
 Other contributors:
 \itemize{
+  \item Jia Ding \email{jiading682@qq.com} (\href{https://orcid.org/0009-0002-2530-0897}{ORCID}) [contributor]
   \item Jennifer Lu \email{jennifer.lu717@gmail.com} (Author of the included scripts from Kraken2 and KrakenTools libraries) [copyright holder]
   \item Li Song \email{Li.Song@dartmouth.edu} (Author of included scripts from TRUST4 library) [copyright holder]
   \item X. Shirley Liu \email{xsliu@ds.dfci.harvard.edu} (Author of included scripts from TRUST4 library) [copyright holder]

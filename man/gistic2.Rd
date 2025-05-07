@@ -53,6 +53,7 @@ Other \code{commands}:
 \code{\link{allele_counter}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
+\code{\link{fastp}()},
 \code{\link{fastq_pair}()},
 \code{\link{kraken2}()},
 \code{\link{kraken_tools}()},

@@ -49,6 +49,7 @@ cellranger(
 Other \code{commands}:
 \code{\link{allele_counter}()},
 \code{\link{conda}()},
+\code{\link{fastp}()},
 \code{\link{fastq_pair}()},
 \code{\link{gistic2}()},
 \code{\link{kraken2}()},
