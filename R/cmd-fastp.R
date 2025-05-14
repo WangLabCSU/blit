@@ -2,9 +2,9 @@
 #'
 #' The `fastp` is a tool designed to provide ultrafast all-in-one preprocessing
 #' and quality control for FastQ data.
-#' @param in1,in2 A string of fastq file path.
-#' @param out1,out2 A string of path to the output fastq file.
+#' @param fq1,fq2 A string of fastq file path.
 #' @param ... `r rd_dots("fastp")`.
+#' @param ofile1,ofile2 A string of path to the output fastq file.
 #' @param fastp `r rd_cmd("fastp")`.
 #' @family command
 #' @inherit exec return
@@ -16,21 +16,21 @@
 fastp <- make_command(
   "fastp",
   function(
-    in1,
-    out1,
-    in2 = NULL,
-    out2 = NULL,
+    fq1,
+    ofile1,
     ...,
+    fq2 = NULL,
+    ofile2 = NULL,
     fastp = NULL
   ){
     assert_string(fastp, allow_empty = FALSE, allow_null = TRUE)
     Fastp$new(
       cmd = fastp,
       ...,
-      in1 = in1,
-      in2 = in2,
-      out1 = out1,
-      out2 = out2
+      fq1 = fq1,
+      fq2 = fq2,
+      ofile1 = ofile1,
+      ofile2 = ofile2
     )
   }
 )
@@ -41,12 +41,12 @@ Fastp <- R6Class(
   private = list(
     alias = function() "fastp",
     setup_help_params = function() "--help",
-    setup_command_params = function(in1, in2, out1, out2){
+    setup_command_params = function(fq1, fq2, ofile1, ofile2){
       c(
-        arg0("-i", in1),
-        if (!is.null(in2)) arg0("-I", in2) else NULL,
-        arg0("-o", out1),
-        if (!is.null(out2)) arg0("-O", out2) else NULL
+        arg0("-i", fq1),
+        if (!is.null(fq2)) arg0("-I", fq2) else NULL,
+        arg0("-o", ofile1),
+        if (!is.null(ofile2)) arg0("-O", ofile2) else NULL
       )
     }
   )

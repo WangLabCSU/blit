@@ -4,12 +4,12 @@
 \alias{fastp}
 \title{Run fastp}
 \usage{
-fastp(in1, out1, in2 = NULL, out2 = NULL, ..., fastp = NULL)
+fastp(fq1, ofile1, ..., fq2 = NULL, ofile2 = NULL, fastp = NULL)
 }
 \arguments{
-\item{in1, in2}{A string of fastq file path.}
+\item{fq1, fq2}{A string of fastq file path.}
 
-\item{out1, out2}{A string of path to the output fastq file.}
+\item{ofile1, ofile2}{A string of path to the output fastq file.}
 
 \item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{fastp} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(fastp())}.}
 
