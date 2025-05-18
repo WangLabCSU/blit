@@ -3,8 +3,8 @@
 #' The `fastp` is a tool designed to provide ultrafast all-in-one preprocessing
 #' and quality control for FastQ data.
 #' @param fq1,fq2 A string of fastq file path.
-#' @param ... `r rd_dots("fastp")`.
 #' @param ofile1,ofile2 A string of path to the output fastq file.
+#' @param ... `r rd_dots("fastp")`.
 #' @param fastp `r rd_cmd("fastp")`.
 #' @family command
 #' @inherit exec return
