@@ -45,6 +45,7 @@ between some other projects, specifically \code{AscatNGS} and \code{Battenberg}.
 Other \code{commands}:
 \code{\link{cellranger}()},
 \code{\link{conda}()},
+\code{\link{fastp}()},
 \code{\link{fastq_pair}()},
 \code{\link{gistic2}()},
 \code{\link{kraken2}()},
