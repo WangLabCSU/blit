@@ -14,7 +14,7 @@ seqkit <- make_command(
     function(subcmd = NULL, ..., seqkit = NULL) {
         assert_string(subcmd, allow_empty = FALSE, allow_null = TRUE)
         assert_string(seqkit, allow_empty = FALSE, allow_null = TRUE)
-        SeqKit$new(cmd = seqkit, ..., .subcmd = subcmd)
+        SeqKit$new(cmd = seqkit, ..., subcmd = subcmd)
     }
 )
 
