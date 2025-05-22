@@ -37,7 +37,7 @@ make_command <- function(name, fun, envir = caller_env()) {
                     error = function(cnd) NULL
                 )
                 if (inherits(first_unnamed_value, "command")) {
-                    call <- args[-unnamed[1L]]
+                    args <- args[-unnamed[1L]]
                     input_command <- first_unnamed_value
                 }
             }
