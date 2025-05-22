@@ -23,6 +23,9 @@ SeqKit <- R6Class(
     inherit = Command,
     private = list(
         alias = function() "seqkit",
-        setup_help_params = function() "--help"
+        setup_help_params = function() "--help",
+        combine_params = function(subcmd) {
+            c(subcmd, super$combine_params())
+        }
     )
 )
