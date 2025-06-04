@@ -1,7 +1,7 @@
 #' Run bedtools
 #'
 #' The `bedtools` is a powerful toolset for genome arithmetic,
-#' which includes `intersect`,`merge`,`coverage`,`getfasta`,`closest`,etc.
+#' which includes `intersect`, `merge`, `coverage`, `getfasta`, `closest`, etc.
 #' @param file1 Path to bed/gff(gtf)/vcf/bam(sam) file.
 #' @param file2 Path to the second file, some commands require.
 #' @param ...
@@ -24,10 +24,9 @@
 #' @inherit exec return
 #' @family command
 #' @export
-
-#  bedtools intersect ----
-`bedtools intersect` <- make_command(
-  "bedtools intersect",
+#  bedtools_intersect ----
+bedtools_intersect <- make_command(
+  "bedtools_intersect",
   function(
     file1,
     file2,
@@ -36,7 +35,7 @@
     `bedtools intersect` = NULL
   ){
     assert_string(`bedtools intersect`, allow_empty = FALSE, allow_null = TRUE)
-    `BEDTools Intersect`$new(
+    BEDTools_Intersect$new(
       cmd = `bedtools intersect`,
       ...,
       file1 = file1,
@@ -46,8 +45,8 @@
   }
 )
 
-`BEDTools Intersect` <- R6Class(
-  "BEDTools Intersect",
+BEDTools_Intersect <- R6Class(
+  "BEDTools_Intersect",
   inherit = Command,
   private = list(
     alias = function() "bedtools intersect",
@@ -63,9 +62,9 @@
   )
 )
 
-#  bedtools merge ----
-`bedtools merge` <- make_command(
-  "bedtools merge",
+#  bedtools_merge ----
+bedtools_merge <- make_command(
+  "bedtools_merge",
   function(
     file1,
     ofile,
@@ -74,7 +73,7 @@
     `bedtools merge` = NULL
   ){
     assert_string(`bedtools merge`, allow_empty = FALSE, allow_null = TRUE)
-    `BEDTools Merge`$new(
+    `BEDTools_Merge`$new(
       cmd = `bedtools merge`,
       ...,
       file1 = file1,
@@ -84,8 +83,8 @@
   }
 )
 
-`BEDTools Merge` <- R6Class(
-  "BEDTools Merge",
+BEDTools_Merge <- R6Class(
+  "BEDTools_Merge",
   inherit = Command,
   private = list(
     alias = function() "bedtools merge",
@@ -106,9 +105,9 @@
   )
 )
 
-#  bedtools coverage ----
-`bedtools coverage` <- make_command(
-  "bedtools coverage",
+#  bedtools_coverage ----
+bedtools_coverage <- make_command(
+  "bedtools_coverage",
   function(
     file1,
     file2,
@@ -117,7 +116,7 @@
     `bedtools coverage` = NULL
   ){
     assert_string(`bedtools coverage`, allow_empty = FALSE, allow_null = TRUE)
-    `BEDTools Coverage`$new(
+    BEDTools_Coverage$new(
       cmd = `bedtools coverage`,
       ...,
       file1 = file1,
@@ -127,8 +126,8 @@
   }
 )
 
-`BEDTools Coverage` <- R6Class(
-  "BEDTools Coverage",
+BEDTools_Coverage <- R6Class(
+  "BEDTools_Coverage",
   inherit = Command,
   private = list(
     alias = function() "bedtools coverage",
@@ -155,9 +154,9 @@
   )
 )
 
-#  bedtools getfasta ----
-`bedtools getfasta` <- make_command(
-  "bedtools getfasta",
+#  bedtools_getfasta ----
+bedtools_getfasta <- make_command(
+  "bedtools_getfasta",
   function(
     file1,
     file2,
@@ -166,7 +165,7 @@
     `bedtools getfasta` = NULL
   ){
     assert_string(`bedtools getfasta`, allow_empty = FALSE, allow_null = TRUE)
-    `BEDTools Getfasta`$new(
+    BEDTools_Getfasta$new(
       cmd = `bedtools getfasta`,
       ...,
       file1 = file1,
@@ -176,8 +175,8 @@
   }
 )
 
-`BEDTools Getfasta` <- R6Class(
-  "BEDTools Getfasta",
+BEDTools_Getfasta <- R6Class(
+  "BEDTools_Getfasta",
   inherit = Command,
   private = list(
     alias = function() "bedtools getfasta",
@@ -204,9 +203,9 @@
   )
 )
 
-#  bedtools closest ----
-`bedtools closest` <- make_command(
-  "bedtools closest",
+#  bedtools_closest ----
+bedtools_closest <- make_command(
+  "bedtools_closest",
   function(
     file1,
     file2,
@@ -215,7 +214,7 @@
     `bedtools closest` = NULL
   ){
     assert_string(`bedtools closest`, allow_empty = FALSE, allow_null = TRUE)
-    `BEDTools Closest`$new(
+    BEDTools_Closest$new(
       cmd = `bedtools closest`,
       ...,
       file1 = file1,
@@ -225,8 +224,8 @@
   }
 )
 
-`BEDTools Closest` <- R6Class(
-  "BEDTools Closest",
+BEDTools_Closest <- R6Class(
+  "BEDTools_Closest",
   inherit = Command,
   private = list(
     alias = function() "bedtools closest",
