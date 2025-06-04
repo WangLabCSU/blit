@@ -1,4 +1,4 @@
-#' Run fastp
+#' Run bwa
 #'
 #' The `fastp` is a tool designed to provide ultrafast all-in-one preprocessing
 #' and quality control for FastQ data.
