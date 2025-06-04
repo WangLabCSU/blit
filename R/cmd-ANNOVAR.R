@@ -9,7 +9,7 @@
 #' @family command
 #' @inherit exec return
 #' @seealso
-#' - <https://github.com/OpenGene/ANNOVAR>
+#' - <https://github.com/WGLab/doc-ANNOVAR>
 #'
 #' `r rd_seealso()`
 #' @export
