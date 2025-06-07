@@ -3,6 +3,11 @@ testthat::test_that("`allele_counter()` works as expected", {
     allele_counter() |> cmd_help()
 })
 
+testthat::test_that("`bedtools()` works as expected", {
+    testthat::skip_if_not(nzchar(Sys.which("bedtools")))
+    bedtools() |> cmd_help()
+})
+
 testthat::test_that("`cellranger()` works as expected", {
     testthat::skip_if_not(nzchar(Sys.which("cellranger")))
     cellranger() |> cmd_help()

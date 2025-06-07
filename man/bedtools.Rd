@@ -4,18 +4,12 @@
 \alias{bedtools}
 \title{Run bedtools}
 \usage{
-bedtools(subcmd = NULL, file1, ofile, ..., file2 = NULL, bedtools = NULL)
+bedtools(subcmd = NULL, ..., bedtools = NULL)
 }
 \arguments{
 \item{subcmd}{Sub-Command of bedtools. Details see: \code{cmd_help(bedtools())}.}
 
-\item{file1}{Path to bed/gff(gtf)/vcf/bam(sam) file.}
-
-\item{ofile}{Path to the output file.}
-
 \item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{bedtools} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(bedtools())}.}
-
-\item{file2}{Path to the second file, some commands require.}
 
 \item{bedtools}{A string of path to \code{bedtools} command.}
 }
@@ -27,6 +21,7 @@ The \code{bedtools} is a powerful toolset for genome arithmetic.
 }
 \seealso{
 \itemize{
+\item \url{http://bedtools.readthedocs.io/}
 \item \url{https://github.com/arq5x/bedtools2/}
 \item \code{\link[=cmd_wd]{cmd_wd()}}/\code{\link[=cmd_envvar]{cmd_envvar()}}/\code{\link[=cmd_envpath]{cmd_envpath()}}/\code{\link[=cmd_condaenv]{cmd_condaenv()}}
 \item \code{\link[=cmd_on_start]{cmd_on_start()}}/\code{\link[=cmd_on_exit]{cmd_on_exit()}}
@@ -36,7 +31,6 @@ The \code{bedtools} is a powerful toolset for genome arithmetic.
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
-\code{\link{bedtools_intersect}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},
