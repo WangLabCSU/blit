@@ -30,7 +30,6 @@ Run pyscenic
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
-\code{\link{bedtools}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},

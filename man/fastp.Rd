@@ -33,7 +33,6 @@ and quality control for FastQ data.
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
-\code{\link{bedtools}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastq_pair}()},
