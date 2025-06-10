@@ -1,53 +1,48 @@
-#' Run bwa
+#' Run BWA
 #'
-#' The `fastp` is a tool designed to provide ultrafast all-in-one preprocessing
-#' and quality control for FastQ data.
-#' @param fq1,fq2 A string of fastq file path.
-#' @param ... `r rd_dots("fastp")`.
-#' @param ofile1,ofile2 A string of path to the output fastq file.
-#' @param fastp `r rd_cmd("fastp")`.
-#' @family command
+#' @param subcmd Sub-Command of BWA (e.g., "index", "mem").
+#' @param ... `r rd_dots("bwa")`.
+#' @param bwa `r rd_cmd("bwa")`.
 #' @inherit exec return
 #' @seealso
-#' - <https://github.com/OpenGene/fastp>
+#' - <http://bio-bwa.sourceforge.net/>
 #'
 #' `r rd_seealso()`
+#' @examples# 索引参考基因组
+#bwa("index", "-a", "bwtsw", "reference.fa")$run()
+
+# 序列比对
+#bwa("mem",
+#    "-t", "4"
+#    "reference.fa"
+#    "read1.fq"
+#    "read2.fq")$run(stdout = "output.sam")
+#' \dontrun{
+#' # 建立索引
+#' bwa("index", "-a", "bwtsw", "reference.fa")$run()
+#'
+#' # 双端序列比对
+#' bwa("mem", "-t", "4", "reference.fa", "read1.fq", "read2.fq")$run(stdout = "output.sam")
+#' }
+#' @family command
 #' @export
-fastp <- make_command(
-  "fastp",
-  function(
-    fq1,
-    ofile1,
-    ...,
-    fq2 = NULL,
-    ofile2 = NULL,
-    fastp = NULL
-  ){
-    assert_string(fastp, allow_empty = FALSE, allow_null = TRUE)
-    Fastp$new(
-      cmd = fastp,
-      ...,
-      fq1 = fq1,
-      fq2 = fq2,
-      ofile1 = ofile1,
-      ofile2 = ofile2
-    )
+bwa <- make_command(
+  "bwa",
+  function(subcmd = NULL, ..., bwa = NULL) {
+    assert_string(subcmd, allow_empty = FALSE, allow_null = TRUE)
+    assert_string(bwa, allow_empty = FALSE, allow_null = TRUE)
+    BWA$new(cmd = bwa, ..., subcmd = subcmd)
   }
 )
 
-Fastp <- R6Class(
-  "Fastp",
+BWA <- R6Class(
+  "BWA",
   inherit = Command,
   private = list(
-    alias = function() "fastp",
+    alias = function() "bwa",
     setup_help_params = function() "--help",
-    setup_command_params = function(fq1, fq2, ofile1, ofile2){
-      c(
-        arg0("-i", fq1),
-        if (!is.null(fq2)) arg0("-I", fq2) else NULL,
-        arg0("-o", ofile1),
-        if (!is.null(ofile2)) arg0("-O", ofile2) else NULL
-      )
+    combine_params = function(subcmd) {
+      c(subcmd, super$combine_params())
     }
   )
 )
