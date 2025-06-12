@@ -1,8 +1,11 @@
 #' Run BWA
 #'
+#'BWA is a software package that aligns low-divergence sequences to a
+#'large reference genome, such as the human genome
 #' @param subcmd Sub-Command of BWA (e.g., "index", "mem").
 #' @param ... `r rd_dots("bwa")`.
 #' @param bwa `r rd_cmd("bwa")`.
+#' @family command
 #' @inherit exec return
 #' @seealso
 #' - <http://bio-bwa.sourceforge.net/>
