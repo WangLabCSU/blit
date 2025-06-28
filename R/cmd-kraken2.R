@@ -79,14 +79,28 @@ Kraken2 <- R6Class(
             # appropriately. For example:
             odir <- build_opath(odir)
             if (!is.null(classified_out)) {
+                if (!grepl("\\.(fq|fastq)$", classified_out,
+                          ignore.case = TRUE)) {
+                    cli::cli_abort("{.arg classified_out} must have a file extension {.field .fq} or {.field fastq}")
+                }
                 if (length(reads) == 2L) {
-                    classified_out <- sprintf("%s#", classified_out)
+                    classified_out <- sub(
+                        "\\.(fq|fastq)", "#.\\1", 
+                        classified_out, ignore.case = TRUE
+                    )
                 }
                 classified_out <- file_path(odir, classified_out)
             }
             if (!is.null(unclassified_out)) {
+                if (!grepl("\\.(fq|fastq)$", unclassified_out,
+                          ignore.case = TRUE)) {
+                    cli::cli_abort("{.arg unclassified_out} must have a file extension {.field .fq} or {.field fastq}")
+                }
                 if (length(reads) == 2L) {
-                    unclassified_out <- sprintf("%s#", unclassified_out)
+                    unclassified_out <- sub(
+                        "\\.(fq|fastq)", "#.\\1", 
+                        unclassified_out, ignore.case = TRUE
+                    )
                 }
                 unclassified_out <- file_path(odir, unclassified_out)
             }
