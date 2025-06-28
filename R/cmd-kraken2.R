@@ -79,13 +79,13 @@ Kraken2 <- R6Class(
             # appropriately. For example:
             odir <- build_opath(odir)
             if (!is.null(classified_out)) {
-                if (!is.null(fq2)) {
+                if (length(reads) == 2L) {
                     classified_out <- sprintf("%s#", classified_out)
                 }
                 classified_out <- file_path(odir, classified_out)
             }
             if (!is.null(unclassified_out)) {
-                if (!is.null(fq2)) {
+                if (length(reads) == 2L) {
                     unclassified_out <- sprintf("%s#", unclassified_out)
                 }
                 unclassified_out <- file_path(odir, unclassified_out)
