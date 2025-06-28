@@ -85,7 +85,7 @@ Kraken2 <- R6Class(
                 }
                 if (length(reads) == 2L) {
                     classified_out <- sub(
-                        "\\.(fq|fastq)", "#.\\1", 
+                        "\\.(fq|fastq)$", "#.\\1", 
                         classified_out, ignore.case = TRUE
                     )
                 }
@@ -98,7 +98,7 @@ Kraken2 <- R6Class(
                 }
                 if (length(reads) == 2L) {
                     unclassified_out <- sub(
-                        "\\.(fq|fastq)", "#.\\1", 
+                        "\\.(fq|fastq)$", "#.\\1", 
                         unclassified_out, ignore.case = TRUE
                     )
                 }
