@@ -6,7 +6,8 @@
 #' k-mers to the lowest common ancestor (LCA) of all genomes known to contain a
 #' given k-mer.
 #'
-#' @param fq1,fq2 A string of fastq file path.
+#' @param reads A character vector of FASTQ files used as input to Kraken2.
+#' Can be one file (single-end) or two files (paired-end).
 #' @param ... `r rd_dots("kraken2")`.
 #' @param ofile A string of path to save kraken2 output.
 #' @param report A string of path to save kraken2 report.
@@ -27,9 +28,7 @@
 kraken2 <- make_command(
     "kraken2",
     function(
-        fq1,
-        ...,
-        fq2 = NULL,
+        reads, ...,
         ofile = "kraken_output.txt",
         report = "kraken_report.txt",
         classified_out = NULL,
@@ -41,8 +40,7 @@ kraken2 <- make_command(
         Kraken2$new(
             cmd = kraken2,
             ...,
-            fq1 = fq1,
-            fq2 = fq2,
+            reads = reads,
             ofile = ofile,
             report = report,
             classified_out = classified_out,
@@ -59,14 +57,17 @@ Kraken2 <- R6Class(
         alias = function() "kraken2",
         setup_help_params = function() "--help",
         setup_command_params = function(
-            fq1,
-            fq2,
+            reads,
             ofile,
             report,
             classified_out,
             unclassified_out,
             odir
         ) {
+            reads <- as.character(reads)
+            if (length(reads) < 1L || length(reads) > 2L) {
+                cli::cli_abort("{.arg reads} must be of length 1 or 2")
+            }
             assert_string(ofile, allow_null = TRUE)
             assert_string(report, allow_null = TRUE)
             assert_string(classified_out, allow_null = TRUE)
@@ -100,14 +101,13 @@ Kraken2 <- R6Class(
                 ),
                 arg0(
                     "--unclassified-out",
-                    classified_out,
+                    unclassified_out,
                     allow_null = TRUE
                 ),
                 arg0("--output", ofile, allow_null = TRUE),
                 arg0("--report", report, allow_null = TRUE),
-                if (!is.null(fq2)) "--paired",
-                fq1,
-                fq2
+                if (length(reads) == 2L) "--paired",
+                reads
             )
         }
     )
