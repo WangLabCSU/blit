@@ -81,7 +81,7 @@ Kraken2 <- R6Class(
             if (!is.null(classified_out)) {
                 if (!grepl("\\.(fq|fastq)$", classified_out,
                           ignore.case = TRUE)) {
-                    cli::cli_abort("{.arg classified_out} must have a file extension {.field .fq} or {.field fastq}")
+                    cli::cli_abort("{.arg classified_out} must have a file extension {.field .fq} or {.field .fastq}")
                 }
                 if (length(reads) == 2L) {
                     classified_out <- sub(
@@ -94,7 +94,7 @@ Kraken2 <- R6Class(
             if (!is.null(unclassified_out)) {
                 if (!grepl("\\.(fq|fastq)$", unclassified_out,
                           ignore.case = TRUE)) {
-                    cli::cli_abort("{.arg unclassified_out} must have a file extension {.field .fq} or {.field fastq}")
+                    cli::cli_abort("{.arg unclassified_out} must have a file extension {.field .fq} or {.field .fastq}")
                 }
                 if (length(reads) == 2L) {
                     unclassified_out <- sub(
