@@ -2,7 +2,8 @@
 % Please edit documentation in R/cmd-bcftools.R
 \name{bcftools}
 \alias{bcftools}
-\title{BCFtools is a program for variant calling and manipulating files in the Variant Call Format (VCF) and its binary counterpart BCF.
+\title{BCFtools is a program for variant calling and manipulating files
+in the Variant Call Format (VCF) and its binary counterpart BCF.
 All commands work transparently with both VCFs and BCFs, both uncompressed and BGZF-compressed.}
 \usage{
 bcftools(subcmd = NULL, ..., bcftools = NULL)
@@ -18,7 +19,8 @@ bcftools(subcmd = NULL, ..., bcftools = NULL)
 A \code{command} object.
 }
 \description{
-BCFtools is a program for variant calling and manipulating files in the Variant Call Format (VCF) and its binary counterpart BCF.
+BCFtools is a program for variant calling and manipulating files
+in the Variant Call Format (VCF) and its binary counterpart BCF.
 All commands work transparently with both VCFs and BCFs, both uncompressed and BGZF-compressed.
 }
 \seealso{
