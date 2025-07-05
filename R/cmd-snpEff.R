@@ -1,6 +1,5 @@
 #' Genetic variant annotation, and functional effect prediction toolbox. 
-#' It annotates and predicts the effects of genetic variants on genes and proteins 
-#' (such as amino acid changes).
+#' It annotates and predicts the effects of genetic variants on genes and proteins (such as amino acid changes).
 #'
 #' @param subcmd Sub-Command of snpEff. Details see: `r rd_help("snpEff")`.
 #' @param ... `r rd_dots("snpEff")`.

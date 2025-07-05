@@ -3,8 +3,7 @@
 \name{snpEff}
 \alias{snpEff}
 \title{Genetic variant annotation, and functional effect prediction toolbox.
-It annotates and predicts the effects of genetic variants on genes and proteins
-(such as amino acid changes).}
+It annotates and predicts the effects of genetic variants on genes and proteins (such as amino acid changes).}
 \usage{
 snpEff(subcmd = NULL, ..., snpEff = NULL)
 }
@@ -20,8 +19,7 @@ A \code{command} object.
 }
 \description{
 Genetic variant annotation, and functional effect prediction toolbox.
-It annotates and predicts the effects of genetic variants on genes and proteins
-(such as amino acid changes).
+It annotates and predicts the effects of genetic variants on genes and proteins (such as amino acid changes).
 }
 \seealso{
 \itemize{
@@ -34,6 +32,7 @@ It annotates and predicts the effects of genetic variants on genes and proteins
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
+\code{\link{bcftools}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},
