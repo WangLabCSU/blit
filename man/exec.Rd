@@ -21,6 +21,7 @@ Invoke a System Command
 
 \itemize{
 \item \code{\link[=allele_counter]{allele_counter()}}
+\item \code{\link[=bcftools]{bcftools()}}
 \item \code{\link[=cellranger]{cellranger()}}
 \item \code{\link[=conda]{conda()}}
 \item \code{\link[=fastp]{fastp()}}
@@ -33,6 +34,7 @@ Invoke a System Command
 \item \code{\link[=python]{python()}}
 \item \code{\link[=samtools]{samtools()}}
 \item \code{\link[=seqkit]{seqkit()}}
+\item \code{\link[=snpEff]{snpEff()}}
 \item \code{\link[=trust4]{trust4()}}
 }
 }

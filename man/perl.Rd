@@ -30,6 +30,7 @@ years of development.
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
+\code{\link{bcftools}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},
@@ -41,6 +42,7 @@ Other \code{commands}:
 \code{\link{python}()},
 \code{\link{samtools}()},
 \code{\link{seqkit}()},
+\code{\link{snpEff}()},
 \code{\link{trust4}()}
 }
 \concept{command}
