@@ -59,6 +59,7 @@ Other \code{commands}:
 \code{\link{python}()},
 \code{\link{samtools}()},
 \code{\link{seqkit}()},
+\code{\link{snpEff}()},
 \code{\link{trust4}()}
 }
 \concept{command}

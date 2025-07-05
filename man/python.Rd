@@ -41,6 +41,7 @@ Other \code{commands}:
 \code{\link{pyscenic}()},
 \code{\link{samtools}()},
 \code{\link{seqkit}()},
+\code{\link{snpEff}()},
 \code{\link{trust4}()}
 }
 \concept{command}
