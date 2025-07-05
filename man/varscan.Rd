@@ -5,18 +5,14 @@
 \title{VarScan is a platform-independent software tool
 developed at the Genome Institute at Washington University to detect variants in NGS data.}
 \usage{
-varscan(java_opts = NULL, varscan_jar = NULL, subcmd = NULL, ..., java = NULL)
+varscan(subcmd = NULL, ..., varscan = NULL)
 }
 \arguments{
-\item{java_opts}{Options passed to the java command}
-
-\item{varscan_jar}{Path to varscan.jar.}
-
 \item{subcmd}{Sub-Command of varscan. Details see: \code{cmd_help(varscan())}.}
 
 \item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{varscan} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(varscan())}.}
 
-\item{java}{A string of path to \code{varscan} command.}
+\item{varscan}{A string of path to \code{varscan} command.}
 }
 \value{
 A \code{command} object.
@@ -36,7 +32,6 @@ developed at the Genome Institute at Washington University to detect variants in
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
-\code{\link{bowtie2}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},
