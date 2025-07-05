@@ -48,6 +48,7 @@ cellranger(
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
+\code{\link{bcftools}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},
 \code{\link{fastq_pair}()},
