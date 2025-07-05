@@ -96,6 +96,7 @@ Other \code{commands}:
 \code{\link{pyscenic}()},
 \code{\link{python}()},
 \code{\link{samtools}()},
-\code{\link{seqkit}()}
+\code{\link{seqkit}()},
+\code{\link{varscan}()}
 }
 \concept{command}
