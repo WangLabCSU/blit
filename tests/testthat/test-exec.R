@@ -77,10 +77,6 @@ testthat::test_that("`fastp()` works as expected", {
   fastp() |> cmd_help()
 })
 
-testthat::test_that("`bowtie2()` works as expected", {
-  testthat::skip_if_not(nzchar(Sys.which("bowtie2")))
-  bowtie2() |> cmd_help()
-})
 
 testthat::test_that("`snpeff()` works as expected", {
   testthat::skip_if_not(nzchar(Sys.which("snpeff")))
@@ -90,4 +86,9 @@ testthat::test_that("`snpeff()` works as expected", {
 testthat::test_that("`bcftools()` works as expected", {
   testthat::skip_if_not(nzchar(Sys.which("bcftools")))
   bcftools() |> cmd_help()
+})
+
+testthat::test_that("`bowtie2()` works as expected", {
+  testthat::skip_if_not(nzchar(Sys.which("bowtie2")))
+  bowtie2() |> cmd_help()
 })
