@@ -66,3 +66,13 @@ testthat::test_that("`pipe()` method works well", {
         cmd_run()
     testthat::expect_identical(read_lines(file), read_lines(file2))
 })
+
+testthat::test_that("`varscan()` works as expected", {
+  testthat::skip_if_not(nzchar(Sys.which("varscan")))
+  varscan() |> cmd_help()
+})
+
+testthat::test_that("`fastp()` works as expected", {
+  testthat::skip_if_not(nzchar(Sys.which("fastp")))
+  fastp() |> cmd_help()
+})
