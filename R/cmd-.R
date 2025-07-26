@@ -13,16 +13,19 @@
 #' @export
 make_command <- function(name, fun, envir = caller_env()) {
     force(name)
+    fun_binding <- new.env(parent = emptyenv())
+    fun_binding[[name]] <- fun
+    fun_quo <- rlang::new_quosure(rlang::sym(name), fun_binding) # nolint
     wrapper <- rlang::new_function(
         rlang::fn_fmls(fun),
         quote({
             # capture the call, and modify it if the first unnamed value is
             # a `command`
-            call <- as.list(sys.call())
+            args <- as.list(sys.call())[-1L]
             envir <- parent.frame() # the environment used to evaluate the call
 
             # unnamed values
-            unnamed <- which(!rlang::have_name(call[-1L])) + 1L
+            unnamed <- which(!rlang::have_name(args))
 
             # if we have accept another command object?
             input_command <- NULL
@@ -30,21 +33,15 @@ make_command <- function(name, fun, envir = caller_env()) {
                 # if the first unnamed value is a `command` object
                 # we'll remove this value from the call
                 first_unnamed_value <- rlang::try_fetch(
-                    eval(.subset2(call, unnamed[1L]), envir = envir),
+                    eval(.subset2(args, unnamed[1L]), envir = envir),
                     error = function(cnd) NULL
                 )
                 if (inherits(first_unnamed_value, "command")) {
-                    call <- call[-unnamed[1L]]
+                    args <- args[-unnamed[1L]]
                     input_command <- first_unnamed_value
                 }
             }
-
-            # insert a new stack to save the function
-            # in this way, the error message will give the function name
-            new_stack <- new.env(parent = envir)
-            new_stack[[name]] <- fun
-            call[[1L]] <- rlang::sym(name)
-            new <- eval(as.call(call), envir = new_stack)
+            new <- rlang::eval_tidy(rlang::call2(fun_quo, !!!args), env = envir)
             # Don't accept another command object
             if (is.null(input_command)) {
                 out <- new_command(new)

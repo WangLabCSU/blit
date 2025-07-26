@@ -93,7 +93,7 @@ install_appmamba <- function(force = FALSE) {
     status <- utils::untar(installer, exdir = path)
     if (status != 0L) {
         cli::cli_abort(
-            "Cannot decompress {.path installer} [status = {status}]"
+            "Cannot decompress {.path {installer}} [status = {status}]"
         )
     }
     cli::cli_inform("Install {.pkg appmamba} successfully!")
@@ -132,8 +132,8 @@ appmamba_rc <- function(edit = FALSE) {
     root <- appmamba_root()
     rc_file <- file.path(root, ".mambarc")
     if (isTRUE(edit)) {
-        dir_create(root)
         if (!file.exists(rc_file)) {
+            dir_create(root)
             write_lines(c(
                 "# For more information about this file see:",
                 "# https://conda.io/docs/user-guide/configuration/use-condarc.html"
