@@ -62,6 +62,7 @@ Other \code{commands}:
 \code{\link{python}()},
 \code{\link{samtools}()},
 \code{\link{seqkit}()},
-\code{\link{trust4}()}
+\code{\link{trust4}()},
+\code{\link{varscan}()}
 }
 \concept{command}
