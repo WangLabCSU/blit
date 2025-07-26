@@ -98,6 +98,7 @@ Other \code{commands}:
 \code{\link{python}()},
 \code{\link{samtools}()},
 \code{\link{seqkit}()},
-\code{\link{snpEff}()}
+\code{\link{snpEff}()},
+\code{\link{varscan}()}
 }
 \concept{command}
