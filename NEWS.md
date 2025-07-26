@@ -2,6 +2,16 @@
 
 * Rename `cmd_conda` to `cmd_codnaenv()`.
 
+* new command `fastp`
+
+* new command `varscan`
+
+* new command `bcftools`
+
+* new command `snpEff`
+
+* new command `bowtie2`
+
 # blit 0.2.0
 
 ## New features
