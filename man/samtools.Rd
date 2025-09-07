@@ -45,6 +45,7 @@ Other \code{commands}:
 \code{\link{pyscenic}()},
 \code{\link{python}()},
 \code{\link{seqkit}()},
+\code{\link{snpEff}()},
 \code{\link{trust4}()},
 \code{\link{varscan}()}
 }
