@@ -1,7 +1,7 @@
 #' Run BWA
 #'
-#'BWA is a software package that aligns low-divergence sequences to a
-#'large reference genome, such as the human genome
+#' BWA is a software package that aligns low-divergence sequences to a
+#' large reference genome, such as the human genome
 #' @param subcmd Sub-Command of BWA (e.g., "index", "mem").
 #' @param ... `r rd_dots("bwa")`.
 #' @param bwa `r rd_cmd("bwa")`.
@@ -11,21 +11,16 @@
 #' - <http://bio-bwa.sourceforge.net/>
 #'
 #' `r rd_seealso()`
-#' @examples# 索引参考基因组
-#bwa("index", "-a", "bwtsw", "reference.fa")$run()
-
-# 序列比对
-#bwa("mem",
-#    "-t", "4"
-#    "reference.fa"
-#    "read1.fq"
-#    "read2.fq")$run(stdout = "output.sam")
+#' @examples
 #' \dontrun{
-#' # 建立索引
+#' # Index reference genome
 #' bwa("index", "-a", "bwtsw", "reference.fa")$run()
 #'
-#' # 双端序列比对
+#' # Paired-end sequence alignment
 #' bwa("mem", "-t", "4", "reference.fa", "read1.fq", "read2.fq")$run(stdout = "output.sam")
+#'
+#' # Single-end alignment (generate sai file)
+#' bwa("aln", "-t", "4", "reference.fa", "read.fq")$run(stdout = "read.sai")
 #' }
 #' @family command
 #' @export
