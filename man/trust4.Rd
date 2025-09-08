@@ -85,6 +85,8 @@ data
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
+\code{\link{bowtie2}()},
+\code{\link{bcftools}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},
@@ -96,6 +98,8 @@ Other \code{commands}:
 \code{\link{pyscenic}()},
 \code{\link{python}()},
 \code{\link{samtools}()},
-\code{\link{seqkit}()}
+\code{\link{seqkit}()},
+\code{\link{snpEff}()},
+\code{\link{varscan}()}
 }
 \concept{command}

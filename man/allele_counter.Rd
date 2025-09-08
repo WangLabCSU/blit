@@ -43,6 +43,8 @@ between some other projects, specifically \code{AscatNGS} and \code{Battenberg}.
 }
 
 Other \code{commands}:
+\code{\link{bowtie2}()},
+\code{\link{bcftools}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},
@@ -55,6 +57,8 @@ Other \code{commands}:
 \code{\link{python}()},
 \code{\link{samtools}()},
 \code{\link{seqkit}()},
-\code{\link{trust4}()}
+\code{\link{snpEff}()},
+\code{\link{trust4}()},
+\code{\link{varscan}()}
 }
 \concept{command}

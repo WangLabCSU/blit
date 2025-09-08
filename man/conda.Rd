@@ -29,6 +29,8 @@ Run conda
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
+\code{\link{bowtie2}()},
+\code{\link{bcftools}()},
 \code{\link{cellranger}()},
 \code{\link{fastp}()},
 \code{\link{fastq_pair}()},
@@ -40,6 +42,8 @@ Other \code{commands}:
 \code{\link{python}()},
 \code{\link{samtools}()},
 \code{\link{seqkit}()},
-\code{\link{trust4}()}
+\code{\link{snpEff}()},
+\code{\link{trust4}()},
+\code{\link{varscan}()}
 }
 \concept{command}

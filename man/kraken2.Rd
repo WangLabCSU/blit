@@ -5,9 +5,8 @@
 \title{Running Kraken2}
 \usage{
 kraken2(
-  fq1,
+  reads,
   ...,
-  fq2 = NULL,
   ofile = "kraken_output.txt",
   report = "kraken_report.txt",
   classified_out = NULL,
@@ -17,7 +16,8 @@ kraken2(
 )
 }
 \arguments{
-\item{fq1, fq2}{A string of fastq file path.}
+\item{reads}{A character vector of FASTQ files used as input to Kraken2.
+Can be one file (single-end) or two files (paired-end).}
 
 \item{...}{<\link[rlang:dyn-dots]{dynamic dots}> Additional arguments passed to \code{kraken2} command. Empty arguments are automatically trimmed. If a single argument, such as a file path, contains spaces, it must be quoted, for example using \code{\link[=shQuote]{shQuote()}}. Details see: \code{cmd_help(kraken2())}.}
 
@@ -57,6 +57,8 @@ given k-mer.
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
+\code{\link{bowtie2}()},
+\code{\link{bcftools}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},
@@ -68,6 +70,8 @@ Other \code{commands}:
 \code{\link{python}()},
 \code{\link{samtools}()},
 \code{\link{seqkit}()},
-\code{\link{trust4}()}
+\code{\link{snpEff}()},
+\code{\link{trust4}()},
+\code{\link{varscan}()}
 }
 \concept{command}
