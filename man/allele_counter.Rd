@@ -43,8 +43,9 @@ between some other projects, specifically \code{AscatNGS} and \code{Battenberg}.
 }
 
 Other \code{commands}:
-\code{\link{bowtie2}()},
 \code{\link{bcftools}()},
+\code{\link{bedtools}()},
+\code{\link{bowtie2}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},

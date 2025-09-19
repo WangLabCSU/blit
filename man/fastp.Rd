@@ -33,8 +33,9 @@ and quality control for FastQ data.
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
-\code{\link{bowtie2}()},
 \code{\link{bcftools}()},
+\code{\link{bedtools}()},
+\code{\link{bowtie2}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastq_pair}()},

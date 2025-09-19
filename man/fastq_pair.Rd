@@ -54,8 +54,9 @@ they demand paired end files have the same number of reads.
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
-\code{\link{bowtie2}()},
 \code{\link{bcftools}()},
+\code{\link{bedtools}()},
+\code{\link{bowtie2}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},

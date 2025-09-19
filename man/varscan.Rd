@@ -32,6 +32,9 @@ developed at the Genome Institute at Washington University to detect variants in
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
+\code{\link{bcftools}()},
+\code{\link{bedtools}()},
+\code{\link{bowtie2}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},
@@ -44,6 +47,7 @@ Other \code{commands}:
 \code{\link{python}()},
 \code{\link{samtools}()},
 \code{\link{seqkit}()},
+\code{\link{snpEff}()},
 \code{\link{trust4}()}
 }
 \concept{command}
