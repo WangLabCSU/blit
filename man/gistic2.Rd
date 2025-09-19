@@ -51,6 +51,10 @@ deletion, and it lists genes found in each "wide peak" region.
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
+\code{\link{bcftools}()},
+\code{\link{bedtools}()},
+\code{\link{bowtie2}()},
+\code{\link{bwa}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},
@@ -62,6 +66,8 @@ Other \code{commands}:
 \code{\link{python}()},
 \code{\link{samtools}()},
 \code{\link{seqkit}()},
-\code{\link{trust4}()}
+\code{\link{snpEff}()},
+\code{\link{trust4}()},
+\code{\link{varscan}()}
 }
 \concept{command}

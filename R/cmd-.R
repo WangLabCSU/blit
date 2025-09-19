@@ -9,12 +9,12 @@
 #' @param envir A environment used to bind the created function.
 #' @return A function.
 #' @seealso [`Command`]
-#' @importFrom rlang caller_env
 #' @export
-make_command <- function(name, fun, envir = caller_env()) {
+make_command <- function(name, fun, envir = parent.frame()) {
     force(name)
     fun_binding <- new.env(parent = emptyenv())
     fun_binding[[name]] <- fun
+    # use quosore to capture the function binding
     fun_quo <- rlang::new_quosure(rlang::sym(name), fun_binding) # nolint
     wrapper <- rlang::new_function(
         rlang::fn_fmls(fun),

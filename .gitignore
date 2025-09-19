@@ -1,6 +1,7 @@
 .Rproj.user
+.Rhistory
 .radian_history
 Scratch.RConsole
-
 /.quarto/
 README.html
+docs
