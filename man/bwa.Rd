@@ -23,13 +23,16 @@ large reference genome, such as the human genome
 \examples{
 \dontrun{
 # Index reference genome
-bwa("index", "-a", "bwtsw", "reference.fa")$run()
+bwa("index", "-a", "bwtsw", "reference.fa") |>
+  cmd_run()
 
 # Paired-end sequence alignment
-bwa("mem", "-t", "4", "reference.fa", "read1.fq", "read2.fq")$run(stdout = "output.sam")
+bwa("mem", "-t", "4", "reference.fa", "read1.fq", "read2.fq") |>
+  cmd_run(stdout = "output.sam")
 
 # Single-end alignment (generate sai file)
-bwa("aln", "-t", "4", "reference.fa", "read.fq")$run(stdout = "read.sai")
+bwa("aln", "-t", "4", "reference.fa", "read.fq") |>
+  cmd_run(stdout = "read.sai")
 }
 }
 \seealso{
@@ -40,27 +43,6 @@ bwa("aln", "-t", "4", "reference.fa", "read.fq")$run(stdout = "read.sai")
 \item \code{\link[=cmd_on_succeed]{cmd_on_succeed()}}/\code{\link[=cmd_on_fail]{cmd_on_fail()}}
 \item \code{\link[=cmd_parallel]{cmd_parallel()}}
 }
-
-Other \code{commands}:
-\code{\link{allele_counter}()},
-\code{\link{bcftools}()},
-\code{\link{bedtools}()},
-\code{\link{bowtie2}()},
-\code{\link{cellranger}()},
-\code{\link{conda}()},
-\code{\link{fastp}()},
-\code{\link{fastq_pair}()},
-\code{\link{gistic2}()},
-\code{\link{kraken2}()},
-\code{\link{kraken_tools}()},
-\code{\link{perl}()},
-\code{\link{pyscenic}()},
-\code{\link{python}()},
-\code{\link{samtools}()},
-\code{\link{seqkit}()},
-\code{\link{snpEff}()},
-\code{\link{trust4}()},
-\code{\link{varscan}()}
 
 Other \code{commands}:
 \code{\link{allele_counter}()},

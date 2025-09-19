@@ -5,7 +5,6 @@
 #' @param subcmd Sub-Command of BWA (e.g., "index", "mem").
 #' @param ... `r rd_dots("bwa")`.
 #' @param bwa `r rd_cmd("bwa")`.
-#' @family command
 #' @inherit exec return
 #' @seealso
 #' - <http://bio-bwa.sourceforge.net/>
@@ -14,13 +13,16 @@
 #' @examples
 #' \dontrun{
 #' # Index reference genome
-#' bwa("index", "-a", "bwtsw", "reference.fa")$run()
+#' bwa("index", "-a", "bwtsw", "reference.fa") |>
+#'   cmd_run()
 #'
 #' # Paired-end sequence alignment
-#' bwa("mem", "-t", "4", "reference.fa", "read1.fq", "read2.fq")$run(stdout = "output.sam")
+#' bwa("mem", "-t", "4", "reference.fa", "read1.fq", "read2.fq") |>
+#'   cmd_run(stdout = "output.sam")
 #'
 #' # Single-end alignment (generate sai file)
-#' bwa("aln", "-t", "4", "reference.fa", "read.fq")$run(stdout = "read.sai")
+#' bwa("aln", "-t", "4", "reference.fa", "read.fq") |>
+#'   cmd_run(stdout = "read.sai")
 #' }
 #' @family command
 #' @export
