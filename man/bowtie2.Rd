@@ -41,6 +41,7 @@ Bowtie 2 supports gapped, local, and paired-end alignment modes.
 Other \code{commands}:
 \code{\link{allele_counter}()},
 \code{\link{bcftools}()},
+\code{\link{bedtools}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},

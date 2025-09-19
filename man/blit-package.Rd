@@ -14,6 +14,7 @@ An all-encompassing R toolkit designed to streamline the process of calling vari
 Useful links:
 \itemize{
   \item \url{https://github.com/WangLabCSU/blit}
+  \item \url{https://wanglabcsu.github.io/blit/}
   \item Report bugs at \url{https://github.com/WangLabCSU/blit/issues}
 }
 

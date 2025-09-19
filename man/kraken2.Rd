@@ -58,6 +58,7 @@ given k-mer.
 Other \code{commands}:
 \code{\link{allele_counter}()},
 \code{\link{bcftools}()},
+\code{\link{bedtools}()},
 \code{\link{bowtie2}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},

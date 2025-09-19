@@ -34,6 +34,7 @@ All commands work transparently with both VCFs and BCFs, both uncompressed and B
 
 Other \code{commands}:
 \code{\link{allele_counter}()},
+\code{\link{bedtools}()},
 \code{\link{bowtie2}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},

@@ -22,6 +22,7 @@ Invoke a System Command
 \itemize{
 \item \code{\link[=allele_counter]{allele_counter()}}
 \item \code{\link[=bcftools]{bcftools()}}
+\item \code{\link[=bedtools]{bedtools()}}
 \item \code{\link[=bowtie2]{bowtie2()}}
 \item \code{\link[=cellranger]{cellranger()}}
 \item \code{\link[=conda]{conda()}}
