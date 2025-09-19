@@ -11,3 +11,6 @@ README.html
 ^data-raw$
 ^codecov\.yml$
 ^revdep$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
