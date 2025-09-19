@@ -4,7 +4,7 @@
 \alias{make_command}
 \title{Helper function to create new command.}
 \usage{
-make_command(name, fun, envir = caller_env())
+make_command(name, fun, envir = parent.frame())
 }
 \arguments{
 \item{name}{A string of the function name.}
