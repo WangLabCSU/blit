@@ -24,6 +24,7 @@ Invoke a System Command
 \item \code{\link[=bcftools]{bcftools()}}
 \item \code{\link[=bedtools]{bedtools()}}
 \item \code{\link[=bowtie2]{bowtie2()}}
+\item \code{\link[=bwa]{bwa()}}
 \item \code{\link[=cellranger]{cellranger()}}
 \item \code{\link[=conda]{conda()}}
 \item \code{\link[=fastp]{fastp()}}

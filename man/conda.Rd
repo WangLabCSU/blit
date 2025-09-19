@@ -32,6 +32,7 @@ Other \code{commands}:
 \code{\link{bcftools}()},
 \code{\link{bedtools}()},
 \code{\link{bowtie2}()},
+\code{\link{bwa}()},
 \code{\link{cellranger}()},
 \code{\link{fastp}()},
 \code{\link{fastq_pair}()},

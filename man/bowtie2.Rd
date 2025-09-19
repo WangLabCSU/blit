@@ -42,6 +42,7 @@ Other \code{commands}:
 \code{\link{allele_counter}()},
 \code{\link{bcftools}()},
 \code{\link{bedtools}()},
+\code{\link{bwa}()},
 \code{\link{cellranger}()},
 \code{\link{conda}()},
 \code{\link{fastp}()},

@@ -8,6 +8,13 @@ testthat::test_that("`bedtools()` works as expected", {
     bedtools() |> cmd_help()
 })
 
+testthat::test_that("`bwa()` works as expected", {
+  testthat::skip_if_not(nzchar(Sys.which("bwa")))
+  bwa() |> cmd_help()
+  bwa("index") |> cmd_help()
+  bwa("mem") |> cmd_help()
+})
+
 testthat::test_that("`cellranger()` works as expected", {
     testthat::skip_if_not(nzchar(Sys.which("cellranger")))
     cellranger() |> cmd_help()
@@ -70,6 +77,32 @@ testthat::test_that("`pipe()` method works well", {
         exec("gzip", "-d", ">", file2) |>
         cmd_run()
     testthat::expect_identical(read_lines(file), read_lines(file2))
+})
+
+testthat::test_that("`varscan()` works as expected", {
+  testthat::skip_if_not(nzchar(Sys.which("varscan")))
+  varscan() |> cmd_help()
+})
+
+testthat::test_that("`fastp()` works as expected", {
+  testthat::skip_if_not(nzchar(Sys.which("fastp")))
+  fastp() |> cmd_help()
+})
+
+
+testthat::test_that("`snpeff()` works as expected", {
+  testthat::skip_if_not(nzchar(Sys.which("snpeff")))
+  snpeff() |> cmd_help()
+})
+
+testthat::test_that("`bcftools()` works as expected", {
+  testthat::skip_if_not(nzchar(Sys.which("bcftools")))
+  bcftools() |> cmd_help()
+})
+
+testthat::test_that("`bowtie2()` works as expected", {
+  testthat::skip_if_not(nzchar(Sys.which("bowtie2")))
+  bowtie2() |> cmd_help()
 })
 
 testthat::test_that("`varscan()` works as expected", {
