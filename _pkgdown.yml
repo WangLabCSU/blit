@@ -2,3 +2,81 @@ url: https://wanglabcsu.github.io/blit/
 template:
   bootstrap: 5
 
+reference:
+  - title: "R6 class"
+    desc: "Core R6 class for encapsulating command parameters and building command objects."
+    contents:
+    - Command
+
+  - title: "Execute command"
+    desc: "Functions for executing commands, including foreground, background, and parallel execution."
+    contents:
+    - exec
+    - cmd_run
+    - cmd_help
+    - cmd_background
+    - cmd_parallel
+
+  - title: "Environment context"
+    desc: "Set up the execution context, such as working directory, environment variables, and dependency management."
+    contents:
+    - cmd_wd
+    - cmd_envvar
+    - cmd_envpath
+    - cmd_condaenv
+    - conda
+    - appmamba
+    - install_appmamba
+    - uninstall_appmamba
+    - appmamba_rc
+    - cmd_conda
+
+  - title: "Schedule expressions"
+    desc: "Define hooks to run before, after, or on success/failure of a command."
+    contents:
+    - cmd_on_start
+    - cmd_on_exit
+    - cmd_on_succeed
+    - cmd_on_fail
+
+  - title: "Genomic tools"
+    desc: "Wrappers for common genomic data processing and analysis tools."
+    contents:
+    - allele_counter
+    - bcftools
+    - bedtools
+    - bowtie2
+    - bwa
+    - samtools
+    - seqkit
+    - varscan
+    - snpEff
+    - gistic2
+
+  - title: "Transcriptomic tools"
+    desc: "Wrappers for transcriptome sequencing data processing and analysis tools."
+    contents:
+    - cellranger
+    - fastp
+    - fastq_pair
+    - fastq_read_pair
+    - kraken2
+    - kraken_tools
+    - trust4
+    - trust4_imgt_annot
+    - trust4_gene_names
+    - pyscenic
+
+  - title: "Development"
+    desc: "Developer utilities for extending functionality and creating new command interfaces."
+    contents:
+    - make_command
+    - arg
+    - arg0
+
+  - title: "Scripting interfaces"
+    desc: "Interfaces to external scripting languages for seamless integration with existing scripts."
+    contents:
+    - python
+    - perl
+
