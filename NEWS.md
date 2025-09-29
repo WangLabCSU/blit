@@ -12,6 +12,10 @@
 
 * new command `bowtie2`
 
+* new command `bwa`
+
+* new command `bedtools`
+
 # blit 0.2.0
 
 ## New features
