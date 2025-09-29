@@ -31,9 +31,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="r-class">R6 class<a class="anchor" aria-label="anchor" href="#r-class"></a></h2>
 
-
+      <div class="section-desc"><p>Core R6 class for encapsulating command parameters and building command objects.</p></div>
 
 
     </div><div class="section level2">
@@ -47,12 +47,58 @@
 
         </dt>
         <dd>R6 Class to prepare command parameters.</dd>
-      </dl><dl><dt>
+      </dl></div><div class="section level2">
+      <h2 id="execute-command">Execute command<a class="anchor" aria-label="anchor" href="#execute-command"></a></h2>
 
-          <code><a href="allele_counter.html">allele_counter()</a></code>
+      <div class="section-desc"><p>Functions for executing commands, including foreground, background, and parallel execution.</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="exec.html">exec()</a></code>
 
         </dt>
-        <dd>Run alleleCount</dd>
+        <dd>Invoke a System Command</dd>
+      </dl><dl><dt>
+
+          <code><a href="cmd_run.html">cmd_run()</a></code> <code><a href="cmd_run.html">cmd_help()</a></code> <code><a href="cmd_run.html">cmd_background()</a></code>
+
+        </dt>
+        <dd>Execute command</dd>
+      </dl><dl><dt>
+
+          <code><a href="cmd_parallel.html">cmd_parallel()</a></code>
+
+        </dt>
+        <dd>Execute a list of commands</dd>
+      </dl></div><div class="section level2">
+      <h2 id="environment-context">Environment context<a class="anchor" aria-label="anchor" href="#environment-context"></a></h2>
+
+      <div class="section-desc"><p>Set up the execution context, such as working directory, environment variables, and dependency management.</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="cmd_wd.html">cmd_wd()</a></code> <code><a href="cmd_wd.html">cmd_envvar()</a></code> <code><a href="cmd_wd.html">cmd_envpath()</a></code> <code><a href="cmd_wd.html">cmd_condaenv()</a></code>
+
+        </dt>
+        <dd>Setup the context for the command</dd>
+      </dl><dl><dt>
+
+          <code><a href="conda.html">conda()</a></code>
+
+        </dt>
+        <dd>Run conda</dd>
       </dl><dl><dt>
 
           <code><a href="appmamba.html">appmamba()</a></code> <code><a href="appmamba.html">install_appmamba()</a></code> <code><a href="appmamba.html">uninstall_appmamba()</a></code> <code><a href="appmamba.html">appmamba_rc()</a></code>
@@ -61,10 +107,44 @@
         <dd>Manage Environment with <code>micromamba</code></dd>
       </dl><dl><dt>
 
-          <code><a href="arg.html">arg()</a></code> <code><a href="arg.html">arg0()</a></code>
+          <code><a href="cmd_conda.html">cmd_conda()</a></code>
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
+        </dt>
+        <dd>Set <code>conda-like</code> environment prefix to the <code>PATH</code> environment variables</dd>
+      </dl></div><div class="section level2">
+      <h2 id="schedule-expressions">Schedule expressions<a class="anchor" aria-label="anchor" href="#schedule-expressions"></a></h2>
+
+      <div class="section-desc"><p>Define hooks to run before, after, or on success/failure of a command.</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="cmd_on_start.html">cmd_on_start()</a></code> <code><a href="cmd_on_start.html">cmd_on_exit()</a></code> <code><a href="cmd_on_start.html">cmd_on_fail()</a></code> <code><a href="cmd_on_start.html">cmd_on_succeed()</a></code>
 
         </dt>
-        <dd>Deliver arguments of command</dd>
+        <dd>Schedule expressions to run</dd>
+      </dl></div><div class="section level2">
+      <h2 id="genomic-tools">Genomic tools<a class="anchor" aria-label="anchor" href="#genomic-tools"></a></h2>
+
+      <div class="section-desc"><p>Wrappers for common genomic data processing and analysis tools.</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="allele_counter.html">allele_counter()</a></code>
+
+        </dt>
+        <dd>Run alleleCount</dd>
       </dl><dl><dt>
 
           <code><a href="bcftools.html">bcftools()</a></code>
@@ -91,52 +171,51 @@
         <dd>Run BWA</dd>
       </dl><dl><dt>
 
+          <code><a href="samtools.html">samtools()</a></code>
+
+        </dt>
+        <dd>Python is a programming language that lets you work quickly and integrate systems more effectively.</dd>
+      </dl><dl><dt>
+
+          <code><a href="seqkit.html">seqkit()</a></code>
+
+        </dt>
+        <dd>Run seqkit</dd>
+      </dl><dl><dt>
+
+          <code><a href="varscan.html">varscan()</a></code>
+
+        </dt>
+        <dd>VarScan is a platform-independent software tool developed at the Genome Institute at Washington University to detect variants in NGS data.</dd>
+      </dl><dl><dt>
+
+          <code><a href="snpEff.html">snpEff()</a></code>
+
+        </dt>
+        <dd>Genetic variant annotation, and functional effect prediction toolbox. It annotates and predicts the effects of genetic variants on genes and proteins (such as amino acid changes).</dd>
+      </dl><dl><dt>
+
+          <code><a href="gistic2.html">gistic2()</a></code>
+
+        </dt>
+        <dd>Run GISTIC2</dd>
+      </dl></div><div class="section level2">
+      <h2 id="transcriptomic-tools">Transcriptomic tools<a class="anchor" aria-label="anchor" href="#transcriptomic-tools"></a></h2>
+
+      <div class="section-desc"><p>Wrappers for transcriptome sequencing data processing and analysis tools.</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
           <code><a href="cellranger.html">cellranger()</a></code>
 
         </dt>
         <dd>Run cellranger</dd>
-      </dl><dl><dt>
-
-          <code><a href="cmd_conda.html">cmd_conda()</a></code>
-          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
-        </dt>
-        <dd>Set <code>conda-like</code> environment prefix to the <code>PATH</code> environment variables</dd>
-      </dl><dl><dt>
-
-          <code><a href="cmd_on_start.html">cmd_on_start()</a></code> <code><a href="cmd_on_start.html">cmd_on_exit()</a></code> <code><a href="cmd_on_start.html">cmd_on_fail()</a></code> <code><a href="cmd_on_start.html">cmd_on_succeed()</a></code>
-
-        </dt>
-        <dd>Schedule expressions to run</dd>
-      </dl><dl><dt>
-
-          <code><a href="cmd_parallel.html">cmd_parallel()</a></code>
-
-        </dt>
-        <dd>Execute a list of commands</dd>
-      </dl><dl><dt>
-
-          <code><a href="cmd_run.html">cmd_run()</a></code> <code><a href="cmd_run.html">cmd_help()</a></code> <code><a href="cmd_run.html">cmd_background()</a></code>
-
-        </dt>
-        <dd>Execute command</dd>
-      </dl><dl><dt>
-
-          <code><a href="cmd_wd.html">cmd_wd()</a></code> <code><a href="cmd_wd.html">cmd_envvar()</a></code> <code><a href="cmd_wd.html">cmd_envpath()</a></code> <code><a href="cmd_wd.html">cmd_condaenv()</a></code>
-
-        </dt>
-        <dd>Setup the context for the command</dd>
-      </dl><dl><dt>
-
-          <code><a href="conda.html">conda()</a></code>
-
-        </dt>
-        <dd>Run conda</dd>
-      </dl><dl><dt>
-
-          <code><a href="exec.html">exec()</a></code>
-
-        </dt>
-        <dd>Invoke a System Command</dd>
       </dl><dl><dt>
 
           <code><a href="fastp.html">fastp()</a></code>
@@ -151,12 +230,6 @@
         <dd>FASTQ PAIR</dd>
       </dl><dl><dt>
 
-          <code><a href="gistic2.html">gistic2()</a></code>
-
-        </dt>
-        <dd>Run GISTIC2</dd>
-      </dl><dl><dt>
-
           <code><a href="kraken2.html">kraken2()</a></code>
 
         </dt>
@@ -169,23 +242,51 @@
         <dd>KrakenTools is a suite of scripts to be used alongside the Kraken, KrakenUniq, Kraken 2, or Bracken programs.</dd>
       </dl><dl><dt>
 
-          <code><a href="make_command.html">make_command()</a></code>
+          <code><a href="trust4.html">trust4()</a></code> <code><a href="trust4.html">trust4_imgt_annot()</a></code> <code><a href="trust4.html">trust4_gene_names()</a></code>
 
         </dt>
-        <dd>Helper function to create new command.</dd>
-      </dl><dl><dt>
-
-          <code><a href="perl.html">perl()</a></code>
-
-        </dt>
-        <dd>Perl is a highly capable, feature-rich programming language with over 36 years of development.</dd>
+        <dd>TRUST4: immune repertoire reconstruction from bulk and single-cell RNA-seq data</dd>
       </dl><dl><dt>
 
           <code><a href="pyscenic.html">pyscenic()</a></code>
 
         </dt>
         <dd>Run pyscenic</dd>
+      </dl></div><div class="section level2">
+      <h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a></h2>
+
+      <div class="section-desc"><p>Developer utilities for extending functionality and creating new command interfaces.</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="make_command.html">make_command()</a></code>
+
+        </dt>
+        <dd>Helper function to create new command.</dd>
       </dl><dl><dt>
+
+          <code><a href="arg.html">arg()</a></code> <code><a href="arg.html">arg0()</a></code>
+
+        </dt>
+        <dd>Deliver arguments of command</dd>
+      </dl></div><div class="section level2">
+      <h2 id="scripting-interfaces">Scripting interfaces<a class="anchor" aria-label="anchor" href="#scripting-interfaces"></a></h2>
+
+      <div class="section-desc"><p>Interfaces to external scripting languages for seamless integration with existing scripts.</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="python.html">python()</a></code>
 
@@ -193,36 +294,13 @@
         <dd>Python is a programming language that lets you work quickly and integrate systems more effectively.</dd>
       </dl><dl><dt>
 
-          <code><a href="samtools.html">samtools()</a></code>
+          <code><a href="perl.html">perl()</a></code>
 
         </dt>
-        <dd>Python is a programming language that lets you work quickly and integrate systems more effectively.</dd>
-      </dl><dl><dt>
-
-          <code><a href="seqkit.html">seqkit()</a></code>
-
-        </dt>
-        <dd>Run seqkit</dd>
-      </dl><dl><dt>
-
-          <code><a href="snpEff.html">snpEff()</a></code>
-
-        </dt>
-        <dd>Genetic variant annotation, and functional effect prediction toolbox. It annotates and predicts the effects of genetic variants on genes and proteins (such as amino acid changes).</dd>
-      </dl><dl><dt>
-
-          <code><a href="trust4.html">trust4()</a></code> <code><a href="trust4.html">trust4_imgt_annot()</a></code> <code><a href="trust4.html">trust4_gene_names()</a></code>
-
-        </dt>
-        <dd>TRUST4: immune repertoire reconstruction from bulk and single-cell RNA-seq data</dd>
-      </dl><dl><dt>
-
-          <code><a href="varscan.html">varscan()</a></code>
-
-        </dt>
-        <dd>VarScan is a platform-independent software tool developed at the Genome Institute at Washington University to detect variants in NGS data.</dd>
+        <dd>Perl is a highly capable, feature-rich programming language with over 36 years of development.</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
