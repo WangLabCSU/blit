@@ -53,6 +53,7 @@ reference:
     - snpEff
     - gistic2
     - strelka
+    - minimap2
 
   - title: "Transcriptomic tools"
     desc: "Wrappers for transcriptome sequencing data processing and analysis tools."
