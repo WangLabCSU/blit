@@ -41,6 +41,7 @@ Invoke a System Command
 \item \code{\link[=strelka]{strelka()}}
 \item \code{\link[=trust4]{trust4()}}
 \item \code{\link[=varscan]{varscan()}}
+\item \code{\link[=minimap2]{minimap2()}}
 }
 }
 

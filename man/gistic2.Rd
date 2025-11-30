@@ -61,6 +61,7 @@ Other \code{commands}:
 \code{\link{fastq_pair}()},
 \code{\link{kraken2}()},
 \code{\link{kraken_tools}()},
+\code{\link{minimap2}()},
 \code{\link{perl}()},
 \code{\link{pyscenic}()},
 \code{\link{python}()},

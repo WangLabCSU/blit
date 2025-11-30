@@ -18,6 +18,8 @@
 
 * new command `strelka`
 
+* new command `minimap2`
+
 # blit 0.2.0
 
 ## New features
