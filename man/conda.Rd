@@ -36,6 +36,7 @@ Other \code{commands}:
 \code{\link{cellranger}()},
 \code{\link{fastp}()},
 \code{\link{fastq_pair}()},
+\code{\link{freebayes}()},
 \code{\link{gistic2}()},
 \code{\link{kraken2}()},
 \code{\link{kraken_tools}()},

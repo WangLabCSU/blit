@@ -29,9 +29,11 @@ Invoke a System Command
 \item \code{\link[=conda]{conda()}}
 \item \code{\link[=fastp]{fastp()}}
 \item \code{\link[=fastq_pair]{fastq_pair()}}
+\item \code{\link[=freebayes]{freebayes()}}
 \item \code{\link[=gistic2]{gistic2()}}
 \item \code{\link[=kraken_tools]{kraken_tools()}}
 \item \code{\link[=kraken2]{kraken2()}}
+\item \code{\link[=minimap2]{minimap2()}}
 \item \code{\link[=perl]{perl()}}
 \item \code{\link[=pyscenic]{pyscenic()}}
 \item \code{\link[=python]{python()}}
@@ -41,7 +43,6 @@ Invoke a System Command
 \item \code{\link[=strelka]{strelka()}}
 \item \code{\link[=trust4]{trust4()}}
 \item \code{\link[=varscan]{varscan()}}
-\item \code{\link[=minimap2]{minimap2()}}
 }
 }
 

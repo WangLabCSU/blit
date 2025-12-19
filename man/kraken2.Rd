@@ -65,6 +65,7 @@ Other \code{commands}:
 \code{\link{conda}()},
 \code{\link{fastp}()},
 \code{\link{fastq_pair}()},
+\code{\link{freebayes}()},
 \code{\link{gistic2}()},
 \code{\link{kraken_tools}()},
 \code{\link{minimap2}()},
