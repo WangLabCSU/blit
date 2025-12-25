@@ -50,6 +50,7 @@ appmamba <- function(...) {
     args <- c(
         "--root-prefix",
         normalizePath(root, winslash = "/", mustWork = FALSE),
+        "--yes",
         args
     )
     command <- exec(command, args)
