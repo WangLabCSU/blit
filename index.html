@@ -245,13 +245,13 @@
 <code class="sourceCode R"><span><span class="fu"><a href="reference/appmamba.html">appmamba</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running command (2025-04-08 05:58:27):</span></span>
 <span><span class="co">#&gt; /home/runner/.local/share/R/blit/apps/appmamba/bin/micromamba --root-prefix</span></span>
-<span><span class="co">#&gt; /home/runner/.local/share/R/blit/appmamba --help</span></span></code></pre></div>
+<span><span class="co">#&gt; /home/runner/.local/share/R/blit/appmamba --yes --help</span></span></code></pre></div>
 <p>To create a new environment named <code>samtools</code> and install <code>samtools</code> from <code>Bioconda</code>, use:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/appmamba.html">appmamba</a></span><span class="op">(</span><span class="st">"create"</span>, <span class="st">"--yes"</span>, <span class="st">"--name samtools"</span>, <span class="st">"bioconda::samtools"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/appmamba.html">appmamba</a></span><span class="op">(</span><span class="st">"create"</span>, <span class="st">"--name samtools"</span>, <span class="st">"bioconda::samtools"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running command (2025-04-08 05:58:27):</span></span>
 <span><span class="co">#&gt; /home/runner/.local/share/R/blit/apps/appmamba/bin/micromamba --root-prefix</span></span>
-<span><span class="co">#&gt; /home/runner/.local/share/R/blit/appmamba create --yes --name samtools</span></span>
+<span><span class="co">#&gt; /home/runner/.local/share/R/blit/appmamba --yes create --name samtools</span></span>
 <span><span class="co">#&gt; bioconda::samtools</span></span></code></pre></div>
 <p>Once the environment is created, you can execute commands within it. The following example locates the samtools binary within the specified environment:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -265,10 +265,10 @@
 <span><span class="co">#&gt; System command succeed</span></span></code></pre></div>
 <p>You may want to clean the created environment-<code>samtools</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/appmamba.html">appmamba</a></span><span class="op">(</span><span class="st">"env"</span>, <span class="st">"remove"</span>, <span class="st">"--yes"</span>, <span class="st">"--name samtools"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/appmamba.html">appmamba</a></span><span class="op">(</span><span class="st">"env"</span>, <span class="st">"remove"</span>, <span class="st">"--name samtools"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running command (2025-04-08 05:58:39):</span></span>
 <span><span class="co">#&gt; /home/runner/.local/share/R/blit/apps/appmamba/bin/micromamba --root-prefix</span></span>
-<span><span class="co">#&gt; /home/runner/.local/share/R/blit/appmamba env remove --yes --name samtools</span></span></code></pre></div>
+<span><span class="co">#&gt; /home/runner/.local/share/R/blit/appmamba --yes env remove --name samtools</span></span></code></pre></div>
 <p>For more details, please see <a href="https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html" class="external-link uri">https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html</a>.</p>
 </div>
 <div class="section level3">
@@ -585,7 +585,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

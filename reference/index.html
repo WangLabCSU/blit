@@ -35,8 +35,7 @@
 
       <div class="section-desc"><p>Core R6 class for encapsulating command parameters and building command objects.</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -52,8 +51,7 @@
 
       <div class="section-desc"><p>Functions for executing commands, including foreground, background, and parallel execution.</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -64,13 +62,15 @@
 
         </dt>
         <dd>Invoke a System Command</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="cmd_run.html">cmd_run()</a></code> <code><a href="cmd_run.html">cmd_help()</a></code> <code><a href="cmd_run.html">cmd_background()</a></code>
 
         </dt>
         <dd>Execute command</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="cmd_parallel.html">cmd_parallel()</a></code>
 
@@ -81,8 +81,7 @@
 
       <div class="section-desc"><p>Set up the execution context, such as working directory, environment variables, and dependency management.</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -93,19 +92,22 @@
 
         </dt>
         <dd>Setup the context for the command</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="conda.html">conda()</a></code>
 
         </dt>
         <dd>Run conda</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="appmamba.html">appmamba()</a></code> <code><a href="appmamba.html">install_appmamba()</a></code> <code><a href="appmamba.html">uninstall_appmamba()</a></code> <code><a href="appmamba.html">appmamba_rc()</a></code>
 
         </dt>
         <dd>Manage Environment with <code>micromamba</code></dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="cmd_conda.html">cmd_conda()</a></code>
           <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
@@ -116,8 +118,7 @@
 
       <div class="section-desc"><p>Define hooks to run before, after, or on success/failure of a command.</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -133,8 +134,7 @@
 
       <div class="section-desc"><p>Wrappers for common genomic data processing and analysis tools.</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -145,67 +145,96 @@
 
         </dt>
         <dd>Run alleleCount</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="bcftools.html">bcftools()</a></code>
 
         </dt>
         <dd>BCFtools is a program for variant calling and manipulating files in the Variant Call Format (VCF) and its binary counterpart BCF. All commands work transparently with both VCFs and BCFs, both uncompressed and BGZF-compressed.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="bedtools.html">bedtools()</a></code>
 
         </dt>
         <dd>Run bedtools</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="bowtie2.html">bowtie2()</a></code>
 
         </dt>
         <dd>Run bowtie2</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="bwa.html">bwa()</a></code>
 
         </dt>
         <dd>Run BWA</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="samtools.html">samtools()</a></code>
 
         </dt>
         <dd>Python is a programming language that lets you work quickly and integrate systems more effectively.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="seqkit.html">seqkit()</a></code>
 
         </dt>
         <dd>Run seqkit</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="varscan.html">varscan()</a></code>
 
         </dt>
         <dd>VarScan is a platform-independent software tool developed at the Genome Institute at Washington University to detect variants in NGS data.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="snpEff.html">snpEff()</a></code>
 
         </dt>
         <dd>Genetic variant annotation, and functional effect prediction toolbox. It annotates and predicts the effects of genetic variants on genes and proteins (such as amino acid changes).</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="gistic2.html">gistic2()</a></code>
 
         </dt>
         <dd>Run GISTIC2</dd>
+
+        <dt>
+
+          <code><a href="strelka.html">strelka()</a></code>
+
+        </dt>
+        <dd>Run strelka</dd>
+
+        <dt>
+
+          <code><a href="minimap2.html">minimap2()</a></code>
+
+        </dt>
+        <dd>Run minimap2</dd>
+
+        <dt>
+
+          <code><a href="freebayes.html">freebayes()</a></code>
+
+        </dt>
+        <dd>Run freebayes</dd>
       </dl></div><div class="section level2">
       <h2 id="transcriptomic-tools">Transcriptomic tools<a class="anchor" aria-label="anchor" href="#transcriptomic-tools"></a></h2>
 
       <div class="section-desc"><p>Wrappers for transcriptome sequencing data processing and analysis tools.</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -216,37 +245,43 @@
 
         </dt>
         <dd>Run cellranger</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="fastp.html">fastp()</a></code>
 
         </dt>
         <dd>Run fastp</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="fastq_pair.html">fastq_pair()</a></code> <code><a href="fastq_pair.html">fastq_read_pair()</a></code>
 
         </dt>
         <dd>FASTQ PAIR</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="kraken2.html">kraken2()</a></code>
 
         </dt>
         <dd>Running Kraken2</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="kraken_tools.html">kraken_tools()</a></code>
 
         </dt>
         <dd>KrakenTools is a suite of scripts to be used alongside the Kraken, KrakenUniq, Kraken 2, or Bracken programs.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="trust4.html">trust4()</a></code> <code><a href="trust4.html">trust4_imgt_annot()</a></code> <code><a href="trust4.html">trust4_gene_names()</a></code>
 
         </dt>
         <dd>TRUST4: immune repertoire reconstruction from bulk and single-cell RNA-seq data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="pyscenic.html">pyscenic()</a></code>
 
@@ -257,8 +292,7 @@
 
       <div class="section-desc"><p>Developer utilities for extending functionality and creating new command interfaces.</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -269,7 +303,8 @@
 
         </dt>
         <dd>Helper function to create new command.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="arg.html">arg()</a></code> <code><a href="arg.html">arg0()</a></code>
 
@@ -280,8 +315,7 @@
 
       <div class="section-desc"><p>Interfaces to external scripting languages for seamless integration with existing scripts.</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -292,7 +326,8 @@
 
         </dt>
         <dd>Python is a programming language that lets you work quickly and integrate systems more effectively.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="perl.html">perl()</a></code>
 
@@ -308,7 +343,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
