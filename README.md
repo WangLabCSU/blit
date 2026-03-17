@@ -247,17 +247,17 @@ Running it without arguments shows the help document:
 appmamba()
 #> Running command (2025-04-08 05:58:27):
 #> /home/runner/.local/share/R/blit/apps/appmamba/bin/micromamba --root-prefix
-#> /home/runner/.local/share/R/blit/appmamba --help
+#> /home/runner/.local/share/R/blit/appmamba --yes --help
 ```
 
 To create a new environment named `samtools` and install `samtools` from
 `Bioconda`, use:
 
 ``` r
-appmamba("create", "--yes", "--name samtools", "bioconda::samtools")
+appmamba("create", "--name samtools", "bioconda::samtools")
 #> Running command (2025-04-08 05:58:27):
 #> /home/runner/.local/share/R/blit/apps/appmamba/bin/micromamba --root-prefix
-#> /home/runner/.local/share/R/blit/appmamba create --yes --name samtools
+#> /home/runner/.local/share/R/blit/appmamba --yes create --name samtools
 #> bioconda::samtools
 ```
 
@@ -279,10 +279,10 @@ exec("which", "samtools") |>
 You may want to clean the created environment-`samtools`.
 
 ``` r
-appmamba("env", "remove", "--yes", "--name samtools")
+appmamba("env", "remove", "--name samtools")
 #> Running command (2025-04-08 05:58:39):
 #> /home/runner/.local/share/R/blit/apps/appmamba/bin/micromamba --root-prefix
-#> /home/runner/.local/share/R/blit/appmamba env remove --yes --name samtools
+#> /home/runner/.local/share/R/blit/appmamba --yes env remove --name samtools
 ```
 
 For more details, please see

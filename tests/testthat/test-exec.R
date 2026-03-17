@@ -130,3 +130,13 @@ testthat::test_that("`bowtie2()` works as expected", {
   testthat::skip_if_not(nzchar(Sys.which("bowtie2")))
   bowtie2() |> cmd_help()
 })
+
+testthat::test_that("`strelka()` works as expected", {
+  testthat::skip_if_not(nzchar(Sys.which("strelka")))
+  strelka() |> cmd_help()
+})
+
+testthat::test_that("`minimap2()` works as expected", {
+  testthat::skip_if_not(nzchar(Sys.which("strelka")))
+  strelka() |> cmd_help()
+})

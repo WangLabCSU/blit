@@ -65,14 +65,17 @@ Other \code{commands}:
 \code{\link{conda}()},
 \code{\link{fastp}()},
 \code{\link{fastq_pair}()},
+\code{\link{freebayes}()},
 \code{\link{gistic2}()},
 \code{\link{kraken_tools}()},
+\code{\link{minimap2}()},
 \code{\link{perl}()},
 \code{\link{pyscenic}()},
 \code{\link{python}()},
 \code{\link{samtools}()},
 \code{\link{seqkit}()},
 \code{\link{snpEff}()},
+\code{\link{strelka}()},
 \code{\link{trust4}()},
 \code{\link{varscan}()}
 }
